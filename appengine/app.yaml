@@ -1,0 +1,21 @@
+application: gdetracking
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+handlers:
+- url: /favicon\.ico
+  static_files: favicon.ico
+  upload: favicon\.ico
+
+# Endpoints handler
+- url: /_ah/spi/.*
+  script: services.register.application
+
+libraries:
+# Needed for endpoints/users_id_token.py.
+- name: pycrypto
+  version: "2.6"
+- name: endpoints
+  version: 1.0

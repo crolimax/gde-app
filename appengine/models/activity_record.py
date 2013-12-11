@@ -1,6 +1,8 @@
 from google.appengine.ext import ndb
+from endpoints_proto_datastore.ndb import EndpointsModel
 
-class ActivityRecord(ndb.Model):
+
+class ActivityRecord(EndpointsModel):
     # tempted to use the G+ unique activity id ( stack overflow ?)
     id = ndb.StringProperty()
     gplusId = ndb.StringProperty()          # we identify GDE's uniquely using this
