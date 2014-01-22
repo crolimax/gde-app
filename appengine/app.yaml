@@ -1,4 +1,4 @@
-application: gdetracking
+application: omega-keep-406
 version: 1
 runtime: python27
 api_version: 1

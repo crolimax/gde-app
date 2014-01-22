@@ -1,10 +1,15 @@
 from google.appengine.ext import ndb
 from endpoints_proto_datastore.ndb import EndpointsModel
+from endpoints_proto_datastore.ndb import EndpointsAliasProperty
 
 
 class ActivityRecord(EndpointsModel):
+
+    _message_fields_schema = ('id', 'postId', 'gplusId', 'name', 'date', 'plusOners', 'resharers', 
+        'title', 'url', 'productGroup', 'activityType', 'links', 'activityMetadata')
+
     # tempted to use the G+ unique activity id ( stack overflow ?)
-    id = ndb.StringProperty()
+    postId = ndb.StringProperty()
     gplusId = ndb.StringProperty()          # we identify GDE's uniquely using this
     name = ndb.StringProperty()
     date = ndb.StringProperty()				# date at which the activity (post) was made
@@ -17,4 +22,17 @@ class ActivityRecord(EndpointsModel):
     activityType = ndb.StringProperty()
     links = ndb.StringProperty()
     # each activity type has a different Metadata
-    activityMetadata = ndb.JsonProperty()
+    activityMetadata = ndb.StringProperty()
+
+    def IdSet(self, value):
+        if not isinstance(value, basestring):
+            raise TypeError('ID must be a string.')
+        self.UpdateFromKey(ndb.Key(ActivityRecord, value))
+
+    @EndpointsAliasProperty(setter=IdSet, required=True)
+    def id(self):
+        if self.key is not None:
+            return self.key.string_id()
+
+
+
