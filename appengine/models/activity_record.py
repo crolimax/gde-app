@@ -2,37 +2,40 @@ from google.appengine.ext import ndb
 from endpoints_proto_datastore.ndb import EndpointsModel
 from endpoints_proto_datastore.ndb import EndpointsAliasProperty
 
+from models import ActivityPost
+
 
 class ActivityRecord(EndpointsModel):
+    # we identify GDE's uniquely using this
+    gplus_id = ndb.StringProperty()
+    # dates
+    date_created = ndb.DateTimeProperty(auto_now_add=True)
+    date_updated = ndb.DateTimeProperty(auto_now=True)
+    # related posts, we store the post_id's and the activity link
+    # in some case the activity link is the gplus_post link itself
+    # when there are no links attached to the post
+    activity_link = ndb.StringProperty()
+    gplus_posts = ndb.StringProperty(repeated=True)
+    # cumulative plus_oners & resharers
+    plus_oners = ndb.IntegerProperty(default=0)
+    resharers = ndb.IntegerProperty(default=0)
 
-    _message_fields_schema = ('id', 'postId', 'gplusId', 'name', 'date', 'plusOners', 'resharers', 
-        'title', 'url', 'productGroup', 'activityType', 'links', 'activityMetadata')
+    def calculate_impact(self):
+    	self.plus_oners = 0
+    	self.resharers = 0
+    	for post_id in self.gplus_posts:
+    		post_key = ndb.Key(ActivityPost, post_id)
+    		activity_post = post_key.get()
+    		if activity_post is not None:
+	    		self.plus_oners += activity_post.plus_oners
+    			self.resharers += activity_post.resharers
 
-    # tempted to use the G+ unique activity id ( stack overflow ?)
-    postId = ndb.StringProperty()
-    gplusId = ndb.StringProperty()          # we identify GDE's uniquely using this
-    name = ndb.StringProperty()
-    date = ndb.StringProperty()				# date at which the activity (post) was made
-    plusOners = ndb.IntegerProperty()
-    resharers = ndb.IntegerProperty()
-    title = ndb.StringProperty()
-    # url of the post (question for stack overflow)
-    url = ndb.StringProperty()
-    productGroup = ndb.StringProperty()
-    activityType = ndb.StringProperty()
-    links = ndb.StringProperty()
-    # each activity type has a different Metadata
-    activityMetadata = ndb.StringProperty()
+    def add_post(self, activity_post):
+    	if (self.gplus_posts.count(activity_post.post_id) == 0):
+    		self.gplus_posts.append(activity_post.post_id)
+		self.calculate_impact()
 
-    def IdSet(self, value):
-        if not isinstance(value, basestring):
-            raise TypeError('ID must be a string.')
-        self.UpdateFromKey(ndb.Key(ActivityRecord, value))
 
-    @EndpointsAliasProperty(setter=IdSet, required=True)
-    def id(self):
-        if self.key is not None:
-            return self.key.string_id()
 
 
 
