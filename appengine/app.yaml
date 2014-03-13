@@ -1,5 +1,5 @@
-application: gdetracking
-version: 1
+application: omega-keep-406
+version: 2
 runtime: python27
 api_version: 1
 threadsafe: yes
