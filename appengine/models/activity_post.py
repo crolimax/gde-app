@@ -18,8 +18,8 @@ class ActivityPost(EndpointsModel):
     title = ndb.StringProperty()
     # url of the post (question for stack overflow)
     url = ndb.StringProperty()
-    product_group = ndb.StringProperty()
-    activity_type = ndb.StringProperty()
+    product_group = ndb.StringProperty(repeated=True)
+    activity_type = ndb.StringProperty(repeated=True)
     links = ndb.StringProperty()
 
     def IdSet(self, value):
