@@ -7,8 +7,8 @@ from models import ActivityPost
 
 class ActivityRecord(EndpointsModel):
 
-    #_message_fields_schema = ('id', 'gplus_id', 'date_created', 'date_updated', 'activity_link',
-    #                          'gplus_posts', 'plus_oners', 'resharers')
+    _message_fields_schema = ('id', 'gplus_id', 'date_created', 'date_updated', 'activity_link',
+                             'gplus_posts', 'plus_oners', 'resharers')
 
     # we identify GDE's uniquely using this
     gplus_id = ndb.StringProperty()
