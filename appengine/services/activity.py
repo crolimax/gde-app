@@ -21,7 +21,7 @@ class ActivityRecordService(remote.Service):
         activity_record.put()
         return activity_record
 
-    @ActivityRecord.method(http_method='UPDATE', name='update')
+    @ActivityRecord.method(http_method='PUT', name='update')
     def ActivityRecordUpdate(self, activity_record):
         activity_record.update()
         return activity_record
