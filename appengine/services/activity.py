@@ -16,6 +16,16 @@ class ActivityRecordService(remote.Service):
 
         return activity_record
 
+    @ActivityRecord.method(http_method='POST', name='insert')
+    def ActivityRecordInsert(self, activity_record):
+        activity_record.put()
+        return activity_record
+
+    @ActivityRecord.method(http_method='UPDATE', name='update')
+    def ActivityRecordUpdate(self, activity_record):
+        activity_record.update()
+        return activity_record
+
     @ActivityRecord.query_method(path='activityRecord', name='activityRecord.list')
     def ActivityRecordList(self, query2):
         return query2
