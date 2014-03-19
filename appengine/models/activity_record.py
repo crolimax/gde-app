@@ -21,8 +21,8 @@ class ActivityRecord(EndpointsModel):
     activity_link = ndb.StringProperty()
     gplus_posts = ndb.StringProperty(repeated=True)
     # cumulative plus_oners & resharers
-    plus_oners = ndb.IntegerProperty(default=0)
-    resharers = ndb.IntegerProperty(default=0)
+    plus_oners = ndb.IntegerProperty()
+    resharers = ndb.IntegerProperty()
 
     def calculate_impact(self):
         self.plus_oners = 0
