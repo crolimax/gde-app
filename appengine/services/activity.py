@@ -2,6 +2,7 @@ import endpoints
 from protorpc import remote
 from models import ActivityPost
 from models import ActivityRecord
+from models import Account
 
 api_root = endpoints.api(name='gdetracking', version='v1.0b1')
 
@@ -72,3 +73,19 @@ class ActivityPostService(remote.Service):
     def ActivityPostList(self, query):
         return query
 
+
+@api_root.api_class(resource_name='account', path='account')
+class AccountService(remote.Service):
+
+    @Account.method(path='/accounts/{id}', http_method='POST', name='insert')
+    def AccountInsert(self, account):
+        account.put()
+
+        return account
+
+    @Account.method(request_fields=('id',),  path='/account/{id}', http_method='GET', name='get')
+    def get(self, account):
+        if not account.from_datastore:
+            raise endpoints.NotFoundException('Account not found.')
+
+        return account

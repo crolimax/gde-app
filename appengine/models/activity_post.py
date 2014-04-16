@@ -5,14 +5,17 @@ from endpoints_proto_datastore.ndb import EndpointsAliasProperty
 
 class ActivityPost(EndpointsModel):
 
-    _message_fields_schema = ('id', 'post_id', 'gplus_id', 'name', 'date', 'plus_oners', 'resharers', 
-        'title', 'url', 'product_group', 'activity_type', 'links')
+    _message_fields_schema = ('id', 'post_id', 'gplus_id', 'name', 'date',
+                              'plus_oners', 'resharers', 'title', 'url', 
+                              'product_group', 'activity_type', 'links')
 
     # tempted to use the G+ unique activity id ( stack overflow ?)
     post_id = ndb.StringProperty()
-    gplus_id = ndb.StringProperty()          # we identify GDE's uniquely using this
+    # we identify GDE's uniquely using this
+    gplus_id = ndb.StringProperty()
     name = ndb.StringProperty()
-    date = ndb.StringProperty()				# date at which the activity (post) was made
+    # date at which the activity (post) was made
+    date = ndb.StringProperty()
     plus_oners = ndb.IntegerProperty(default=0)
     resharers = ndb.IntegerProperty(default=0)
     title = ndb.StringProperty()
