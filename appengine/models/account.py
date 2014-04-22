@@ -2,14 +2,15 @@ from google.appengine.ext import ndb
 from endpoints_proto_datastore.ndb import EndpointsModel
 from endpoints_proto_datastore.ndb import EndpointsAliasProperty
 
+
 class Account(EndpointsModel):
 
-    _message_fields_schema = ('id', 'type', 'display_name', 'real_name',
-                              'email', 'location', 'region',
+    _message_fields_schema = ('id', 'gplus_id', 'type', 'display_name',
+                              'real_name', 'email', 'location', 'region',
                               'country', 'product_group', 'deleted')
 
+    gplus_id = ndb.StringProperty()
     type = ndb.StringProperty()
-    plus_id = ndb.StringProperty()
     display_name = ndb.StringProperty()
     real_name = ndb.StringProperty()
     email = ndb.StringProperty()
