@@ -95,6 +95,7 @@ class AccountService(remote.Service):
 
         return account
 
-    @Account.query_method(path='account', name='list')
+    @Account.query_method(query_fields=('limit', 'order', 'pageToken', 'type'),
+                          path='account', name='list')
     def AccountList(self, query):
         return query

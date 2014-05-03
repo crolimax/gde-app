@@ -5,11 +5,13 @@ from endpoints_proto_datastore.ndb import EndpointsAliasProperty
 
 class Account(EndpointsModel):
 
-    _message_fields_schema = ('id', 'gplus_id', 'type', 'display_name',
+    _message_fields_schema = ('id', 'gplus_id', 'gplus_page', 'type', 
+                              'display_name', 'pic_url',
                               'real_name', 'email', 'location', 'region',
                               'country', 'product_group', 'deleted')
 
     gplus_id = ndb.StringProperty()
+    gplus_page = ndb.StringProperty()
     type = ndb.StringProperty()
     display_name = ndb.StringProperty()
     real_name = ndb.StringProperty()
@@ -19,6 +21,7 @@ class Account(EndpointsModel):
     country = ndb.StringProperty()
     product_group = ndb.StringProperty(repeated=True)
     deleted = ndb.BooleanProperty()
+    pic_url = ndb.StringProperty()
     # how will we manage these? using AR ids?
     #activities = ndb.StringProperty(repeated=True)
 
