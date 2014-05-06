@@ -28,8 +28,8 @@ class ActivityRecordService(remote.Service):
         activity_record.update()
         return activity_record
 
-    @ActivityRecord.query_method(path='activityRecord',
-                                 name='list')
+    @ActivityRecord.query_method(query_fields=('limit', 'order', 'pageToken'),
+                                 path='activityRecord', name='list')
     def ActivityRecordList(self, query2):
         return query2
 
@@ -73,7 +73,8 @@ class ActivityPostService(remote.Service):
 
         return activity_post
 
-    @ActivityPost.query_method(path='activityPost', name='list')
+    @ActivityPost.query_method(query_fields=('limit', 'order', 'pageToken'),
+                               path='activityPost', name='list')
     def ActivityPostList(self, query):
         return query
 
