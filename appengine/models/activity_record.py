@@ -7,19 +7,24 @@ from models import ActivityPost
 
 class ActivityRecord(EndpointsModel):
 
-    _message_fields_schema = ('id', 'gplus_id', 'date_created', 'date_updated',
+    _message_fields_schema = ('id', 'gplus_id', 'gde_name', 'date_created',
+                              'date_updated', 'post_date',
                               'activity_link', 'gplus_posts', 'plus_oners',
-                              'resharers', 'metadata')
+                              'activity_title', 'resharers', 'metadata')
 
     # we identify GDE's uniquely using this
     gplus_id = ndb.StringProperty()
-    # dates
+    gde_name = ndb.StringProperty()
+    # dates: are they really useful????
     date_created = ndb.DateTimeProperty(auto_now_add=True)
     date_updated = ndb.DateTimeProperty(auto_now=True)
+    # first post date, will be more interesting
+    post_date = ndb.StringProperty()
     # related posts, we store the post_id's and the activity link
     # in some case the activity link is the gplus_post link itself
     # when there are no links attached to the post
     activity_link = ndb.StringProperty()
+    activity_title = ndb.StringProperty()
     gplus_posts = ndb.StringProperty(repeated=True)
     # cumulative plus_oners & resharers
     plus_oners = ndb.IntegerProperty()

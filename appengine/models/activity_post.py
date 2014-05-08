@@ -16,8 +16,8 @@ class ActivityPost(EndpointsModel):
     name = ndb.StringProperty()
     # date at which the activity (post) was made
     date = ndb.StringProperty()
-    plus_oners = ndb.IntegerProperty(default=0)
-    resharers = ndb.IntegerProperty(default=0)
+    plus_oners = ndb.IntegerProperty()
+    resharers = ndb.IntegerProperty()
     title = ndb.StringProperty()
     # url of the post (question for stack overflow)
     url = ndb.StringProperty()

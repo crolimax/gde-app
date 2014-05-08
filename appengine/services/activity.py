@@ -3,6 +3,7 @@ from protorpc import remote
 from models import ActivityPost
 from models import ActivityRecord
 from models import Account
+from datetime import datetime
 
 api_root = endpoints.api(name='gdetracking', version='v1.0b1')
 
@@ -52,8 +53,13 @@ class ActivityPostService(remote.Service):
                                        activity_link).fetch(20)
 
         if (len(records) == 0):
+            date = datetime.strptime(activity_post.date[0:19], '%Y-%m-%dT%H:%M:%S')
+            date_format = date.strftime("%d/%m/%Y")
             activity_record = ActivityRecord(gplus_id=activity_post.gplus_id,
-                                             activity_link=activity_link)
+                                             gde_name=activity_post.name,
+                                             post_date=date_format,
+                                             activity_link=activity_link,
+                                             activity_title=activity_post.title)
         elif(len(records) == 1):
             activity_record = records[0]
         else:
