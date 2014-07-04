@@ -19,3 +19,7 @@ libraries:
   version: "2.6"
 - name: endpoints
   version: 1.0
+
+builtins:
+ - remote_api: on
+

@@ -1,4 +1,8 @@
 import endpoints
-from .activity_post import ActivityPostService
+from .activity import ActivityPostService
+from .activity import ActivityRecordService
+from .activity import AccountService
+#from .activity_record import ActivityRecordService
 
-application = endpoints.api_server([ActivityPostService], restricted=False)
+application = endpoints.api_server([ActivityRecordService, ActivityPostService,
+                                    AccountService], restricted=False)
