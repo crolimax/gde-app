@@ -13,6 +13,11 @@ handlers:
 - url: /_ah/spi/.*
   script: services.register.application
 
+- url: /tasks/.*
+  script: services.register.app
+
+
+
 libraries:
 # Needed for endpoints/users_id_token.py.
 - name: pycrypto

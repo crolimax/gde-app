@@ -1,0 +1,4 @@
+cron:
+- description: daily activity update
+  url: /tasks/uapost
+  schedule: every 1 minutes
