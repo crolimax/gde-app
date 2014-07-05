@@ -1,9 +1,9 @@
 from google.appengine.ext import ndb
 from endpoints_proto_datastore.ndb import EndpointsModel
 from endpoints_proto_datastore.ndb import EndpointsAliasProperty
+from datetime import datetime
 
 from models import ActivityPost
-
 
 class ActivityRecord(EndpointsModel):
 
@@ -47,3 +47,40 @@ class ActivityRecord(EndpointsModel):
         if (self.gplus_posts.count(activity_post.post_id) == 0):
             self.gplus_posts.append(activity_post.post_id)
         self.calculate_impact()
+        self.put()
+
+def create_activity_record(activity_post):
+    # is there a link attached to the post? if not query using the post as
+    # activity link
+    activity_link = activity_post.links
+    if activity_post.links == "":
+        activity_link = activity_post.url
+
+    date = datetime.strptime(activity_post.date[0:19], '%Y-%m-%dT%H:%M:%S')
+    date_format = date.strftime("%d/%m/%Y")
+    activity_record = ActivityRecord(gplus_id=activity_post.gplus_id,
+                                     gde_name=activity_post.name,
+                                     post_date=date_format,
+                                     activity_link=activity_link,
+                                     activity_title=activity_post.title)
+    activity_record.put()
+    return activity_record
+
+
+def find_or_create(activity_post):
+    # is there a link attached to the post? if not query using the post as
+    # activity link
+    activity_link = activity_post.links
+    if activity_post.links == "":
+        activity_link = activity_post.url
+
+    # find out if a record exist
+    records = ActivityRecord.query(ActivityRecord.activity_link ==
+                                   activity_link).fetch(20)
+    if (len(records) == 0):
+        return create_activity_record(activity_post)
+    elif(len(records) == 1):
+        return records[0]
+    else:
+        # TODO : DON'T KNOW WHAT TO DO HERE
+        return remote.ApplicationError("Mutiple Matching ActivityRecord")
