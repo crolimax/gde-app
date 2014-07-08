@@ -1,4 +1,8 @@
 cron:
-- description: daily activity update
+- description: daily activity post update
   url: /tasks/uapost
-  schedule: every 1 minutes
+  schedule: every day 00:00
+
+- description: daily new activity post
+  url: /tasks/napost
+  schedule: every day 01:00
