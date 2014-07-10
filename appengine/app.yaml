@@ -12,6 +12,11 @@ handlers:
 # Endpoints handler
 - url: /_ah/spi/.*
   script: services.register.application
+# Cron job handler
+- url: /tasks/.*
+  script: services.register.app
+
+
 
 libraries:
 # Needed for endpoints/users_id_token.py.
