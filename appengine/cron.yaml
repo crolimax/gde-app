@@ -5,4 +5,4 @@ cron:
 
 - description: daily new activity post
   url: /tasks/napost
-  schedule: every day 01:00
+  schedule: every day 12:50

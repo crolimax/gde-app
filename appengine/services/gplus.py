@@ -15,6 +15,7 @@ import webapp2
 import logging
 import re
 from datetime import datetime
+from datetime import date
 from google.appengine.api import mail
 from apiclient.discovery import build
 
@@ -92,6 +93,7 @@ class UpdateActivityPosts(webapp2.RequestHandler):
             return None
 
     def send_transcript_mail(self, metrics):
+        """Send out a mail with some metrics about the process."""
         body_string = "Started at %s \n" % metrics["start"]
         body_string += "ActivityPosts processed : %s \n" % metrics["count"]
         body_string += "ActivityPosts updated : %s \n" % metrics["updated_count"]
@@ -101,8 +103,6 @@ class UpdateActivityPosts(webapp2.RequestHandler):
             body_string += "%s \n" % record 
 
         body_string += "Ended at %s \n" % metrics["end"]
-
-        print body_string
 
         mail.send_mail(sender="GDE Tracking App Support <no-reply@omega-keep-406.appspotmail.com>",
               to="Patrick Martinent <patrick.martinent@gmail.com>",
@@ -128,10 +128,16 @@ class NewActivityPosts(webapp2.RequestHandler):
             #don't process admin users
             if account.type == "administrator":
                 continue
+            logging.info(account.display_name)
             user_count += 1
             # find out what the last activity date recorded is for the expert
-            activities = ActivityPost.query().order(-ActivityPost.date).fetch()
-            last_activity_date = activities[0].date
+            activities = ActivityPost.query(ActivityPost.gplus_id == account.gplus_id).order(-ActivityPost.date).fetch(1)
+            # if this is the first time we are getting activities for a new user
+            if len(activities) == 0:
+                last_activity_date = date(1990, 1, 1).strftime("%Y-%m-%d %H:%M:%S")
+            else:
+                last_activity_date = activities[0].date
+            logging.info('Last activity date : % s' % last_activity_date)
             # get the last 100 activities from gplus
             # eventually we can also query using the date so we don't
             # have to compare each post with the date we just got
@@ -147,7 +153,11 @@ class NewActivityPosts(webapp2.RequestHandler):
                         #create a list of updated posts
                         records.append(gplus_activity["url"])
                         activity_post = self.create_activity(gplus_activity, account)
-                        print activity_post
+                        logging.info(activity_post)
+                        activity_post.put()
+                        activity_record = ar.find_or_create(activity_post)
+                        activity_record.add_post(activity_post)
+
                         # activity = ActivityPost(activity_data)
                         # activity.put()
         metrics["user_count"] = user_count
@@ -159,8 +169,10 @@ class NewActivityPosts(webapp2.RequestHandler):
         print user_count
 
     def create_activity(self, activity, account):
+        """Create the ActivityPost object from gplus post."""
         plus_oners = activity['object']['plusoners']['totalItems']
         resharers = activity['object']['resharers']['totalItems']
+
         activity_post = ActivityPost(id=activity["id"],
                                 post_id=activity["id"],
                                 name=account.real_name,
@@ -170,14 +182,15 @@ class NewActivityPosts(webapp2.RequestHandler):
                                 title=activity["title"],
                                 plus_oners=plus_oners,
                                 resharers=resharers)
+
         at = self.get_activity_types(activity["object"]["content"])
         activity_post.populate(activity_type=at)
         pg = self.get_product_groups(activity["object"]["content"])
         activity_post.populate(product_group=pg)
         try:
             attachments = activity["object"]["attachments"]
-        except:
-            print
+        except Exception as e:
+            logging.error(e)
         else:
             links = self.get_links(attachments)
             activity_post.populate(links=links)
@@ -185,6 +198,7 @@ class NewActivityPosts(webapp2.RequestHandler):
         return activity_post
 
     def is_gde_post(self, activity):
+        """Identify gde post."""
         # first find out wether the post contains #gde
         result = re.search('(#(gde</a>))', activity["object"]["content"], flags=re.IGNORECASE)
         if result is None:
@@ -201,6 +215,7 @@ class NewActivityPosts(webapp2.RequestHandler):
             return False
 
     def get_activity_types(self, content):
+        """Extract activity type hashtags."""
         at = []
         for activity_type in ACTIVITY_TYPES:
             result = re.search(activity_type, content, flags=re.IGNORECASE)
@@ -209,6 +224,7 @@ class NewActivityPosts(webapp2.RequestHandler):
         return at
 
     def get_product_groups(self, content):
+        """Extract product group hashtags."""
         pg = []
         for product_group in PRODUCT_GROUPS:
             result = re.search(product_group, content, flags=re.IGNORECASE)
@@ -217,6 +233,7 @@ class NewActivityPosts(webapp2.RequestHandler):
         return pg
 
     def get_links(self, attachments):
+        """Extract links."""
         links = ""
         for attachment in attachments:
             if attachment["objectType"] == "article" or attachment["objectType"] == "video":
@@ -226,6 +243,7 @@ class NewActivityPosts(webapp2.RequestHandler):
         return links
 
     def send_transcript_mail(self, metrics):
+        """Send out a mail with some metrics about the process."""
         body_string = "Started at %s \n" % metrics["start"]
         body_string += "Accounts processed : %s \n" % metrics["user_count"]
         body_string += "New activities found : %s \n" % metrics["new_activities"]
@@ -235,8 +253,6 @@ class NewActivityPosts(webapp2.RequestHandler):
             body_string += "%s \n" % record 
 
         body_string += "Ended at %s \n" % metrics["end"]
-
-        print body_string
 
         mail.send_mail(sender="GDE Tracking App Support <no-reply@omega-keep-406.appspotmail.com>",
               to="Patrick Martinent <patrick.martinent@gmail.com>",
