@@ -141,9 +141,21 @@ class NewActivityPosts(webapp2.RequestHandler):
             # get the last 100 activities from gplus
             # eventually we can also query using the date so we don't
             # have to compare each post with the date we just got
-            result = service.activities().list(userId=account.gplus_id,
-                                               collection='public',
-                                               maxResults=100).execute()
+            try: 
+                result = service.activities().list(userId=account.gplus_id,
+                                                   collection='public',
+                                                   maxResults=100).execute()
+            except:
+                #try againg
+                logging.info('trying to get gplus activities again')
+                try:
+                    result = service.activities().list(userId=account.gplus_id,
+                                                       collection='public',
+                                                       maxResults=100).execute()
+                except:
+                    logging.info('failed again, giving up')
+            
+
             gplus_activities = result.get('items', [])
             for gplus_activity in gplus_activities:
                 if gplus_activity["updated"] > last_activity_date:
