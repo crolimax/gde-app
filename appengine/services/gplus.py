@@ -55,12 +55,16 @@ class UpdateActivityPosts(webapp2.RequestHandler):
             count += 1
             #get the activity from gplus
             try:
-                plus_activity = service.activities().get(activityId=activity.post_id).execute()
+                plus_activity = service.activities().get(
+                    activityId=activity.post_id,
+                    fields='object(plusoners/totalItems,replies/totalItems,resharers/totalItems)').execute()
             except:
                 #try again
                 logging.info('trying to get gplus activities again')
                 try:
-                    plus_activity = service.activities().get(activityId=activity.post_id).execute()
+                    plus_activity = service.activities().get(
+                        activityId=activity.post_id,
+                        fields='object(plusoners/totalItems,replies/totalItems,resharers/totalItems)').execute()
                 except:
                     logging.info('failed again, giving up')
 
@@ -93,6 +97,10 @@ class UpdateActivityPosts(webapp2.RequestHandler):
         if entity.resharers != post['object']['resharers']['totalItems']:
             changed = True
             entity.resharers = post['object']['resharers']['totalItems']
+
+        if entity.comments != post['object']['replies']['totalItems']:
+            changed = True
+            entity.comments = post['object']['replies']['totalItems']
 
         if changed:
             return entity
@@ -191,6 +199,7 @@ class NewActivityPosts(webapp2.RequestHandler):
         """Create the ActivityPost object from gplus post."""
         plus_oners = activity['object']['plusoners']['totalItems']
         resharers = activity['object']['resharers']['totalItems']
+        comments = activity['object']['replies']['totalItems']
 
         activity_post = ActivityPost(id=activity["id"],
                                 post_id=activity["id"],
@@ -200,7 +209,8 @@ class NewActivityPosts(webapp2.RequestHandler):
                                 url=activity["url"],
                                 title=activity["title"],
                                 plus_oners=plus_oners,
-                                resharers=resharers)
+                                resharers=resharers,
+                                comments=comments)
 
         at = self.get_activity_types(activity["object"]["content"])
         activity_post.populate(activity_type=at)
