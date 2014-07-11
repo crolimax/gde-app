@@ -9,8 +9,8 @@ class ActivityRecord(EndpointsModel):
 
     _message_fields_schema = ('id', 'gplus_id', 'gde_name', 'date_created',
                               'date_updated', 'post_date',
-                              'activity_link', 'gplus_posts', 'plus_oners',
-                              'activity_title', 'resharers', 'metadata')
+                              'activity_link', 'gplus_posts', 'activity_title',
+                              'plus_oners', 'resharers', 'comments', 'metadata')
 
     # we identify GDE's uniquely using this
     gplus_id = ndb.StringProperty()
@@ -29,6 +29,7 @@ class ActivityRecord(EndpointsModel):
     # cumulative plus_oners & resharers
     plus_oners = ndb.IntegerProperty()
     resharers = ndb.IntegerProperty()
+    comments = ndb.IntegerProperty()
 
     #  activity type metadata
     metadata = ndb.JsonProperty()
@@ -36,12 +37,14 @@ class ActivityRecord(EndpointsModel):
     def calculate_impact(self):
         self.plus_oners = 0
         self.resharers = 0
+        self.comments = 0
         for post_id in self.gplus_posts:
             post_key = ndb.Key(ActivityPost, post_id)
             activity_post = post_key.get()
             if activity_post is not None:
                 self.plus_oners += activity_post.plus_oners
                 self.resharers += activity_post.resharers
+                self.comments += activity_post.comments
 
     def add_post(self, activity_post):
         if (self.gplus_posts.count(activity_post.post_id) == 0):

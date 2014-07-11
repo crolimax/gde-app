@@ -6,7 +6,7 @@ from endpoints_proto_datastore.ndb import EndpointsAliasProperty
 class ActivityPost(EndpointsModel):
 
     _message_fields_schema = ('id', 'post_id', 'gplus_id', 'name', 'date',
-                              'plus_oners', 'resharers', 'title', 'url', 
+                              'plus_oners', 'resharers', 'comments', 'title', 'url',
                               'product_group', 'activity_type', 'links')
 
     # tempted to use the G+ unique activity id ( stack overflow ?)
@@ -18,6 +18,7 @@ class ActivityPost(EndpointsModel):
     date = ndb.StringProperty()
     plus_oners = ndb.IntegerProperty()
     resharers = ndb.IntegerProperty()
+    comments = ndb.IntegerProperty()
     title = ndb.StringProperty()
     # url of the post (question for stack overflow)
     url = ndb.StringProperty()
