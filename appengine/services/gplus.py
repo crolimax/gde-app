@@ -54,8 +54,15 @@ class UpdateActivityPosts(webapp2.RequestHandler):
         for activity in activities:
             count += 1
             #get the activity from gplus
-            request = service.activities().get(activityId=activity.post_id)
-            plus_activity = request.execute()
+            try:
+                plus_activity = service.activities().get(activityId=activity.post_id).execute()
+            except:
+                #try again
+                logging.info('trying to get gplus activities again')
+                try:
+                    plus_activity = service.activities().get(activityId=activity.post_id).execute()
+                except:
+                    logging.info('failed again, giving up')
 
             updated_activity = self.update_if_changed(activity, plus_activity)
 
@@ -154,7 +161,7 @@ class NewActivityPosts(webapp2.RequestHandler):
                                                        maxResults=100).execute()
                 except:
                     logging.info('failed again, giving up')
-            
+
 
             gplus_activities = result.get('items', [])
             for gplus_activity in gplus_activities:

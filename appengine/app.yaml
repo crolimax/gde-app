@@ -14,7 +14,7 @@ handlers:
   script: services.register.application
 # Cron job handler
 - url: /tasks/.*
-  script: services.register.app
+  script: services.register_tasks.app
 
 
 
