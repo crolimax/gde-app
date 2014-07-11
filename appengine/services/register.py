@@ -1,8 +1,9 @@
+""" Endpoint api server registration."""
+
 import endpoints
-from .activity import ActivityPostService
-from .activity import ActivityRecordService
-from .activity import AccountService
-#from .activity_record import ActivityRecordService
+from .web_endpoints import ActivityPostService
+from .web_endpoints import ActivityRecordService
+from .web_endpoints import AccountService
 
 application = endpoints.api_server([ActivityRecordService, ActivityPostService,
                                     AccountService], restricted=False)
