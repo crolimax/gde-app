@@ -1428,7 +1428,6 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope	,$http	,$rootSco
 				'userId': 'me'
 			});
 			request.execute(function(resp)
-			request.execute(function(resp)
 			{
 //				console.log(resp);
 				$rootScope.$broadcast('gde:logged',resp.displayName);
