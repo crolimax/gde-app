@@ -68,15 +68,23 @@ class UpdateActivityPosts(webapp2.RequestHandler):
                 except:
                     logging.info('failed again, giving up')
 
+            # toogle one of the two lines below
+
+            # comment if you need to update every activity post
             updated_activity = self.update_if_changed(activity, plus_activity)
 
+            # comment is you need to only update changed activity posts
+            # plus_oners, resharers, replies ( comments )
+            #updated_activity = activity
+            
             if not updated_activity is None:
-                updated_count += 1
                 logging.info('updated gplus post id %s' % updated_activity.post_id)
                 updated_activity.put()
                 activity_record = ar.find_or_create(updated_activity)
                 activity_record.add_post(updated_activity)
+
                 #create a list of updated posts
+                updated_count += 1
                 records.append(updated_activity.url)
 
         metrics["count"] = count
@@ -169,62 +177,34 @@ class NewActivityPosts(webapp2.RequestHandler):
                                                        maxResults=100).execute()
                 except:
                     logging.info('failed again, giving up')
-
+                    continue
 
             gplus_activities = result.get('items', [])
             for gplus_activity in gplus_activities:
                 if gplus_activity["updated"] > last_activity_date:
                     # ensure this is a gde post
                     if self.is_gde_post(gplus_activity):
-                        new_activities += 1
-                        #create a list of updated posts
-                        records.append(gplus_activity["url"])
-                        activity_post = self.create_activity(gplus_activity, account)
-                        logging.info(activity_post)
-                        activity_post.put()
-                        activity_record = ar.find_or_create(activity_post)
-                        activity_record.add_post(activity_post)
 
-                        # activity = ActivityPost(activity_data)
-                        # activity.put()
+                        #create a new activity
+                        new_activity = ActivityPost(id=gplus_activity["id"])
+                        new_activity.create_from_gplus_post(gplus_activity)
+                        new_activity.put()
+
+                        #create the new activity record
+                        activity_record = ar.find_or_create(new_activity)
+                        activity_record.add_post(new_activity)
+
+                        #create a list of updated posts
+                        new_activities += 1
+                        records.append(new_activity.url)
+
         metrics["user_count"] = user_count
         metrics["new_activities"] = new_activities
         metrics["records"] = records
         metrics["end"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                
         self.send_transcript_mail(metrics)
-        print user_count
-
-    def create_activity(self, activity, account):
-        """Create the ActivityPost object from gplus post."""
-        plus_oners = activity['object']['plusoners']['totalItems']
-        resharers = activity['object']['resharers']['totalItems']
-        comments = activity['object']['replies']['totalItems']
-
-        activity_post = ActivityPost(id=activity["id"],
-                                post_id=activity["id"],
-                                name=account.real_name,
-                                gplus_id=account.gplus_id,
-                                date=activity["updated"],
-                                url=activity["url"],
-                                title=activity["title"],
-                                plus_oners=plus_oners,
-                                resharers=resharers,
-                                comments=comments)
-
-        at = self.get_activity_types(activity["object"]["content"])
-        activity_post.populate(activity_type=at)
-        pg = self.get_product_groups(activity["object"]["content"])
-        activity_post.populate(product_group=pg)
-        try:
-            attachments = activity["object"]["attachments"]
-        except Exception as e:
-            logging.error(e)
-        else:
-            links = self.get_links(attachments)
-            activity_post.populate(links=links)
-        
-        return activity_post
+        logging.info('End NewActivityPosts')
 
     def is_gde_post(self, activity):
         """Identify gde post."""
@@ -242,34 +222,6 @@ class NewActivityPosts(webapp2.RequestHandler):
             return True
         else:
             return False
-
-    def get_activity_types(self, content):
-        """Extract activity type hashtags."""
-        at = []
-        for activity_type in ACTIVITY_TYPES:
-            result = re.search(activity_type, content, flags=re.IGNORECASE)
-            if result is not None:
-                at.append(activity_type)
-        return at
-
-    def get_product_groups(self, content):
-        """Extract product group hashtags."""
-        pg = []
-        for product_group in PRODUCT_GROUPS:
-            result = re.search(product_group, content, flags=re.IGNORECASE)
-            if result is not None:
-                pg.append(product_group)
-        return pg
-
-    def get_links(self, attachments):
-        """Extract links."""
-        links = ""
-        for attachment in attachments:
-            if attachment["objectType"] == "article" or attachment["objectType"] == "video":
-                if links != "":
-                    links += ", "
-                links += attachment["url"]
-        return links
 
     def send_transcript_mail(self, metrics):
         """Send out a mail with some metrics about the process."""

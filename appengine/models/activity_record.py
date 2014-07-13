@@ -3,12 +3,15 @@ from endpoints_proto_datastore.ndb import EndpointsModel
 from endpoints_proto_datastore.ndb import EndpointsAliasProperty
 from datetime import datetime
 
+import logging
+
 from models import ActivityPost
 
 class ActivityRecord(EndpointsModel):
 
     _message_fields_schema = ('id', 'gplus_id', 'gde_name', 'date_created',
-                              'date_updated', 'post_date',
+                              'date_updated', 'post_date', 'activity_types',
+                              'product_groups',
                               'activity_link', 'gplus_posts', 'activity_title',
                               'plus_oners', 'resharers', 'comments', 'metadata')
 
@@ -30,6 +33,9 @@ class ActivityRecord(EndpointsModel):
     plus_oners = ndb.IntegerProperty()
     resharers = ndb.IntegerProperty()
     comments = ndb.IntegerProperty()
+    # activity types and product groups
+    activity_types = ndb.StringProperty(repeated=True)
+    product_groups = ndb.StringProperty(repeated=True)
 
     #  activity type metadata
     metadata = ndb.JsonProperty()
@@ -45,6 +51,17 @@ class ActivityRecord(EndpointsModel):
                 self.plus_oners += activity_post.plus_oners
                 self.resharers += activity_post.resharers
                 self.comments += activity_post.comments
+
+                if activity_post.product_group:
+                    for product_group in activity_post.product_group:
+                        if product_group not in self.product_groups:
+                            self.product_groups.append(product_group)
+
+                if activity_post.activity_type:
+                    for act_type in activity_post.activity_type:
+                        if act_type not in self.activity_types:
+                            self.activity_types.append(act_type)
+
 
     def add_post(self, activity_post):
         if (self.gplus_posts.count(activity_post.post_id) == 0):
