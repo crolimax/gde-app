@@ -63,6 +63,7 @@ class ActivityPost(EndpointsModel):
             attachments = gplus_post["object"]["attachments"]
         except Exception as e:
             logging.info('no attachments')
+            self.links=""
         else:
             attachment_links = self.get_links(attachments)
             self.links=attachment_links
