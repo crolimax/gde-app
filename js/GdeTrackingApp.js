@@ -26,10 +26,10 @@ GdeTrackingApp.config(function($routeProvider)
 			controller	: 'myStatisticsCtrl',
 			templateUrl	:'html/myStatistics.html'
 		}).
-		when('/tagGuidelines',
+		when('/how-to-use',
 		{
 //			controller	: '',
-			templateUrl	:'html/tagGuidelines.html'
+			templateUrl	:'html/how-to-use.html'
 		}).
 		when('/generalStatisticsForGooglers',
 		{
