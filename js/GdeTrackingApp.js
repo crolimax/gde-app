@@ -1255,7 +1255,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope	,$http	,$rootS
 		.draw(activitiesByGde_data);
 	}
 				
-	var getPostsEndPointURL = 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/activityRecord/activityRecord?limit=100';
+	var getPostsEndPointURL = 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/activityRecord/activityRecord?limit=100&gplus_id='+ $rootScope.usrId;
 	$scope.loadVisualizationLibraries = google.load('visualization', '1.1', null);
 	$scope.getPostsFromGAE = function (getPostsEndPointURL)
 	{
@@ -1268,7 +1268,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope	,$http	,$rootS
 			};
 			if (response.nextPageToken)													// If there is still more data
 			{
-				var nextUrl = 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/activityRecord/activityRecord?limit=100&pageToken='+response.nextPageToken; // Adjust the end point URL
+				var nextUrl = 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/activityRecord/activityRecord?limit=100&gplus_id='+ $rootScope.usrId+'&pageToken='+response.nextPageToken; // Adjust the end point URL
 				$scope.getPostsFromGAE(nextUrl);										// Add the next page
 			} else
 			{																			// Done
