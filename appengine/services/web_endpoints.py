@@ -24,10 +24,10 @@ class ActivityRecordService(remote.Service):
         activity_record.put()
         return activity_record
 
-    @ActivityRecord.query_method(query_fields=('limit', 'order', 'pageToken'),
+    @ActivityRecord.query_method(query_fields=('limit', 'order', 'pageToken', 'gplus_id'),
                                  path='activityRecord', name='list')
-    def ActivityRecordList(self, query2):
-        return query2
+    def ActivityRecordList(self, query):
+        return query
 
 
 @api_root.api_class(resource_name='activity_post', path='activityPost')
