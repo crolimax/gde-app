@@ -28,13 +28,21 @@ GdeTrackingApp.config(function($routeProvider)
 		}).
 		when('/how-to-use',
 		{
-//			controller	: '',
 			templateUrl	:'html/how-to-use.html'
 		}).
 		when('/generalStatisticsForGooglers',
 		{
 			controller	: 'generalStatisticsForGooglersCtrl',
 			templateUrl	:'html/generalStatisticsForGooglers.html'
+		}).
+		when('/impact',
+		{
+			controller	: 'publicGeneralStatisticsCtrl',
+			templateUrl	:'html/impact.html'
+		}).
+		when('/who-are-gdes',
+		{
+			templateUrl	:'html/who-are-gdes.html'
 		}).
 		when('/feature',
 		{
@@ -1303,7 +1311,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope	,$http	,$rootS
 								post['product_group']	= $scope.data.items[i].product_groups;
 								post['activity_type']	= $scope.data.items[i].activity_types;
 								$scope.postByGdeNameTemp[$scope.name]['posts'].push(post);
-								$scope.userPosts.push(post);									// Push another post 
+								$scope.userPosts.push(post);									// Push another post
 //								console.log(post);
 							} else
 							{
@@ -1331,8 +1339,8 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope	,$http	,$rootS
 								post['product_group']	= $scope.data.items[i].product_groups;
 								post['activity_type']	= $scope.data.items[i].activity_types;
 								$scope.postByGdeNameTemp[$scope.name]['posts'].push(post);
-								$scope.userPosts.push(post);									// Push first post 
-							};	
+								$scope.userPosts.push(post);									// Push first post
+							};
 						};
 					};
 					drawGeneralStatistics();
@@ -1468,7 +1476,6 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope	,$http	,$rootSco
 					    case 'administrator':
 					        console.log('You are an administrator of this app.');
 					        $('#generalStatisticsForGooglers').css('display','block');
-					        $('#myStatistics').css('display','block'); //Administrators can share activities and get tracked
 					        break;
 					    case 'manager':
 					        console.log('You are a manager of this app.');
@@ -1513,4 +1520,244 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope	,$http	,$rootSco
 		console.log('Error in sign in flow.');
 		console.log(authResult);
 	});
+});
+
+// *****************************************************************************************************
+//    								General Statistics Controllers
+// *****************************************************************************************************
+GdeTrackingApp.controller("publicGeneralStatisticsCtrl",	function($scope	,$http)
+{
+
+	$scope.postByActivity			= [];
+	$scope.data						= {};
+	$scope.data.items				= [];
+	$scope.postByActivityTemp		= {};
+	var drawGeneralStatistics		= function ()
+	{	// For every Activity in $scope.postByActivityTemp
+		$.each($scope.postByActivityTemp,	function(k,v)
+		{
+			$scope.postByActivity.push($scope.postByActivityTemp[k]); // Push it as a new object in a JSON ordered array.
+		});
+//		console.log($scope.postByActivity);
+		var postByActivity =
+		{
+			cols:
+			[
+				{
+					id		: 'activity',
+					label	: 'Activity Type',
+					type	: 'string'
+				},
+				{
+					id		: 'activitiesLogged',
+					label	: 'Activities Logged',
+					type	: 'number'
+				},
+				{
+					id		: 'totalResharers',
+					label	: 'Total Resharers',
+					type	: 'number'
+				},
+				{
+					id		: 'totalPlus1s',
+					label	: 'Total +1s',
+					type	: 'number'
+				}
+			],
+			rows: []
+		};
+		for (var i=0;i<$scope.postByActivity.length;i++)
+		{
+			var activityName		= $scope.postByActivity[i].activity;
+			var activitiesLogged	= $scope.postByActivity[i].posts.length;
+			var totalResharers		= $scope.postByActivity[i].totalResharers;
+			var totalPlus1s			= $scope.postByActivity[i].totalPlus1s;
+			var product				= {c:[]};
+			product.c.push({v:activityName});
+			product.c.push({v:activitiesLogged});
+			product.c.push({v:totalResharers});
+			product.c.push({v:totalPlus1s});
+			postByActivity.rows.push(product);
+		};
+//		console.log(postByActivity);
+					
+		// Sort data by Total Activities
+					var postByActivity_data		= new google.visualization.DataTable(postByActivity);
+					postByActivity_data.sort(1);
+					
+		// Posts by Activity
+					var activities_Selector 	= new google.visualization.ControlWrapper();
+					activities_Selector.setControlType('CategoryFilter');
+					activities_Selector.setContainerId('activities_Selector');
+					activities_Selector.setOptions(
+					{
+						'filterColumnLabel': 'Activity Type',
+						'ui':
+						{
+							'caption'				: 'Activity...',
+							'labelStacking'			: 'vertical',
+							'selectedValuesLayout'	: 'belowStacked',
+							'allowTyping'			: true,
+							'allowMultiple'			: true
+						}
+					});
+					
+					var activities_ActivitiesSlider	= new google.visualization.ControlWrapper();
+					activities_ActivitiesSlider.setControlType('NumberRangeFilter');
+					activities_ActivitiesSlider.setContainerId('activities_ActivitiesSlider');
+					activities_ActivitiesSlider.setOptions(
+					{
+						'filterColumnLabel': 'Activities Logged',
+						'ui':
+						{
+							'labelStacking': 'vertical'
+						}
+					});
+					
+					var activities_ResharesSlider	= new google.visualization.ControlWrapper();
+					activities_ResharesSlider.setControlType('NumberRangeFilter');
+					activities_ResharesSlider.setContainerId('activities_ResharesSlider');
+					activities_ResharesSlider.setOptions(
+					{
+						'filterColumnLabel': 'Total Resharers',
+						'ui':
+						{
+							'labelStacking': 'vertical'
+						}
+					});
+					
+					var activities_Plus1sSlider		= new google.visualization.ControlWrapper();
+					activities_Plus1sSlider.setControlType('NumberRangeFilter');
+					activities_Plus1sSlider.setContainerId('activities_Plus1sSlider');
+					activities_Plus1sSlider.setOptions(
+					{
+						'filterColumnLabel': 'Total +1s',
+						'ui':
+						{
+							'labelStacking': 'vertical'
+						}
+					});
+
+					var activityTableChart			= new google.visualization.ChartWrapper();
+					activityTableChart.setChartType('Table');
+					activityTableChart.setContainerId('activityTableChart');
+					activityTableChart.setOptions(
+					{
+						'sortColumn'	: 1,
+						'sortAscending'	: false,
+						'page'			: 'enable',
+						'pageSize'		:30
+					});
+					
+					var activityBarChart			= new google.visualization.ChartWrapper();
+					activityBarChart.setChartType('BarChart');
+					activityBarChart.setContainerId('activityBarChart');
+					activityBarChart.setOptions(
+					{
+						'width'			:700,
+						'isStacked'		: true,
+						'reverseCategories': true,
+						'legend':
+						{
+							'position'	:'top',
+							'alignment'	:'center',
+							'maxLines'	:4
+						}
+					});
+					
+		// Draw Charts
+		new google.visualization.Dashboard(document.getElementById('generalStatisticsByActivity'))
+		.bind([activities_Selector,activities_ActivitiesSlider,activities_ResharesSlider,activities_Plus1sSlider], [activityTableChart,activityBarChart])
+		.draw(postByActivity_data);
+					
+	}
+				
+	var getPostsEndPointURL = 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/activityRecord/activityRecord?limit=100';
+	$scope.loadVisualizationLibraries = google.load('visualization', '1.1', null);
+	$scope.getPostsFromGAE = function (getPostsEndPointURL)
+	{
+		$http({method: 'GET', url: getPostsEndPointURL})
+		.success(function(response, status, config)
+		{
+//			console.log('getPostsFromGAE response ok');
+			for (var i=0;i<response.items.length;i++)
+			{
+				$scope.data.items.push(response.items[i]);
+			};
+			
+			if (response.nextPageToken) // If there is still more data
+			{
+				var nextUrl = 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/activityRecord/activityRecord?limit=100&pageToken='+response.nextPageToken; // Adjust the end point URL
+				$scope.getPostsFromGAE(nextUrl); // Add the next page
+			} else
+			{
+				// Done
+//				console.log(data.items);
+				for (var i=0;i<$scope.data.items.length;i++)// Posts by Activity Type
+				{
+					if ($scope.data.items[i].activity_types)
+					{
+						for (var j=0;j<$scope.data.items[i].activity_types.length;j++)
+						{
+							var activity = $scope.data.items[i].activity_types[j];
+							activity = activity.slice(1,activity.length); // Remove the Hash Tag
+							if ($scope.postByActivityTemp[activity])
+							{
+								$scope.postByActivityTemp[activity]['activity']		= activity;
+								$scope.postByActivityTemp[activity]['totalPlus1s']		= Math.abs($scope.postByActivityTemp[activity]['totalPlus1s'])		+ Math.abs($scope.data.items[i].plus_oners);
+								$scope.postByActivityTemp[activity]['totalResharers']	= Math.abs($scope.postByActivityTemp[activity]['totalResharers'])	+ Math.abs($scope.data.items[i].resharers);
+								var post				= [];
+								post['gde_name']		= $scope.data.items[i].gde_name ;
+								post['title']			= $scope.data.items[i].activity_title;
+								post['url']				= $scope.data.items[i].activity_link;
+								post['gplus_id']		= $scope.data.items[i].gplus_id;
+								post['resharers']		= $scope.data.items[i].resharers;
+								post['post_id']			= $scope.data.items[i].id;
+								post['plus_oners']		= $scope.data.items[i].plus_oners;
+								post['date']			= $scope.data.items[i].post_date;
+								post['id']				= $scope.data.items[i].id;
+								post['product_group']	= $scope.data.items[i].product_groups;
+								post['activity_type']	= $scope.data.items[i].activity_types;
+								$scope.postByActivityTemp[activity]['posts'].push(post);
+							} else
+							{
+								$scope.postByActivityTemp[activity]					= {}; // Initialize a new JSON unordered array
+								
+								$scope.postByActivityTemp[activity]['posts']			= [];  // Initialize a new JSON ordered array
+								$scope.postByActivityTemp[activity]['totalPlus1s']		= 0; // Initialize a new acumulator for total+1s
+								$scope.postByActivityTemp[activity]['totalResharers']	= 0; // Initialize a new acumulator for totalResharers
+								
+								$scope.postByActivityTemp[activity]['activity']		= activity;
+								$scope.postByActivityTemp[activity]['totalPlus1s']		= Math.abs($scope.postByActivityTemp[activity]['totalPlus1s']) + Math.abs($scope.data.items[i].plus_oners);
+								$scope.postByActivityTemp[activity]['totalResharers']	= Math.abs($scope.postByActivityTemp[activity]['totalResharers']) + Math.abs($scope.data.items[i].resharers);
+								
+								var post				= [];
+								post['gde_name']		= $scope.data.items[i].gde_name ;
+								post['title']			= $scope.data.items[i].activity_title;
+								post['url']				= $scope.data.items[i].activity_link;
+								post['gplus_id']		= $scope.data.items[i].gplus_id;
+								post['resharers']		= $scope.data.items[i].resharers;
+								post['post_id']			= $scope.data.items[i].id;
+								post['plus_oners']		= $scope.data.items[i].plus_oners;
+								post['date']			= $scope.data.items[i].post_date;
+								post['id']				= $scope.data.items[i].id;
+								post['product_group']	= $scope.data.items[i].product_groups;
+								post['activity_type']	= $scope.data.items[i].activity_types;
+								$scope.postByActivityTemp[activity]['posts'].push(post);
+							};
+						}
+					};
+				};
+//				console.log($scope.postByActivityTemp);
+				
+				drawGeneralStatistics()
+			};
+		})
+		.error(function(response, status, config)
+		{
+			window.alert('There was a problem loading the app. This windows will be re-loaded automatically.');
+			location.reload(true);
+		});
+	};
+	$scope.getPostsFromGAE(getPostsEndPointURL);
 });
