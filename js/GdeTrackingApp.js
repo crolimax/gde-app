@@ -1468,6 +1468,7 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope	,$http	,$rootSco
 					    case 'administrator':
 					        console.log('You are an administrator of this app.');
 					        $('#generalStatisticsForGooglers').css('display','block');
+					        $('#myStatistics').css('display','block'); //Administrators can share activities and get tracked
 					        break;
 					    case 'manager':
 					        console.log('You are a manager of this app.');
