@@ -19,15 +19,20 @@
     border-radius: 1em;
     background-color:rgba(0, 0, 0, 0.4);
 }
+
+
+
+
+
 /*	Android KitKat Roboto font with W3C recommended text size */
-h1, h2, h3, h4, h5, p, a {
+h1, h2, h3, h4, h5, p, a, .text-styled {
     /* W3C */
     color: #000;
     font-family:'Roboto', sans-serif;
     text-decoration:none;
     margin:0;
 }
-p, a {
+a {
     /* W3C */
     font-weight:bold;
 }
