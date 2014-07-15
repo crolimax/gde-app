@@ -1,11 +1,59 @@
 from google.appengine.ext import ndb
 from endpoints_proto_datastore.ndb import EndpointsModel
-from endpoints_proto_datastore.ndb import EndpointsAliasProperty
 from datetime import datetime
 
-import logging
-
 from models import ActivityPost
+
+
+class ActivityMetaData(EndpointsModel):
+    ## Description
+
+    # should match one of the activity_types of the ActivityRecord
+    kind = ndb.StringProperty()
+
+    # for all types, can be event link/blog link/github link/...
+    link = ndb.StringProperty()
+
+    # bugreport, techtalk
+    title = ndb.StringProperty()
+
+    # opensourcecode
+    description = ndb.StringProperty()
+
+    # community
+    event_name = ndb.StringProperty()
+    event_type = ndb.StringProperty()
+    photos_link = ndb.StringProperty()
+
+    # techtalk
+    abstract = ndb.StringProperty()
+    slides_link = ndb.StringProperty()
+    recordings_link = ndb.StringProperty()
+
+    # community, techtalk
+    location = ndb.StringProperty()
+    google_covered_expenses = ndb.BooleanProperty()
+
+    ## Metrics
+
+    # bugreport
+    users_affected = ndb.IntegerProperty()
+
+    # community
+    attendees = ndb.IntegerProperty()
+
+    # forumpost
+    upvotes = ndb.IntegerProperty()
+
+    # article, blogpost, book, techdocs, translation
+    page_views = ndb.IntegerProperty()
+    plus_oners = ndb.IntegerProperty()
+    reshares = ndb.IntegerProperty()
+
+    # opensourcecode
+    downloads = ndb.IntegerProperty()
+    active_contributors = ndb.IntegerProperty()
+
 
 class ActivityRecord(EndpointsModel):
 
@@ -38,7 +86,7 @@ class ActivityRecord(EndpointsModel):
     product_groups = ndb.StringProperty(repeated=True)
 
     #  activity type metadata
-    metadata = ndb.JsonProperty()
+    metadata = ndb.StructuredProperty(ActivityMetaData, repeated=True)
 
     def calculate_impact(self):
         self.plus_oners = 0
@@ -68,6 +116,7 @@ class ActivityRecord(EndpointsModel):
             self.gplus_posts.append(activity_post.post_id)
         self.calculate_impact()
         self.put()
+
 
 def create_activity_record(activity_post):
     # is there a link attached to the post? if not query using the post as
