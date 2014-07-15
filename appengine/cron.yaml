@@ -1,8 +1,14 @@
 cron:
 - description: daily activity post update
   url: /tasks/uapost
+  # schedule: 13 of july 04:10
   schedule: every day 00:00
 
 - description: daily new activity post
   url: /tasks/napost
-  schedule: every day 12:50
+  # schedule: 13 of july 04:28
+  schedule: every day 00:30
+
+- description: reconstruct data set
+  url: /tasks/reconstruct
+  schedule: 12 of july 19:05

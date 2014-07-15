@@ -3,14 +3,17 @@ from endpoints_proto_datastore.ndb import EndpointsModel
 from endpoints_proto_datastore.ndb import EndpointsAliasProperty
 from datetime import datetime
 
+import logging
+
 from models import ActivityPost
 
 class ActivityRecord(EndpointsModel):
 
     _message_fields_schema = ('id', 'gplus_id', 'gde_name', 'date_created',
-                              'date_updated', 'post_date',
-                              'activity_link', 'gplus_posts', 'plus_oners',
-                              'activity_title', 'resharers', 'metadata')
+                              'date_updated', 'post_date', 'activity_types',
+                              'product_groups',
+                              'activity_link', 'gplus_posts', 'activity_title',
+                              'plus_oners', 'resharers', 'comments', 'metadata')
 
     # we identify GDE's uniquely using this
     gplus_id = ndb.StringProperty()
@@ -29,6 +32,10 @@ class ActivityRecord(EndpointsModel):
     # cumulative plus_oners & resharers
     plus_oners = ndb.IntegerProperty()
     resharers = ndb.IntegerProperty()
+    comments = ndb.IntegerProperty()
+    # activity types and product groups
+    activity_types = ndb.StringProperty(repeated=True)
+    product_groups = ndb.StringProperty(repeated=True)
 
     #  activity type metadata
     metadata = ndb.JsonProperty()
@@ -36,12 +43,25 @@ class ActivityRecord(EndpointsModel):
     def calculate_impact(self):
         self.plus_oners = 0
         self.resharers = 0
+        self.comments = 0
         for post_id in self.gplus_posts:
             post_key = ndb.Key(ActivityPost, post_id)
             activity_post = post_key.get()
             if activity_post is not None:
                 self.plus_oners += activity_post.plus_oners
                 self.resharers += activity_post.resharers
+                self.comments += activity_post.comments
+
+                if activity_post.product_group:
+                    for product_group in activity_post.product_group:
+                        if product_group not in self.product_groups:
+                            self.product_groups.append(product_group)
+
+                if activity_post.activity_type:
+                    for act_type in activity_post.activity_type:
+                        if act_type not in self.activity_types:
+                            self.activity_types.append(act_type)
+
 
     def add_post(self, activity_post):
         if (self.gplus_posts.count(activity_post.post_id) == 0):
@@ -57,7 +77,7 @@ def create_activity_record(activity_post):
         activity_link = activity_post.url
 
     date = datetime.strptime(activity_post.date[0:19], '%Y-%m-%dT%H:%M:%S')
-    date_format = date.strftime("%d/%m/%Y")
+    date_format = date.strftime("%Y/%m/%d")
     activity_record = ActivityRecord(gplus_id=activity_post.gplus_id,
                                      gde_name=activity_post.name,
                                      post_date=date_format,
