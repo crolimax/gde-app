@@ -218,7 +218,7 @@ class NewActivityPosts(webapp2.RequestHandler):
         valid_post = False
         if activity["verb"] == 'post':
             return True
-        elif activity["object"]["actor"]["id"] == activity["id"]:
+        elif activity["object"]["actor"]["id"] == activity["actor"]["id"]:
             return True
         else:
             return False
