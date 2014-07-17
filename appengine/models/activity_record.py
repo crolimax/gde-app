@@ -1,6 +1,8 @@
 from google.appengine.ext import ndb
 from endpoints_proto_datastore.ndb import EndpointsModel
+from endpoints_proto_datastore.ndb import EndpointsAliasProperty
 from datetime import datetime
+from protorpc import messages
 
 from models import ActivityPost
 
@@ -87,6 +89,31 @@ class ActivityRecord(EndpointsModel):
 
     #  activity type metadata
     metadata = ndb.StructuredProperty(ActivityMetaData, repeated=True)
+
+    def MinDateSet(self, value):
+        if value is not None:
+            self._endpoints_query_info._filters.add(ActivityRecord.post_date >= value)
+
+    @EndpointsAliasProperty(setter=MinDateSet, property_type=messages.StringField)
+    def minDate(self):
+        """
+        minDate is only used as parameter in query_methods
+        so there should never be a reason to actually retrieve the value
+        """
+        return None
+
+    def MaxDateSet(self, value):
+        if value is not None:
+            self._endpoints_query_info._filters.add(ActivityRecord.post_date <= value)
+
+    @EndpointsAliasProperty(setter=MaxDateSet, property_type=messages.StringField)
+    def maxDate(self):
+        """
+        maxDate is only used as parameter in query_methods
+        so there should never be a reason to actually retrieve the value
+        """
+        return None
+
 
     def calculate_impact(self):
         self.plus_oners = 0
