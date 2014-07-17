@@ -27,7 +27,7 @@ class ActivityMetaData(EndpointsModel):
 
     # impact is about the number of people impacted
     # views for #blogpost, attendess for #techtalks ...
-    impace = ndb.StringProperty()
+    impact = ndb.IntegerProperty()
 
     # for some acivities, links to slides, video's etc 
     other_link1 = ndb.StringProperty()
