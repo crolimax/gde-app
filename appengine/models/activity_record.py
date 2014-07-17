@@ -8,62 +8,46 @@ from models import ActivityPost
 
 
 class ActivityMetaData(EndpointsModel):
-    ## Description
 
-    # should match one of the activity_types of the ActivityRecord
-    kind = ndb.StringProperty()
+    # groups of activities that can be reported together
+    # #content #community #techtalk #bugreport #forumpost #opensourcecode
+    activity_group = ndb.StringProperty()
+
+    # bugreport, techtalk, applies to all
+    title = ndb.StringProperty()
+
+    # applies to all, provides more detail / abstract about the activity
+    description = ndb.StringProperty()
+
+    # sub activity type 
+    type = ndb.StringProperty()
 
     # for all types, can be event link/blog link/github link/...
     link = ndb.StringProperty()
 
-    # bugreport, techtalk
-    title = ndb.StringProperty()
+    # impact is about the number of people impacted
+    # views for #blogpost, attendess for #techtalks ...
+    impace = ndb.StringProperty()
 
-    # opensourcecode
-    description = ndb.StringProperty()
+    # for some acivities, links to slides, video's etc 
+    other_link1 = ndb.StringProperty()
+    other_link2 = ndb.StringProperty()
 
-    # community
-    event_name = ndb.StringProperty()
-    event_type = ndb.StringProperty()
-    photos_link = ndb.StringProperty()
-
-    # techtalk
-    abstract = ndb.StringProperty()
-    slides_link = ndb.StringProperty()
-    recordings_link = ndb.StringProperty()
 
     # community, techtalk
     location = ndb.StringProperty()
-    google_covered_expenses = ndb.BooleanProperty()
-
-    ## Metrics
-
-    # bugreport
-    users_affected = ndb.IntegerProperty()
-
-    # community
-    attendees = ndb.IntegerProperty()
-
-    # forumpost
-    upvotes = ndb.IntegerProperty()
-
-    # article, blogpost, book, techdocs, translation
-    page_views = ndb.IntegerProperty()
-    plus_oners = ndb.IntegerProperty()
-    reshares = ndb.IntegerProperty()
-
-    # opensourcecode
-    downloads = ndb.IntegerProperty()
-    active_contributors = ndb.IntegerProperty()
+    google_expensed = ndb.BooleanProperty()
+    us_approx_amount = ndb.IntegerProperty()
 
 
 class ActivityRecord(EndpointsModel):
 
     _message_fields_schema = ('id', 'gplus_id', 'gde_name', 'date_created',
                               'date_updated', 'post_date', 'activity_types',
-                              'product_groups',
+                              'product_groups', 
                               'activity_link', 'gplus_posts', 'activity_title',
-                              'plus_oners', 'resharers', 'comments', 'metadata')
+                              'plus_oners', 'resharers', 'comments', 'metadata'
+                              )
 
     # we identify GDE's uniquely using this
     gplus_id = ndb.StringProperty()
