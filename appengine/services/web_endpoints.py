@@ -25,6 +25,31 @@ class ActivityRecordService(remote.Service):
         activity_record.put()
         return activity_record
 
+    @ActivityRecord.method(path='/activityRecord/{id}', http_method='PUT',
+                           name='update')
+    def ActivityRecordUpdate(self, activity_record):
+        if not activity_record.from_datastore:
+            raise endpoints.NotFoundException('ActivityRecord not found.')
+        activity_record.put()
+        return activity_record
+
+    @ActivityRecord.method(path='/activityRecord/{id}', http_method='PATCH',
+                           name='patch')
+    def ActivityRecordPatch(self, activity_record):
+        if not activity_record.from_datastore:
+            raise endpoints.NotFoundException('ActivityRecord not found.')
+        activity_record.put()
+        return activity_record
+
+    @ActivityRecord.method(request_fields=('id',), response_fields=('id',),
+                           path='/activityRecord/{id}',
+                           http_method='DELETE', name='delete')
+    def ActivityRecordDelete(self, activity_record):
+        if not activity_record.from_datastore:
+            raise endpoints.NotFoundException('ActivityRecord not found.')
+        activity_record.key.delete()
+        return activity_record
+
     @ActivityRecord.query_method(query_fields=('limit', 'order', 'pageToken', 'gplus_id',
                                                'minDate', 'maxDate'),
                                  path='activityRecord', name='list')
