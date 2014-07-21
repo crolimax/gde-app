@@ -1,14 +1,45 @@
 "use strict";
 
+// =====================================================================================================
+//								Google JS API & AngularJS load control
+// =====================================================================================================
 google.setOnLoadCallback(function ()
 {
-    angular.bootstrap(document.body,	['GdeTrackingApp']);
+    angular.bootstrap(document.body,['GdeTrackingApp']);
 });
-google.load('visualization','1',{packages:['controls']});
+google.load(
+	'visualization',
+	'1',
+	{
+		packages:
+			[
+				'controls'
+			]
+	}
+);
+
+// =====================================================================================================
+//											Polymer
+// =====================================================================================================
+
+function toggleDialog(id) 
+{
+	var dialog = document.querySelector('paper-dialog[id=' + id + ']');
+	dialog.toggle();
+}
+document.addEventListener('polymer-ready', function() 
+{
+	var navicon		= document.getElementById('navicon');
+	var drawerPanel	= document.getElementById('drawerPanel');
+	navicon.addEventListener('click', function() 
+	{
+		drawerPanel.togglePanel();
+	});
+});
 // =====================================================================================================
 //											AngularJS
 // =====================================================================================================
-var GdeTrackingApp	= angular.module('GdeTrackingApp', ['ngRoute','google-maps','googlePlusSignin']);
+var GdeTrackingApp	= angular.module('GdeTrackingApp'	, [ 'ngRoute' , 'google-maps' , 'googlePlusSignin' ]);
 
 // *****************************************************************************************************
 //  								Dynamic HTML navigation
@@ -26,33 +57,10 @@ GdeTrackingApp.config(function($routeProvider)
 			controller	: 'myStatisticsCtrl',
 			templateUrl	:'html/myStatistics.html'
 		}).
-		when('/how-to-use',
-		{
-			templateUrl	:'html/how-to-use.html'
-		}).
 		when('/generalStatisticsForGooglers',
 		{
 			controller	: 'generalStatisticsForGooglersCtrl',
 			templateUrl	:'html/generalStatisticsForGooglers.html'
-		}).
-		when('/impact',
-		{
-			controller	: 'publicGeneralStatisticsCtrl',
-			templateUrl	:'html/impact.html'
-		}).
-		when('/who-are-gdes',
-		{
-			templateUrl	:'html/who-are-gdes.html'
-		}).
-		when('/feature',
-		{
-//			controller	: '',
-			templateUrl	:'html/feature.html'
-		}).
-		when('/activitylist',
-		{
-//			controller	: '',
-			templateUrl	:'html/activityList.html'
 		}).
 		otherwise({redirectTo:'/'});
 });
@@ -158,16 +166,178 @@ GdeTrackingApp.factory("mapMarkers",	[function()
 }]);
 
 // *****************************************************************************************************
-//    								Start screen Controller
+//    								plusLoginCtrl Controller
+//					Library source: http://jeradbitner.com/angular-directive.g-signin/
 // *****************************************************************************************************
-GdeTrackingApp.controller("startCtrl",							function($scope	,$http	,mapOptions	,mapCenters	,mapMarkers)
+GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$http,	$rootScope)
 {
-	var mapWidth		= screen.width	* 0.7 +'px';	// Adjust Google Maps container to 70% of screen width
-	var mapHeight		= screen.height	* 0.5 +'px';	// Adjust Google Maps container to 70% of screen height
+	$location.path('/');		// Forces the App to always load in the Welcome Screen
+	$scope.$on('event:google-plus-signin-success', function (event, authResult)
+	{																				// User successfully authorized the G+ App!
+//		console.log(event);
+		$('.signinButton')	.css('display','none');
+		$('.signout')		.css('display','block');
+		gapi.client.load('plus', 'v1', function()
+		{
+			var request	= gapi.client.plus.people.get(
+			{
+				'userId': 'me'
+			});
+			request.execute(function(resp)
+			{
+//				console.log(resp);
+				$rootScope.$broadcast('gde:logged',resp.displayName);
+				$scope.userName			= resp.displayName;
+				$scope.userImageUrl		= (resp.image.url).replace("=50", "=90");
+				$scope.userEmails		= resp.emails;
+				$scope.id				= resp.id;
+				$rootScope.usrId		= resp.id;
+				
+			    for (var i=0;i<$scope.userEmails.length;i++)
+				{
+					var emailDomain = $scope.userEmails[i].value.substring($scope.userEmails[i].value.indexOf('@'));
+					if (emailDomain == '@google.com')	//	Detect if domain matches an official Google domain (Googlers only).
+					{
+						console	.log('You are a Googler!');
+						console	.log('Hope you like the detailed GDE program statistics.');
+						$('#generalStatisticsForGooglers')	.css('display','block');
+					}
+				}
+    			
+				$('.userName')	.text($scope.userName);	// Binds the user name into the DOM using a class via jQuery so it can be repeated throughout the document.
+				var userImage			= document.createElement('img');
+				userImage.src			= $scope.userImageUrl;
+				userImage.alt			= 'g+ image';
+				$('#userImg')	.html(userImage);
+				
+				var checkUserEndPointURL = 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/account/'+resp.id+'?fields=type';
+				//Get the user Account Object
+				$http({method: 'GET', url: checkUserEndPointURL})
+				.success(function(response, status, config)
+				{
+					$scope.type	= response.type;
+					console.log('Welcome '+$scope.userName+'!');
+					
+					$('#generalStatisticsForGooglers')			.css('display','none');	//Hide the previously shown menu
+					//Show the right menu by user type
+					switch (response.type){
+					    case 'administrator':
+					        console.log('You are an administrator of this app!');
+					        $('#generalStatisticsForGooglers')	.css('display','block');
+					        break;
+					    case 'manager':
+					        console.log('You are a manager of this app!');
+					        $('#generalStatisticsForGooglers')	.css('display','block');
+					        break;
+					    case 'active':
+					        console.log('You are a GDE!');
+					        $('#gdeStatistics')					.css('display','block');
+					        break;
+					    default:
+					        break;	//disabled users
+
+					}
+				})
+				/*
+				.error(function(response, status, config)//....doesn't work with 404 responses
+				{
+				    console.log('error');
+				    //Googlers are not stored in
+				    for (var i=0;i<$scope.userEmails.length;i++)
+    				{
+    					var emailDomain = $scope.userEmails[i].value.substring($scope.userEmails[i].value.indexOf('@'));
+    					//if (emailDomain == '@google.com')
+    					if (emailDomain == '@mail.com')
+    					{
+    						console.log('Welcome Googler '+$scope.userName+'!');
+    						$('#generalStatisticsForGooglers').css('display','block');
+    					}
+    				}
+				})*/
+				;
+				
+			});
+		});
+	});
+	$scope.$on('event:google-plus-signin-failure', function (event, authResult)
+	{																					// User has not authorized the G+ App!
+		$('.signinButton')	.css('display','block');
+//		$('.signout')		.css('display','none');
+		$('#userImg')		.html = '';
+		$('.userName')		.text= '';
+		console.log('Error in sign in flow.');
+		console.log(authResult);
+	});
+});
+
+// *****************************************************************************************************
+//    								paper-fab Controller
+// *****************************************************************************************************
+GdeTrackingApp.controller("fabCtrl",							function($scope,	$location)
+{
+	$('paper-fab')	.click( function()			// Triggers Animation on paper-fab click
+	{
+		if ($('paper-fab')	.attr('id')	== 'fabLeft')			// Cycle between left and right animation
+		{
+//			console.log('left');
+			$('.mapArea')		.css('-webkit-animation'	, 'mapSlideLeft		1s	linear	1	both');	//	-webkit- CSS3 animation
+			$('.mapArea')		.css('animation'			, 'mapSlideLeft		1s	linear	1	both');	//	W3C	CSS3 animation
+			$('paper-fab')		.css('-webkit-animation'	, 'fabGoesLeft		1s	linear	1	both');	//	-webkit- CSS3 animation
+			$('paper-fab')		.css('animation'			, 'fabGoesLeft		1s	linear	1	both');	//	W3C	CSS3 animation
+			$('paper-fab')		.attr('id','fabRight');		//	Updates the element's id
+			setTimeout(function()	//	Show GDE List
+				{
+					$('.gdeList')	.css('opacity' , '1');
+					$('.scrollBar')	.css('display' , 'inline');
+					$('.scrollBar')	.css('overflow-y' , 'auto');
+				},
+				1010				//	Wait 1 second before showing
+			);
+		}	else if ($('paper-fab')	.attr('id')	== 'fabRight')
+		{
+//			console.log('right');
+			$('.gdeList')		.css('opacity' 				, '0');		
+			$('.scrollBar')		.css('overflow-y' 			, 'hidden');
+			$('.scrollBar')		.css('display' 				, 'block');								//	Hice GDE List
+			$('.mapArea')		.css('-webkit-animation'	, 'mapSlideRight	1s	linear	1	both');	//	-webkit- CSS3 animation
+			$('.mapArea')		.css('animation'			, 'mapSlideRight	1s	linear	1	both');	//	W3C	CSS3 animation
+			$('paper-fab')		.css('-webkit-animation'	, 'fabGoesRight		1s	linear	1	both');	//	-webkit- CSS3 animation
+			$('paper-fab')		.css('animation'			, 'fabGoesRight		1s	linear	1	both');	//	W3C	CSS3 animation
+			$('paper-fab')		.attr('id','fabLeft');		//	Updates the element's id
+		};
+	});
+});
+
+// *****************************************************************************************************
+//    									Menu Controller
+// *****************************************************************************************************
+GdeTrackingApp.controller("menuCtrl",							function($scope,	$location)
+{
+	$scope.showGeneralStatisticsForGooglers	= function()	// Click detection
+	{
+//		console.log('showGeneralStatisticsForGooglers');
+		$location.path('/generalStatisticsForGooglers');
+	};
+	$scope.showGdeStatistics				= function()	// Click detection
+	{
+//		console.log('showGdeStatistics');
+		$location.path('/myStatistics');
+	};
+});
+
+// *****************************************************************************************************
+//    								Google Maps Controller
+// *****************************************************************************************************
+GdeTrackingApp.controller("startCtrl",							function($scope,	$http,	mapOptions,	mapCenters,	mapMarkers)
+{
+	var mapWidth		= screen.width	* 0.7	+ 'px';	// Adjust Google Maps container to 70% of screen width
+	var mapHeight		= screen.height	* 0.6	+ 'px';	// Adjust Google Maps container to 60% of screen height
 	$('.mapZone')						.css('width',	mapWidth);
 	$('.mapZone')						.css('height',	mapHeight);
 	$('.angular-google-map-container')	.css('width',	mapWidth);
 	$('.angular-google-map-container')	.css('height',	mapHeight);
+	$('.angular-google-map-container')	.css('border-bottom-left-radius',	'0.5em');
+	$('.angular-google-map-container')	.css('border-bottom-right-radius',	'0.5em');
 	$scope.map			= mapOptions;
 	$scope.focusMap		= function (zone)
 	{
@@ -191,7 +361,10 @@ GdeTrackingApp.controller("startCtrl",							function($scope	,$http	,mapOptions	
 			{
 			    //MSO - 20140605 - Check the deleted field
 			    if (response.items[i].deleted==false)
+				{
+//					console.log(response.items[i]);
 				    $scope.gdeList.push(response.items[i]);
+				}
 			};
 //			console.log(response);
 			if	(response.nextPageToken)	// If there is still more data
@@ -203,11 +376,12 @@ GdeTrackingApp.controller("startCtrl",							function($scope	,$http	,mapOptions	
 			    $scope.gdeNumber	= $scope.gdeList.length;
     			for (var i=0;i<$scope.gdeNumber;i++)
     			{
-    				var coords		= JSON.parse($scope.gdeList[i].geocode);
-    				var badge		= $scope.gdeList[i].pg_filename;
-    				var gdeName		= $scope.gdeList[i].display_name;
-    				var gdeBadge	= $scope.gdeList[i].product_group;
-    				var icon		= 'img/badges/'+badge+'.png';
+    				var coords					= JSON.parse($scope.gdeList[i].geocode);
+    				var badge					= $scope.gdeList[i].pg_filename;
+    				var gdeName					= $scope.gdeList[i].display_name;
+    				var gdeBadge				= $scope.gdeList[i].product_group;
+    				var icon					= 'img/badges/'+badge+'.png';
+					$scope.gdeList[i].pic_url	= ($scope.gdeList[i].pic_url).replace("=50", "=100");
     				mapMarkers[i]				= {};
     				mapMarkers[i]["latitude"]	= coords.lat;
     				mapMarkers[i]["longitude"]	= coords.lng;
@@ -219,8 +393,12 @@ GdeTrackingApp.controller("startCtrl",							function($scope	,$http	,mapOptions	
     			$scope.markerClick	= function(name,badge)
     			{
     				window.alert(name+' - ' + badge + ' GDE');
-    			};
-    			$('.loading')		.css('display','none');
+    			};	
+				//	Trigger CSS3 animation after map loads
+				$('paper-fab')	.css('-webkit-animation'	, 'fabAppears	2s	linear	1	both');	//	-webkit- CSS
+				$('paper-fab')	.css('animation'			, 'fabAppears	2s	linear	1	both');	//	W3C	CSS
+				$('.mapArea')	.css('-webkit-animation'	, 'mapAppears	2s	linear	1	both');	//	-webkit- CSS
+				$('.mapArea')	.css('animation'			, 'mapAppears	2s	linear	1	both');	//	W3C	CSS
 			}
 		})
 		.error(function(response, status, config)
@@ -235,9 +413,11 @@ GdeTrackingApp.controller("startCtrl",							function($scope	,$http	,mapOptions	
 // *****************************************************************************************************
 //    								Statistics Controllers
 // *****************************************************************************************************
-GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope	,$http)
+GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$http)
 {
-
+	$('paper-fab')		.css('-webkit-animation',	'hideFab	1s	linear	1	both');	//	-webkit- CSS3 animation
+	$('paper-fab')		.css('animation',			'hideFab	1s	linear	1	both');	//	W3C	CSS3 animation
+	
 // -----------------------------------------------------------------------------------------------------
 //     								General Statistics by GDE
 // -----------------------------------------------------------------------------------------------------
@@ -1085,8 +1265,11 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope	,$
 	};
 	$scope.getPostsFromGAE(getPostsEndPointURL);
 });
-GdeTrackingApp.controller("myStatisticsCtrl",					function($scope	,$http	,$rootScope)
+GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$http,	$rootScope)
 {
+	$('paper-fab')		.css('-webkit-animation',	'hideFab	1s	linear	1	both');	//	-webkit- CSS3 animation
+	$('paper-fab')		.css('animation',			'hideFab	1s	linear	1	both');	//	W3C	CSS3 animation
+	
 // ----------------------------------------------
 // .............My General Statistics............
 // ----------------------------------------------
@@ -1263,7 +1446,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope	,$http	,$rootS
 		.draw(activitiesByGde_data);
 	}
 				
-	var getPostsEndPointURL = 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/activityRecord/activityRecord?limit=100&gplus_id='+ $rootScope.usrId;
+	var getPostsEndPointURL = 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/activityRecord/activityRecord?limit=100';
 	$scope.loadVisualizationLibraries = google.load('visualization', '1.1', null);
 	$scope.getPostsFromGAE = function (getPostsEndPointURL)
 	{
@@ -1276,7 +1459,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope	,$http	,$rootS
 			};
 			if (response.nextPageToken)													// If there is still more data
 			{
-				var nextUrl = 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/activityRecord/activityRecord?limit=100&gplus_id='+ $rootScope.usrId+'&pageToken='+response.nextPageToken; // Adjust the end point URL
+				var nextUrl = 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/activityRecord/activityRecord?limit=100&pageToken='+response.nextPageToken; // Adjust the end point URL
 				$scope.getPostsFromGAE(nextUrl);										// Add the next page
 			} else
 			{																			// Done
@@ -1311,7 +1494,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope	,$http	,$rootS
 								post['product_group']	= $scope.data.items[i].product_groups;
 								post['activity_type']	= $scope.data.items[i].activity_types;
 								$scope.postByGdeNameTemp[$scope.name]['posts'].push(post);
-								$scope.userPosts.push(post);									// Push another post
+								$scope.userPosts.push(post);									// Push another post 
 //								console.log(post);
 							} else
 							{
@@ -1339,8 +1522,8 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope	,$http	,$rootS
 								post['product_group']	= $scope.data.items[i].product_groups;
 								post['activity_type']	= $scope.data.items[i].activity_types;
 								$scope.postByGdeNameTemp[$scope.name]['posts'].push(post);
-								$scope.userPosts.push(post);									// Push first post
-							};
+								$scope.userPosts.push(post);									// Push first post 
+							};	
 						};
 					};
 					drawGeneralStatistics();
@@ -1415,349 +1598,5 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope	,$http	,$rootS
 		});
 	};
 	
-	$scope.getPostsFromGAE(getPostsEndPointURL);
-});
-
-// *****************************************************************************************************
-//    								plusLoginCtrl Controller
-//					Library source: http://jeradbitner.com/angular-directive.g-signin/
-// *****************************************************************************************************
-GdeTrackingApp.controller('plusLoginCtrl',						function($scope	,$http	,$rootScope)
-{
-	$scope.$on('event:google-plus-signin-success', function (event, authResult)
-	{																				// User successfully authorized the G+ App!
-//		console.log(event);
-		$('.signinButton').css('display','none');
-		$('.signout').css('display','block');
-		gapi.client.load('plus', 'v1', function()
-		{
-			var request = gapi.client.plus.people.get(
-			{
-				'userId': 'me'
-			});
-			request.execute(function(resp)
-			{
-//				console.log(resp);
-				$rootScope.$broadcast('gde:logged',resp.displayName);
-				$scope.userName = resp.displayName;
-				$scope.userImageUrl = resp.image.url;
-				$scope.userEmails = resp.emails;
-				$scope.id = resp.id;
-				$rootScope.usrId = resp.id;
-				
-				//Googlers are not stored in
-			    for (var i=0;i<$scope.userEmails.length;i++)
-				{
-					var emailDomain = $scope.userEmails[i].value.substring($scope.userEmails[i].value.indexOf('@'));
-					if (emailDomain == '@google.com')
-					{
-						console.log('Welcome Googler '+$scope.userName+'!');
-						$('#generalStatisticsForGooglers').css('display','block');
-					}
-				}
-    			
-				$('.userName').text($scope.userName);									// Binds the user name into the DOM using a class via jQuery so it can be repeated throughout the document.
-				var userImage = document.createElement('img');
-				userImage.src = $scope.userImageUrl;
-				userImage.alt = 'g+ image';
-				$('#userImg').html(userImage);
-				
-				var checkUserEndPointURL = 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/account/'+resp.id+'?fields=type';
-				//Get the user Account Object
-				$http({method: 'GET', url: checkUserEndPointURL})
-				.success(function(response, status, config)
-				{
-					$scope.type=response.type;
-					console.log('Welcome '+$scope.userName+'!');
-					
-					$('#generalStatisticsForGooglers').css('display','none');//Hide the previously shown menu
-					//Show the right menu by user type
-					switch (response.type){
-					    case 'administrator':
-					        console.log('You are an administrator of this app.');
-					        $('#generalStatisticsForGooglers').css('display','block');
-					        break;
-					    case 'manager':
-					        console.log('You are a manager of this app.');
-					        $('#generalStatisticsForGooglers').css('display','block');
-					        break;
-					    case 'active':
-					        console.log('You are a GDE');
-					        $('#myStatistics').css('display','block');
-					        break;
-					    default:
-					        //disabled users
-					        break;
-					}
-				})
-				/*
-				.error(function(response, status, config)//....doesn't work with 404 responses
-				{
-				    console.log('error');
-				    //Googlers are not stored in
-				    for (var i=0;i<$scope.userEmails.length;i++)
-    				{
-    					var emailDomain = $scope.userEmails[i].value.substring($scope.userEmails[i].value.indexOf('@'));
-    					//if (emailDomain == '@google.com')
-    					if (emailDomain == '@mail.com')
-    					{
-    						console.log('Welcome Googler '+$scope.userName+'!');
-    						$('#generalStatisticsForGooglers').css('display','block');
-    					}
-    				}
-				})*/
-				;
-				
-			});
-		});
-	});
-	$scope.$on('event:google-plus-signin-failure', function (event, authResult)
-	{																					// User has not authorized the G+ App!
-		$('.signinButton').css('display','block');
-		$('.signout').css('display','none');
-		$('#userImg').html = '';
-		$('.userName').text= '';
-		console.log('Error in sign in flow.');
-		console.log(authResult);
-	});
-});
-
-// *****************************************************************************************************
-//    								General Statistics Controllers
-// *****************************************************************************************************
-GdeTrackingApp.controller("publicGeneralStatisticsCtrl",	function($scope	,$http)
-{
-
-	$scope.postByActivity			= [];
-	$scope.data						= {};
-	$scope.data.items				= [];
-	$scope.postByActivityTemp		= {};
-	var drawGeneralStatistics		= function ()
-	{	// For every Activity in $scope.postByActivityTemp
-		$.each($scope.postByActivityTemp,	function(k,v)
-		{
-			$scope.postByActivity.push($scope.postByActivityTemp[k]); // Push it as a new object in a JSON ordered array.
-		});
-//		console.log($scope.postByActivity);
-		var postByActivity =
-		{
-			cols:
-			[
-				{
-					id		: 'activity',
-					label	: 'Activity Type',
-					type	: 'string'
-				},
-				{
-					id		: 'activitiesLogged',
-					label	: 'Activities Logged',
-					type	: 'number'
-				},
-				{
-					id		: 'totalResharers',
-					label	: 'Total Resharers',
-					type	: 'number'
-				},
-				{
-					id		: 'totalPlus1s',
-					label	: 'Total +1s',
-					type	: 'number'
-				}
-			],
-			rows: []
-		};
-		for (var i=0;i<$scope.postByActivity.length;i++)
-		{
-			var activityName		= $scope.postByActivity[i].activity;
-			var activitiesLogged	= $scope.postByActivity[i].posts.length;
-			var totalResharers		= $scope.postByActivity[i].totalResharers;
-			var totalPlus1s			= $scope.postByActivity[i].totalPlus1s;
-			var product				= {c:[]};
-			product.c.push({v:activityName});
-			product.c.push({v:activitiesLogged});
-			product.c.push({v:totalResharers});
-			product.c.push({v:totalPlus1s});
-			postByActivity.rows.push(product);
-		};
-//		console.log(postByActivity);
-					
-		// Sort data by Total Activities
-					var postByActivity_data		= new google.visualization.DataTable(postByActivity);
-					postByActivity_data.sort(1);
-					
-		// Posts by Activity
-					var activities_Selector 	= new google.visualization.ControlWrapper();
-					activities_Selector.setControlType('CategoryFilter');
-					activities_Selector.setContainerId('activities_Selector');
-					activities_Selector.setOptions(
-					{
-						'filterColumnLabel': 'Activity Type',
-						'ui':
-						{
-							'caption'				: 'Activity...',
-							'labelStacking'			: 'vertical',
-							'selectedValuesLayout'	: 'belowStacked',
-							'allowTyping'			: true,
-							'allowMultiple'			: true
-						}
-					});
-					
-					var activities_ActivitiesSlider	= new google.visualization.ControlWrapper();
-					activities_ActivitiesSlider.setControlType('NumberRangeFilter');
-					activities_ActivitiesSlider.setContainerId('activities_ActivitiesSlider');
-					activities_ActivitiesSlider.setOptions(
-					{
-						'filterColumnLabel': 'Activities Logged',
-						'ui':
-						{
-							'labelStacking': 'vertical'
-						}
-					});
-					
-					var activities_ResharesSlider	= new google.visualization.ControlWrapper();
-					activities_ResharesSlider.setControlType('NumberRangeFilter');
-					activities_ResharesSlider.setContainerId('activities_ResharesSlider');
-					activities_ResharesSlider.setOptions(
-					{
-						'filterColumnLabel': 'Total Resharers',
-						'ui':
-						{
-							'labelStacking': 'vertical'
-						}
-					});
-					
-					var activities_Plus1sSlider		= new google.visualization.ControlWrapper();
-					activities_Plus1sSlider.setControlType('NumberRangeFilter');
-					activities_Plus1sSlider.setContainerId('activities_Plus1sSlider');
-					activities_Plus1sSlider.setOptions(
-					{
-						'filterColumnLabel': 'Total +1s',
-						'ui':
-						{
-							'labelStacking': 'vertical'
-						}
-					});
-
-					var activityTableChart			= new google.visualization.ChartWrapper();
-					activityTableChart.setChartType('Table');
-					activityTableChart.setContainerId('activityTableChart');
-					activityTableChart.setOptions(
-					{
-						'sortColumn'	: 1,
-						'sortAscending'	: false,
-						'page'			: 'enable',
-						'pageSize'		:30
-					});
-					
-					var activityBarChart			= new google.visualization.ChartWrapper();
-					activityBarChart.setChartType('BarChart');
-					activityBarChart.setContainerId('activityBarChart');
-					activityBarChart.setOptions(
-					{
-						'width'			:700,
-						'isStacked'		: true,
-						'reverseCategories': true,
-						'legend':
-						{
-							'position'	:'top',
-							'alignment'	:'center',
-							'maxLines'	:4
-						}
-					});
-					
-		// Draw Charts
-		new google.visualization.Dashboard(document.getElementById('generalStatisticsByActivity'))
-		.bind([activities_Selector,activities_ActivitiesSlider,activities_ResharesSlider,activities_Plus1sSlider], [activityTableChart,activityBarChart])
-		.draw(postByActivity_data);
-					
-	}
-				
-	var getPostsEndPointURL = 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/activityRecord/activityRecord?limit=100';
-	$scope.loadVisualizationLibraries = google.load('visualization', '1.1', null);
-	$scope.getPostsFromGAE = function (getPostsEndPointURL)
-	{
-		$http({method: 'GET', url: getPostsEndPointURL})
-		.success(function(response, status, config)
-		{
-//			console.log('getPostsFromGAE response ok');
-			for (var i=0;i<response.items.length;i++)
-			{
-				$scope.data.items.push(response.items[i]);
-			};
-			
-			if (response.nextPageToken) // If there is still more data
-			{
-				var nextUrl = 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/activityRecord/activityRecord?limit=100&pageToken='+response.nextPageToken; // Adjust the end point URL
-				$scope.getPostsFromGAE(nextUrl); // Add the next page
-			} else
-			{
-				// Done
-//				console.log(data.items);
-				for (var i=0;i<$scope.data.items.length;i++)// Posts by Activity Type
-				{
-					if ($scope.data.items[i].activity_types)
-					{
-						for (var j=0;j<$scope.data.items[i].activity_types.length;j++)
-						{
-							var activity = $scope.data.items[i].activity_types[j];
-							activity = activity.slice(1,activity.length); // Remove the Hash Tag
-							if ($scope.postByActivityTemp[activity])
-							{
-								$scope.postByActivityTemp[activity]['activity']		= activity;
-								$scope.postByActivityTemp[activity]['totalPlus1s']		= Math.abs($scope.postByActivityTemp[activity]['totalPlus1s'])		+ Math.abs($scope.data.items[i].plus_oners);
-								$scope.postByActivityTemp[activity]['totalResharers']	= Math.abs($scope.postByActivityTemp[activity]['totalResharers'])	+ Math.abs($scope.data.items[i].resharers);
-								var post				= [];
-								post['gde_name']		= $scope.data.items[i].gde_name ;
-								post['title']			= $scope.data.items[i].activity_title;
-								post['url']				= $scope.data.items[i].activity_link;
-								post['gplus_id']		= $scope.data.items[i].gplus_id;
-								post['resharers']		= $scope.data.items[i].resharers;
-								post['post_id']			= $scope.data.items[i].id;
-								post['plus_oners']		= $scope.data.items[i].plus_oners;
-								post['date']			= $scope.data.items[i].post_date;
-								post['id']				= $scope.data.items[i].id;
-								post['product_group']	= $scope.data.items[i].product_groups;
-								post['activity_type']	= $scope.data.items[i].activity_types;
-								$scope.postByActivityTemp[activity]['posts'].push(post);
-							} else
-							{
-								$scope.postByActivityTemp[activity]					= {}; // Initialize a new JSON unordered array
-								
-								$scope.postByActivityTemp[activity]['posts']			= [];  // Initialize a new JSON ordered array
-								$scope.postByActivityTemp[activity]['totalPlus1s']		= 0; // Initialize a new acumulator for total+1s
-								$scope.postByActivityTemp[activity]['totalResharers']	= 0; // Initialize a new acumulator for totalResharers
-								
-								$scope.postByActivityTemp[activity]['activity']		= activity;
-								$scope.postByActivityTemp[activity]['totalPlus1s']		= Math.abs($scope.postByActivityTemp[activity]['totalPlus1s']) + Math.abs($scope.data.items[i].plus_oners);
-								$scope.postByActivityTemp[activity]['totalResharers']	= Math.abs($scope.postByActivityTemp[activity]['totalResharers']) + Math.abs($scope.data.items[i].resharers);
-								
-								var post				= [];
-								post['gde_name']		= $scope.data.items[i].gde_name ;
-								post['title']			= $scope.data.items[i].activity_title;
-								post['url']				= $scope.data.items[i].activity_link;
-								post['gplus_id']		= $scope.data.items[i].gplus_id;
-								post['resharers']		= $scope.data.items[i].resharers;
-								post['post_id']			= $scope.data.items[i].id;
-								post['plus_oners']		= $scope.data.items[i].plus_oners;
-								post['date']			= $scope.data.items[i].post_date;
-								post['id']				= $scope.data.items[i].id;
-								post['product_group']	= $scope.data.items[i].product_groups;
-								post['activity_type']	= $scope.data.items[i].activity_types;
-								$scope.postByActivityTemp[activity]['posts'].push(post);
-							};
-						}
-					};
-				};
-//				console.log($scope.postByActivityTemp);
-				
-				drawGeneralStatistics()
-			};
-		})
-		.error(function(response, status, config)
-		{
-			window.alert('There was a problem loading the app. This windows will be re-loaded automatically.');
-			location.reload(true);
-		});
-	};
 	$scope.getPostsFromGAE(getPostsEndPointURL);
 });

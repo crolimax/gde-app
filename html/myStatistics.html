@@ -1,50 +1,55 @@
-<div class="googlerStats">
+<div class="stats">
 	<h1>My General Statistics</h1>
 	<div class="gdesGeneralStats" id="generalStatisticsByGDE">
 		<div>
+			<div id="gdeTableChart"></div>
+			<br/>
 			<div id="activitiesSlider" class="activitiesSlider"></div>
 			<br/>
 			<div id="resharesSlider" class="resharesSlider"></div>
 			<br/>
 			<div id="plus1sSlider" class="plus1sSlider"></div>
 		</div>
-		<div id="gdeTableChart"></div>
 		<div id="gdeColumnChart"></div>
 	</div>
+	<paper-shadow z="2"></paper-shadow>
 </div>
 <br/>
-<table class="prettyTable">
-	<tr>
-		<th>
-			Title
-		</th>
-		<th>
-			+1's
-		</th>
-		<th>
-			Resharers
-		</th>
-		<th>
-			Date
-		</th>
-	</tr>
-	<tr ng-repeat="post in userPosts | orderBy : 'plus_oners' : true">
-		<td>
-			<a href={{post.url}} target="_blank">{{post.title}}</a>
-		</td>
-		<td>
-			{{post.plus_oners}}
-		</td>
-		<td>
-			{{post.resharers}}
-		</td>
-		<td>
-			{{post.date}}
-		</td>
-	</tr>
-</table>
-
+<div class="stats">
+	<table class="prettyTable">
+		<tr>
+			<th>
+				Title
+			</th>
+			<th>
+				+1's
+			</th>
+			<th>
+				Resharers
+			</th>
+			<th>
+				Date
+			</th>
+		</tr>
+		<tr ng-repeat="post in userPosts | orderBy : 'plus_oners' : true">
+			<td>
+				<a href={{post.url}} target="_blank">{{post.title}}</a>
+			</td>
+			<td>
+				{{post.plus_oners}}
+			</td>
+			<td>
+				{{post.resharers}}
+			</td>
+			<td>
+				{{post.date}}
+			</td>
+		</tr>
+	</table>
+	<paper-shadow z="2"></paper-shadow>
+</div>
+</br>
+<div>
 <a href="#/">
-	<button title="Return" class="go_back">
-	</button>
+	<paper-icon-button icon="arrow-back" label="start"></paper-icon-button
 </a>

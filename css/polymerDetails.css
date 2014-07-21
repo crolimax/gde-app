@@ -1,0 +1,554 @@
+/*	*********************************************************************************	*/
+/*		Site Name: http://gdetracking.gweb.io/											*/
+/*		Author: GDE tracking app team.													*/
+/*		Polymer & CSS3 -Webkit/W3C- Layout												*/
+/*	*********************************************************************************	*/
+@font-face {
+	font-family: 'roboto';
+	src: url(components/font-roboto/Roboto-Bold.ttf);
+}
+html,body {
+	height				: 95%;
+	font-family			: 'roboto';
+	overflow			: hidden;
+}
+/*	*********************************************************************************	*/
+/*								Polymer Web Components									*/
+/*	*********************************************************************************	*/
+core-header-panel {
+	background			: white;
+	overflow			: hidden;
+}
+core-toolbar {
+	color				: #fafafa;
+	text-shadow			: 0 0 0.5px #fafafa;
+	background-color	: #212121;
+	fill				: #fafafa;
+}
+core-scroll-header-panel {
+	position			: absolute;
+	top					: 0;
+	right				: 0;
+	bottom				: 0;
+	left				: 0;
+}
+/*	Note:																				*/
+/*		Drawer is always visible on a wide screen so menu button should be hidden		*/
+core-drawer-panel:not([narrow]) #navicon {
+	display				: none;
+}
+#drawerPanel::shadow #drawer {
+	width				: 310px;
+}
+#drawerPanel::shadow #main {
+	left				: 310px;
+}
+core-header-panel drawer {
+	width				: 310px;
+}
+paper-dialog {
+	width				: 80%;
+	min-width			: 430px;
+	min-height			: 30%
+}
+core-menu	{
+	position			: absolute;
+	top					: 70px;
+	height				: 85%;	
+}
+paper-button {
+	margin				: 1em;
+	width				: 13em;
+	height				: 5em;
+	line-height			: 5em;
+}
+paper-button[raisedButton].colored	{
+	fill				: #fafafa;
+	color				: #fafafa;
+	text-shadow			: 0 0 0.5px #fafafa;
+}
+paper-button[raisedButton].colored.red		{
+	background			: #e84e40;
+}
+paper-button[raisedButton].colored.blue		{
+	background			: #5677fc;
+}
+paper-button[raisedButton].colored.green		{
+	background			: #7cb342;
+}
+paper-button[raisedButton].colored.yellow		{
+	background			: #f9a825;
+}
+paper-button[raisedButton].colored.deepPurple	{
+	background			: #673ab7;
+}
+
+paper-fab	{
+	position			: fixed;
+	right				: -20%;
+	bottom				: 5em;
+	z-index				: 1;
+}
+/*	*********************************************************************************	*/
+/*								AngularJS Directives									*/
+/*	*********************************************************************************	*/
+google-map	{
+	display				: inline-block;
+	width				: 100%;
+}
+marker	{
+	box-shadow:			1px 1px 50px #aaa, inset -1px -1px 50px #ccc;
+}
+/*	*********************************************************************************	*/
+/*									Custom Classes										*/
+/*	*********************************************************************************	*/
+paper-dialog table		{
+    /* W3C */
+	border-width		: 0;
+	background-color	: #f5f5f5;
+    margin				: 0.5em;
+    padding				: 1.5em;
+    border-radius		: 5px;
+    box-shadow			: 0px 1px 4px #777, inset 0px 0px 2px #aaa;
+    transition			: all 1s linear;
+}
+paper-dialog table:hover {
+    /* W3C */
+    box-shadow			: 0px 3px 8px #555, inset 0px 0px 3px #999;
+}
+.scrollBar	{
+	display				: block;
+	overflow-y			: hidden;
+}
+.wrap {
+    /* W3C */
+    display				: flex !important;
+    flex-wrap			: wrap;
+    flex-direction		: row;
+    align-items			: flex-start;
+}
+#gdeStatistics,	#generalStatisticsForGooglers	{
+	display				: none;
+}
+.plusLogin	#userImg	{
+	margin				: 1em;
+}
+.plusLogin	#userImg	img	{
+	height				: 90px;
+	box-shadow			: 2px 2px 10px #000;
+}
+.gplus		{
+	margin				: 1em;
+	margin-top			: 5em;
+}
+.plusLogin	{
+	position			: relative;
+	top					: -20px;
+}
+.plusLogin	.userName	{
+	display				: inline-block;
+	position			: relative;
+	top					: -15px;
+}
+.appLogo	{
+	position			: absolute;
+	left				: 0;
+	bottom				: 20px;
+	margin				: 1em;
+	padding				: 1em;
+	text-align			: right;
+	width				: 300px;
+	margin-top			: -7em;
+	border-radius		: 0.5em;
+	background-color	: rgba(255, 255, 255, .7);
+	box-shadow			: 1px 1px 4px #999, inset 1px 1px 3px #aaa;
+}
+.gdeLogo	{
+	height				: 40px;
+}
+.gdeTrackingApp_text	{
+	position			: relative;
+	top					: -6px;
+	color				: #616161;
+	text-shadow			: 0 0 0.5px #616161;
+}
+.googleDevelopersLogo	{
+	position			: relative;
+	left				: 15px;
+	top					: 80px;
+	height				: 200px;
+}
+.content	{
+	padding				: 20px;
+}
+.mapArea	{
+	position			: absolute;
+	top					: -1000px;
+	left				: 0px;
+	width				: 100%;
+}
+.gdeList {
+    /* webkit */
+    -webkit-box-pack	: start;
+    -webkit-box-align	: start;
+    -webkit-box-orient	: horizontal;
+    -webkit-box-flex	: 1;
+	
+    /* W3C */
+    display				: box;
+    box-pack			: start;
+    box-align			: start;
+    box-orient			: horizontal;
+    box-flex			: 1;
+	opacity				: 0;
+	position			: absolute;
+	right				: 0;
+	width				: 90%;
+    transition			: all 0.4s linear;
+}
+.gdeCard {
+    /* webkit */
+    display				: -webkit-box;
+    -webkit-box-orient	: vertical;
+    -webkit-box-pack	: center;
+    -webkit-box-align	: center;
+    /* W3C */
+    display				: box;
+    box-orient			: vertical;
+    box-pack			: center;
+    box-align			: center;
+	
+	background-color	: #f5f5f5;
+	width				: 300px;
+	height				: 450px;
+    margin				: 0.5em;
+    padding				: 1.5em;
+    text-align			: center;
+    border-radius		: 5px;
+    box-shadow			: 0px 1px 4px #777, inset 0px 0px 2px #aaa;
+    transition			: all 1s linear;
+}
+.gdeCard:hover {
+    /* W3C */
+    box-shadow			: 0px 3px 8px #555, inset 0px 0px 3px #999;
+}
+.gdeCard * {
+    /* W3C */
+    text-decoration		: none;
+	color				: #212121;
+	text-shadow			: 0 0 1px #212121;
+}
+.badge {
+    /* W3C */
+	height				: 120px;
+	margin				: 5px;
+}
+.flag {
+    /* W3C */
+	height				: 30px;
+	margin				: 2px;
+}
+
+.prettyTable {
+	/* W3C */
+	margin:1em;
+	padding:1em;
+}
+.prettyTable tr {
+	/* W3C */
+	margin:1em;
+	padding:1em;
+	transition: all 0.2s linear;
+}
+.prettyTable tr:nth-child(even) {
+	/* W3C */
+	background-color: #eee;
+}
+.prettyTable tr:hover {
+	/* W3C */
+	background-color: #666;
+	color:#fff!important;
+}
+.prettyTable th {
+	/* W3C */
+	font-size			: 1.17em;
+	color				: #fff !important;
+	text-shadow			: 0em 0em 0.01em #fff !important;
+	margin				: 1em;
+	padding				: 1em;
+	background-color	: #666;
+	border-radius		: 5px;
+}
+
+.stats {
+	border-radius	: 5px;
+	margin			: 1em;
+	padding			: 1em;
+	text-align		: center;
+}
+.gdesGeneralStats {
+    display:-webkit-box;
+    -webkit-box-pack:start;
+    -webkit-box-align:stretch;
+    -webkit-box-orient: horizontal;
+    -webkit-box-flex:1;
+
+    /* W3C */
+    display: box;
+    box-pack:start;
+    box-align:stretch;
+    box-orient: horizontal;
+    box-flex:1;
+}
+.countryButtons	{
+	position		: absolute;
+	bottom			: -170px;
+	left			: 0;
+}
+.countryButtons	paper-icon-button	{
+	margin 			: 1em;
+	padding			: 0.5em;
+}
+/*	*********************************************************************************	*/
+/*								CSS3 Animation Keyframes								*/
+/*	*********************************************************************************	*/
+
+/*	---------------------------------------------------------------------------------	*/
+/*										Opening											*/
+/*	---------------------------------------------------------------------------------	*/
+@-webkit-keyframes mapAppears
+{
+    0%
+	{
+		top				: -1000px;
+	}
+	50%
+	{
+		top				: -100px;
+	}
+	100%
+	{
+		top				: 0px;
+	}
+}
+@keyframes mapAppears 
+{
+    0%
+	{
+		top				: -1000px;
+	}
+	50%
+	{
+		top				: -100px;
+	}
+	100%
+	{
+		top				: 0px;
+	}
+}
+@-webkit-keyframes fabAppears
+{
+    0%
+	{
+		right			: -20%;
+	}
+	70%
+	{
+		right			: 0%;
+	}
+	100%
+	{
+		right			: 5%;
+	}
+}
+@keyframes fabAppears 
+{
+    0%
+	{
+		right			: -20%;
+	}
+	70%
+	{
+		right			: 0%;
+	}
+	100%
+	{
+		right			: 5%;
+	}
+}
+
+/*	---------------------------------------------------------------------------------	*/
+/*									paper-fab goes left									*/
+/*	---------------------------------------------------------------------------------	*/
+@-webkit-keyframes fabGoesLeft 
+{
+    0%
+	{ 
+		right			: 5%;
+	}
+	30%
+	{ 
+		right			: 20%;
+	}
+	70%
+	{ 
+		right			: 60%;
+	}
+	90%
+	{ 
+		right			: 85%;
+		transform		: rotate(0deg);
+	}
+	100%
+	{ 
+		right			: 85%;
+		transform		: rotate(180deg);
+	}
+}
+@keyframes fabGoesLeft 
+{
+    0%
+	{ 
+		right			: 5%;
+	}
+	30%
+	{ 
+		right			: 20%;
+	}
+	70%
+	{ 
+		right			: 60%;
+	}
+	90%
+	{ 
+		right			: 85%;
+		transform		: rotate(0deg);
+	}
+	100%
+	{ 
+		right			: 85%;
+		transform		: rotate(180deg);
+	}
+}
+@-webkit-keyframes mapSlideLeft 
+{
+    0%		
+	{ 
+		left			: 0px;
+		top				: 0px;
+	}
+	30%
+	{ 
+		left			: -200px;
+		top				: 0px;
+	}
+	100%
+	{ 
+		left			: -2000px;
+		top				: 0px;
+	}
+}
+@keyframes mapSlideLeft 
+{
+    0%
+	{ 
+		-left			: 0px;
+		top				: 0px;
+	}
+	30%
+	{	
+		left			: -200px;
+		top				: 0px;
+	}
+	100%
+	{
+		left			: -2000px;
+		top				: 0px;
+	}
+}
+
+/*	---------------------------------------------------------------------------------	*/
+/*									paper-fab goes right								*/
+/*	---------------------------------------------------------------------------------	*/
+@-webkit-keyframes fabGoesRight 
+{
+    100%
+	{ 
+		right			: 5%;
+		transform		: rotate(0deg);
+	}
+	90%
+	{ 
+		right			: 5%;
+		transform		: rotate(180deg);
+	}
+	70%
+	{ 
+		right			: 10%;
+		transform		: rotate(180deg);
+	}
+	0%
+	{ 
+		right			: 85%;
+		transform		: rotate(180deg);
+	}
+}
+@keyframes fabGoesRight 
+{
+    100%
+	{ 
+		right			: 5%;
+		transform		: rotate(0deg);
+	}
+	90%
+	{ 
+		right			: 5%;
+		transform		: rotate(180deg);
+	}
+	70%
+	{ 
+		right			: 10%;
+		transform		: rotate(180deg);
+	}
+	0%
+	{ 
+		right			: 85%;
+		transform		: rotate(180deg);
+	}
+}
+@-webkit-keyframes mapSlideRight 
+{
+    100%		
+	{ 
+		left			: 0px;
+		top				: 0px;
+	}
+	30%
+	{ 
+		left			: -200px;
+		top				: 0px;
+	}
+	0%
+	{ 
+		left			: -2000px;
+		top				: 0px;
+	}
+}
+@keyframes mapSlideRight 
+{
+    100%		
+	{ 
+		left			: 0px;
+		top				: 0px;
+	}
+	30%
+	{ 
+		left			: -200px;
+		top				: 0px;
+	}
+	0%
+	{ 
+		left			: -2000px;
+		top				: 0px;
+	}
+}
