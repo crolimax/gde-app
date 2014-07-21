@@ -330,8 +330,8 @@ GdeTrackingApp.controller("menuCtrl",							function($scope,	$location)
 // *****************************************************************************************************
 GdeTrackingApp.controller("startCtrl",							function($scope,	$http,	mapOptions,	mapCenters,	mapMarkers)
 {
-	var mapWidth		= screen.width	* 0.7	+ 'px';	// Adjust Google Maps container to 100% of screen width
-	var mapHeight		= screen.height	* 0.8	+ 'px';	// Adjust Google Maps container to 60% of screen height
+	var mapWidth		= screen.width	* 0.7	+ 'px';	// Adjust Google Maps container to 70% of screen width
+	var mapHeight		= screen.height	* 0.6	+ 'px';	// Adjust Google Maps container to 60% of screen height
 	$('.mapZone')						.css('width',	mapWidth);
 	$('.mapZone')						.css('height',	mapHeight);
 	$('.angular-google-map-container')	.css('width',	mapWidth);
