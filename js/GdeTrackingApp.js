@@ -450,7 +450,6 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 	$scope.postByRegionTemp 		= {};
 	$scope.postByProductTemp		= {};
 	$scope.postByActivityTemp		= {};
-	console.log($scope.utils);
 	var drawGeneralStatistics		= function ()
 	{	// For every GDE in postByGdeNameTemp
 //		console.log('drawGeneralStatistics initiated');
