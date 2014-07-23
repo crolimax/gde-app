@@ -166,7 +166,7 @@ GdeTrackingApp.factory("mapMarkers",	[function()
 }]);
 
 // *****************************************************************************************************
-//      						utility functions for accumulating stats
+//						utility functions for accumulating and displaying stats
 // *****************************************************************************************************
 GdeTrackingApp.run(function ($rootScope) {
 	$rootScope.utils = {
@@ -186,11 +186,43 @@ GdeTrackingApp.run(function ($rootScope) {
 			return post;
 		},
 		'updateStats': function (dataset, apiData) {
-			dataset['totalPlus1s']		= (dataset['totalPlus1s'] || 0) + parseInt(apiData.plus_oners || 0, 10);
-			dataset['totalResharers']	= (dataset['totalResharers'] || 0) + parseInt(apiData.resharers || 0, 10);
+			dataset.totalPlus1s		= (dataset.totalPlus1s || 0) + parseInt(apiData.plus_oners || 0, 10);
+			dataset.totalResharers	= (dataset.totalResharers || 0) + parseInt(apiData.resharers || 0, 10);
+		},
+		'addMetricColumns': function (chartData) {
+			chartData.cols.push({
+				id		: 'activitiesLogged',
+				label	: 'Activities Logged',
+				type	: 'number'
+			});
+			chartData.cols.push({
+				id		: 'totalResharers',
+				label	: 'Total Resharers',
+				type	: 'number'
+			});
+			chartData.cols.push({
+				id		: 'totalPlus1s',
+				label	: 'Total +1s',
+				type	: 'number'
+			});
+		},
+		'chartDataRow': function (label, activityRecord) {
+			var row					= {c:[]};
+
+			var activitiesLogged	= activityRecord.posts.length;
+			var totalResharers		= activityRecord.totalResharers;
+			var totalPlus1s			= activityRecord.totalPlus1s;
+
+			row.c.push({v:label});
+			row.c.push({v:activitiesLogged});
+			row.c.push({v:totalResharers});
+			row.c.push({v:totalPlus1s});
+
+			return row;
 		}
 	};
 });
+
 // *****************************************************************************************************
 //    								plusLoginCtrl Controller
 //					Library source: http://jeradbitner.com/angular-directive.g-signin/
@@ -465,45 +497,23 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 			$scope.postByGdeName.push($scope.postByGdeNameTemp[k]); // Push it as a new object in a JSON ordered array.
 		});
 //		console.log($scope.postByGdeName);
-		var activitiesByGde =
-		{
-			cols:
-				[
-					{
-						id		: 'gdeName',
-						label	: 'GDE',
-						type	: 'string'
-					},
-					{
-						id		: 'activitiesLogged',
-						label	: 'Activities Logged',
-						type	: 'number'
-					},
-					{
-						id		: 'totalResharers',
-						label	: 'Total Resharers',
-						type	: 'number'
-					},
-					{
-						id		: 'totalPlus1s',
-						label	: 'Total +1s',
-						type	: 'number'
-					}
-				],
+		var activitiesByGde = {
+			cols: [
+				{
+					id		: 'gdeName',
+					label	: 'GDE',
+					type	: 'string'
+				}
+			],
 			rows: []
 		};
+		$scope.utils.addMetricColumns(activitiesByGde);
+
 		for (var i=0;i<$scope.postByGdeName.length;i++)
 		{
-			var gdeName				= $scope.postByGdeName[i].name;
-			var activitiesLogged	= $scope.postByGdeName[i].posts.length;
-			var totalResharers		= $scope.postByGdeName[i].totalResharers;
-			var totalPlus1s			= $scope.postByGdeName[i].totalPlus1s;
-			var gde					= {c:[]};
-			gde.c.push({v:gdeName});
-			gde.c.push({v:activitiesLogged});
-			gde.c.push({v:totalResharers});
-			gde.c.push({v:totalPlus1s});
-			activitiesByGde.rows.push(gde);
+			activitiesByGde.rows.push(
+				$scope.utils.chartDataRow($scope.postByGdeName[i].name, $scope.postByGdeName[i])
+			);
 		};
 //		console.log(activitiesByGde);
 		// For every Product in $scope.postByProductTemp
@@ -520,37 +530,17 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 					id		: 'product',
 					label	: 'Product',
 					type	: 'string'
-				},
-				{
-					id		: 'activitiesLogged',
-					label	: 'Activities Logged',
-					type	: 'number'
-				},
-				{
-					id		: 'totalResharers',
-					label	: 'Total Resharers',
-					type	: 'number'
-				},
-				{
-					id		: 'totalPlus1s',
-					label	: 'Total +1s',
-					type	: 'number'
 				}
 			],
 			rows: []
 		};
+		$scope.utils.addMetricColumns(postByProduct);
+
 		for (var i=0;i<$scope.postByProduct.length;i++)
 		{
-			var productName			= $scope.postByProduct[i].product;
-			var activitiesLogged	= $scope.postByProduct[i].posts.length;
-			var totalResharers		= $scope.postByProduct[i].totalResharers;
-			var totalPlus1s			= $scope.postByProduct[i].totalPlus1s;
-			var product				= {c:[]};
-			product.c.push({v:productName});
-			product.c.push({v:activitiesLogged});
-			product.c.push({v:totalResharers});
-			product.c.push({v:totalPlus1s});
-			postByProduct.rows.push(product);
+			postByProduct.rows.push(
+				$scope.utils.chartDataRow($scope.postByProduct[i].product, $scope.postByProduct[i])
+			);
 		};
 //		console.log(postByProduct);
 		// For every Activity in $scope.postByActivityTemp
@@ -567,85 +557,45 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 					id		: 'activity',
 					label	: 'Activity',
 					type	: 'string'
-				},
-				{
-					id		: 'activitiesLogged',
-					label	: 'Activities Logged',
-					type	: 'number'
-				},
-				{
-					id		: 'totalResharers',
-					label	: 'Total Resharers',
-					type	: 'number'
-				},
-				{
-					id		: 'totalPlus1s',
-					label	: 'Total +1s',
-					type	: 'number'
 				}
 			],
 			rows: []
 		};
+		$scope.utils.addMetricColumns(postByActivity);
+
 		for (var i=0;i<$scope.postByActivity.length;i++)
 		{
-			var activityName		= $scope.postByActivity[i].activity;
-			var activitiesLogged	= $scope.postByActivity[i].posts.length;
-			var totalResharers		= $scope.postByActivity[i].totalResharers;
-			var totalPlus1s			= $scope.postByActivity[i].totalPlus1s;
-			var product				= {c:[]};
-			product.c.push({v:activityName});
-			product.c.push({v:activitiesLogged});
-			product.c.push({v:totalResharers});
-			product.c.push({v:totalPlus1s});
-			postByActivity.rows.push(product);
+			postByActivity.rows.push(
+				$scope.utils.chartDataRow($scope.postByActivity[i].activity, $scope.postByActivity[i])
+			);
 		};
 //		console.log(postByActivity);
 		// For every Region in postByRegionTemp
-					$.each($scope.postByRegionTemp,	function(k,v)
-					{
-						$scope.postByRegion.push($scope.postByRegionTemp[k]); // Push it as a new object in a JSON ordered array.
-					});
+		$.each($scope.postByRegionTemp,	function(k,v)
+		{
+			$scope.postByRegion.push($scope.postByRegionTemp[k]); // Push it as a new object in a JSON ordered array.
+		});
 //					console.log($scope.postByRegion);
-					var postsByRegion =
-					{
-						cols:
-						[
-							{
-								id		: 'region',
-								label	: 'Region',
-								type	: 'string'
-							},
-							{
-								id		: 'activitiesLogged',
-								label	: 'Activities Logged',
-								type	: 'number'
-							},
-							{
-								id		: 'totalResharers',
-								label	: 'Total Resharers',
-								type	: 'number'
-							},
-							{
-								id		: 'totalPlus1s',
-								label	: 'Total +1s',
-								type	: 'number'
-							}
-						],
-						rows: []
-					};
-					for (var i=0;i<$scope.postByRegion.length;i++)
-					{
-						var regionName			= $scope.postByRegion[i].region;
-						var activitiesLogged	= $scope.postByRegion[i].posts.length;
-						var totalResharers		= $scope.postByRegion[i].totalResharers;
-						var totalPlus1s			= $scope.postByRegion[i].totalPlus1s;
-						var gde					= {c:[]};
-						gde.c.push({v:regionName});
-						gde.c.push({v:activitiesLogged});
-						gde.c.push({v:totalResharers});
-						gde.c.push({v:totalPlus1s});
-						postsByRegion.rows.push(gde);
-					};
+		var postsByRegion =
+		{
+			cols:
+			[
+				{
+					id		: 'region',
+					label	: 'Region',
+					type	: 'string'
+				}
+			],
+			rows: []
+		};
+		$scope.utils.addMetricColumns(postsByRegion);
+
+		for (var i=0;i<$scope.postByRegion.length;i++)
+		{
+			postsByRegion.rows.push(
+				$scope.utils.chartDataRow($scope.postByRegion[i].region, $scope.postByRegion[i])
+			);
+		};
 //					console.log(postsByRegion);
 					
 		// Sort data by Total Activities
@@ -1194,38 +1144,17 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 					id		: 'gdeName',
 					label	: 'GDE',
 					type	: 'string'
-				},
-				{
-					id		: 'activitiesLogged',
-					label	: 'Activities Logged',
-					type	: 'number'
-				},
-				{
-					id		: 'totalResharers',
-					label	: 'Total Resharers',
-					type	: 'number'
-				},
-				{
-					id		: 'totalPlus1s',
-					label	: 'Total +1s',
-					type	: 'number'
 				}
 			],
 			rows	: []
 		};
+		$scope.utils.addMetricColumns(activitiesByGde);
+
 		for (var i=0;i<$scope.postByGdeName.length;i++)
 		{
-//			console.log($('.userName').text());
-			var gdeName				= $scope.postByGdeName[i].name;
-			var activitiesLogged	= $scope.postByGdeName[i].posts.length;
-			var totalResharers		= $scope.postByGdeName[i].totalResharers;
-			var totalPlus1s			= $scope.postByGdeName[i].totalPlus1s;
-			var gde					= {c:[]};
-			gde.c.push({v:gdeName});
-			gde.c.push({v:activitiesLogged});
-			gde.c.push({v:totalResharers});
-			gde.c.push({v:totalPlus1s});
-			activitiesByGde.rows.push(gde);
+			activitiesByGde.rows.push(
+				$scope.utils.chartDataRow($scope.postByGdeName[i].name, $scope.postByGdeName[i])
+			);
 		};
 //			console.log(activitiesByGde);
 		
