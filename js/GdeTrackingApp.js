@@ -166,6 +166,64 @@ GdeTrackingApp.factory("mapMarkers",	[function()
 }]);
 
 // *****************************************************************************************************
+//						utility functions for accumulating and displaying stats
+// *****************************************************************************************************
+GdeTrackingApp.run(function ($rootScope) {
+	$rootScope.utils = {
+		'postFromApi': function (apiData) {
+			var post = {};
+			post.gde_name		= apiData.gde_name;
+			post.title			= apiData.activity_title;
+			post.url			= apiData.activity_link;
+			post.gplus_id		= apiData.gplus_id;
+			post.resharers		= parseInt(apiData.resharers || 0, 10);
+			post.post_id		= apiData.id;
+			post.plus_oners		= parseInt(apiData.plus_oners || 0, 10);
+			post.date			= apiData.post_date;
+			post.id				= apiData.id;
+			post.product_group	= apiData.product_groups;
+			post.activity_type	= apiData.activity_types;
+			return post;
+		},
+		'updateStats': function (dataset, apiData) {
+			dataset.totalPlus1s		= (dataset.totalPlus1s || 0) + parseInt(apiData.plus_oners || 0, 10);
+			dataset.totalResharers	= (dataset.totalResharers || 0) + parseInt(apiData.resharers || 0, 10);
+		},
+		'addMetricColumns': function (chartData) {
+			chartData.cols.push({
+				id		: 'activitiesLogged',
+				label	: 'Activities Logged',
+				type	: 'number'
+			});
+			chartData.cols.push({
+				id		: 'totalResharers',
+				label	: 'Total Resharers',
+				type	: 'number'
+			});
+			chartData.cols.push({
+				id		: 'totalPlus1s',
+				label	: 'Total +1s',
+				type	: 'number'
+			});
+		},
+		'chartDataRow': function (label, activityRecord) {
+			var row					= {c:[]};
+
+			var activitiesLogged	= activityRecord.posts.length;
+			var totalResharers		= activityRecord.totalResharers;
+			var totalPlus1s			= activityRecord.totalPlus1s;
+
+			row.c.push({v:label});
+			row.c.push({v:activitiesLogged});
+			row.c.push({v:totalResharers});
+			row.c.push({v:totalPlus1s});
+
+			return row;
+		}
+	};
+});
+
+// *****************************************************************************************************
 //    								plusLoginCtrl Controller
 //					Library source: http://jeradbitner.com/angular-directive.g-signin/
 // *****************************************************************************************************
@@ -439,45 +497,23 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 			$scope.postByGdeName.push($scope.postByGdeNameTemp[k]); // Push it as a new object in a JSON ordered array.
 		});
 //		console.log($scope.postByGdeName);
-		var activitiesByGde =
-		{
-			cols:
-				[
-					{
-						id		: 'gdeName',
-						label	: 'GDE',
-						type	: 'string'
-					},
-					{
-						id		: 'activitiesLogged',
-						label	: 'Activities Logged',
-						type	: 'number'
-					},
-					{
-						id		: 'totalResharers',
-						label	: 'Total Resharers',
-						type	: 'number'
-					},
-					{
-						id		: 'totalPlus1s',
-						label	: 'Total +1s',
-						type	: 'number'
-					}
-				],
+		var activitiesByGde = {
+			cols: [
+				{
+					id		: 'gdeName',
+					label	: 'GDE',
+					type	: 'string'
+				}
+			],
 			rows: []
 		};
+		$scope.utils.addMetricColumns(activitiesByGde);
+
 		for (var i=0;i<$scope.postByGdeName.length;i++)
 		{
-			var gdeName				= $scope.postByGdeName[i].name;
-			var activitiesLogged	= $scope.postByGdeName[i].posts.length;
-			var totalResharers		= $scope.postByGdeName[i].totalResharers;
-			var totalPlus1s			= $scope.postByGdeName[i].totalPlus1s;
-			var gde					= {c:[]};
-			gde.c.push({v:gdeName});
-			gde.c.push({v:activitiesLogged});
-			gde.c.push({v:totalResharers});
-			gde.c.push({v:totalPlus1s});
-			activitiesByGde.rows.push(gde);
+			activitiesByGde.rows.push(
+				$scope.utils.chartDataRow($scope.postByGdeName[i].name, $scope.postByGdeName[i])
+			);
 		};
 //		console.log(activitiesByGde);
 		// For every Product in $scope.postByProductTemp
@@ -494,37 +530,17 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 					id		: 'product',
 					label	: 'Product',
 					type	: 'string'
-				},
-				{
-					id		: 'activitiesLogged',
-					label	: 'Activities Logged',
-					type	: 'number'
-				},
-				{
-					id		: 'totalResharers',
-					label	: 'Total Resharers',
-					type	: 'number'
-				},
-				{
-					id		: 'totalPlus1s',
-					label	: 'Total +1s',
-					type	: 'number'
 				}
 			],
 			rows: []
 		};
+		$scope.utils.addMetricColumns(postByProduct);
+
 		for (var i=0;i<$scope.postByProduct.length;i++)
 		{
-			var productName			= $scope.postByProduct[i].product;
-			var activitiesLogged	= $scope.postByProduct[i].posts.length;
-			var totalResharers		= $scope.postByProduct[i].totalResharers;
-			var totalPlus1s			= $scope.postByProduct[i].totalPlus1s;
-			var product				= {c:[]};
-			product.c.push({v:productName});
-			product.c.push({v:activitiesLogged});
-			product.c.push({v:totalResharers});
-			product.c.push({v:totalPlus1s});
-			postByProduct.rows.push(product);
+			postByProduct.rows.push(
+				$scope.utils.chartDataRow($scope.postByProduct[i].product, $scope.postByProduct[i])
+			);
 		};
 //		console.log(postByProduct);
 		// For every Activity in $scope.postByActivityTemp
@@ -541,85 +557,45 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 					id		: 'activity',
 					label	: 'Activity',
 					type	: 'string'
-				},
-				{
-					id		: 'activitiesLogged',
-					label	: 'Activities Logged',
-					type	: 'number'
-				},
-				{
-					id		: 'totalResharers',
-					label	: 'Total Resharers',
-					type	: 'number'
-				},
-				{
-					id		: 'totalPlus1s',
-					label	: 'Total +1s',
-					type	: 'number'
 				}
 			],
 			rows: []
 		};
+		$scope.utils.addMetricColumns(postByActivity);
+
 		for (var i=0;i<$scope.postByActivity.length;i++)
 		{
-			var activityName		= $scope.postByActivity[i].activity;
-			var activitiesLogged	= $scope.postByActivity[i].posts.length;
-			var totalResharers		= $scope.postByActivity[i].totalResharers;
-			var totalPlus1s			= $scope.postByActivity[i].totalPlus1s;
-			var product				= {c:[]};
-			product.c.push({v:activityName});
-			product.c.push({v:activitiesLogged});
-			product.c.push({v:totalResharers});
-			product.c.push({v:totalPlus1s});
-			postByActivity.rows.push(product);
+			postByActivity.rows.push(
+				$scope.utils.chartDataRow($scope.postByActivity[i].activity, $scope.postByActivity[i])
+			);
 		};
 //		console.log(postByActivity);
 		// For every Region in postByRegionTemp
-					$.each($scope.postByRegionTemp,	function(k,v)
-					{
-						$scope.postByRegion.push($scope.postByRegionTemp[k]); // Push it as a new object in a JSON ordered array.
-					});
+		$.each($scope.postByRegionTemp,	function(k,v)
+		{
+			$scope.postByRegion.push($scope.postByRegionTemp[k]); // Push it as a new object in a JSON ordered array.
+		});
 //					console.log($scope.postByRegion);
-					var postsByRegion =
-					{
-						cols:
-						[
-							{
-								id		: 'region',
-								label	: 'Region',
-								type	: 'string'
-							},
-							{
-								id		: 'activitiesLogged',
-								label	: 'Activities Logged',
-								type	: 'number'
-							},
-							{
-								id		: 'totalResharers',
-								label	: 'Total Resharers',
-								type	: 'number'
-							},
-							{
-								id		: 'totalPlus1s',
-								label	: 'Total +1s',
-								type	: 'number'
-							}
-						],
-						rows: []
-					};
-					for (var i=0;i<$scope.postByRegion.length;i++)
-					{
-						var regionName			= $scope.postByRegion[i].region;
-						var activitiesLogged	= $scope.postByRegion[i].posts.length;
-						var totalResharers		= $scope.postByRegion[i].totalResharers;
-						var totalPlus1s			= $scope.postByRegion[i].totalPlus1s;
-						var gde					= {c:[]};
-						gde.c.push({v:regionName});
-						gde.c.push({v:activitiesLogged});
-						gde.c.push({v:totalResharers});
-						gde.c.push({v:totalPlus1s});
-						postsByRegion.rows.push(gde);
-					};
+		var postsByRegion =
+		{
+			cols:
+			[
+				{
+					id		: 'region',
+					label	: 'Region',
+					type	: 'string'
+				}
+			],
+			rows: []
+		};
+		$scope.utils.addMetricColumns(postsByRegion);
+
+		for (var i=0;i<$scope.postByRegion.length;i++)
+		{
+			postsByRegion.rows.push(
+				$scope.utils.chartDataRow($scope.postByRegion[i].region, $scope.postByRegion[i])
+			);
+		};
 //					console.log(postsByRegion);
 					
 		// Sort data by Total Activities
@@ -1040,54 +1016,21 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 				for (var i=0;i<$scope.data.items.length;i++) // Posts by GDE Name
 				{
 					var name = $scope.data.items[i].gde_name;
-					
-					if ($scope.postByGdeNameTemp[name])
-					{
-						$scope.postByGdeNameTemp[name]['name']				= name;
-						$scope.postByGdeNameTemp[name]['id']				= $scope.data.items[i].gplus_id;
-						$scope.postByGdeNameTemp[name]['totalPlus1s']		= Math.abs($scope.postByGdeNameTemp[name]['totalPlus1s']) + Math.abs($scope.data.items[i].plus_oners);
-						$scope.postByGdeNameTemp[name]['totalResharers']	= Math.abs($scope.postByGdeNameTemp[name]['totalResharers']) + Math.abs($scope.data.items[i].resharers);
-						
-						var post				= [];
-						post['gde_name']		= $scope.data.items[i].gde_name ;
-						post['title']			= $scope.data.items[i].activity_title;
-						post['url']				= $scope.data.items[i].activity_link;
-						post['gplus_id']		= $scope.data.items[i].gplus_id;
-						post['resharers']		= $scope.data.items[i].resharers;
-						post['post_id']			= $scope.data.items[i].id;
-						post['plus_oners']		= $scope.data.items[i].plus_oners;
-						post['date']			= $scope.data.items[i].post_date;
-						post['id']				= $scope.data.items[i].id;
-						post['product_group']	= $scope.data.items[i].product_groups;
-						post['activity_type']	= $scope.data.items[i].activity_types;
-						$scope.postByGdeNameTemp[name]['posts'].push(post);
-					} else
+
+					if (!$scope.postByGdeNameTemp[name])
 					{
 						$scope.postByGdeNameTemp[name]						= {};	// Initialize a new JSON unordered array
-						
-						$scope.postByGdeNameTemp[name]['posts']				= [];	// Initialize a new JSON ordered array
-						$scope.postByGdeNameTemp[name]['totalPlus1s']		= 0;	// Initialize a new acumulator for total+1s
-						$scope.postByGdeNameTemp[name]['totalResharers']	= 0;	// Initialize a new acumulator for totalResharers
-						
+
 						$scope.postByGdeNameTemp[name]['name']				= name;
 						$scope.postByGdeNameTemp[name]['id']				= $scope.data.items[i].gplus_id;
-						$scope.postByGdeNameTemp[name]['totalPlus1s']		= Math.abs($scope.postByGdeNameTemp[name]['totalPlus1s']) + Math.abs($scope.data.items[i].plus_oners);
-						$scope.postByGdeNameTemp[name]['totalResharers']	= Math.abs($scope.postByGdeNameTemp[name]['totalResharers']) + Math.abs($scope.data.items[i].resharers);
-						
-						var post				= [];
-						post['gde_name']		= $scope.data.items[i].gde_name ;
-						post['title']			= $scope.data.items[i].activity_title;
-						post['url']				= $scope.data.items[i].activity_link;
-						post['gplus_id']		= $scope.data.items[i].gplus_id;
-						post['resharers']		= $scope.data.items[i].resharers;
-						post['post_id']			= $scope.data.items[i].id;
-						post['plus_oners']		= $scope.data.items[i].plus_oners;
-						post['date']			= $scope.data.items[i].post_date;
-						post['id']				= $scope.data.items[i].id;
-						post['product_group']	= $scope.data.items[i].product_groups;
-						post['activity_type']	= $scope.data.items[i].activity_types;
-						$scope.postByGdeNameTemp[name]['posts'].push(post);
-					};
+
+						$scope.postByGdeNameTemp[name]['posts']				= [];	// Initialize a new JSON ordered array
+					}
+
+					$scope.utils.updateStats($scope.postByGdeNameTemp[name], $scope.data.items[i]);
+
+					var post = $scope.utils.postFromApi($scope.data.items[i]);
+					$scope.postByGdeNameTemp[name]['posts'].push(post);
 				};
 //				console.log(postByGdeNameTemp);
 				for (var i=0;i<$scope.data.items.length;i++)// Posts by Product
@@ -1098,50 +1041,20 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 						{
 							var product = $scope.data.items[i].product_groups[j];
 							product = product.slice(1,product.length); // Remove the Hash Tag
-							if ($scope.postByProductTemp[product])
-							{
-								$scope.postByProductTemp[product]['product']			= product;
-								$scope.postByProductTemp[product]['totalPlus1s']		= Math.abs($scope.postByProductTemp[product]['totalPlus1s'])		+ Math.abs($scope.data.items[i].plus_oners);
-								$scope.postByProductTemp[product]['totalResharers']		= Math.abs($scope.postByProductTemp[product]['totalResharers'])	+ Math.abs($scope.data.items[i].resharers);
-								var post				= [];
-								post['gde_name']		= $scope.data.items[i].gde_name;
-								post['title']			= $scope.data.items[i].activity_title;
-								post['url']				= $scope.data.items[i].activity_link;
-								post['gplus_id']		= $scope.data.items[i].gplus_id;
-								post['resharers']		= $scope.data.items[i].resharers;
-								post['post_id']			= $scope.data.items[i].id;
-								post['plus_oners']		= $scope.data.items[i].plus_oners;
-								post['date']			= $scope.data.items[i].post_date;
-								post['id']				= $scope.data.items[i].id;
-								post['product_group']	= $scope.data.items[i].product_groups;
-								post['activity_type']	= $scope.data.items[i].activity_types;
-								$scope.postByProductTemp[product]['posts'].push(post);
-							} else
+							if (!$scope.postByProductTemp[product])
 							{
 								$scope.postByProductTemp[product]						= {};	// Initialize a new JSON unordered array
-								
+
+								$scope.postByProductTemp[product]['product']			= product;
+
 								$scope.postByProductTemp[product]['posts']				= [];	// Initialize a new JSON ordered array
 								$scope.postByProductTemp[product]['totalPlus1s']		= 0;	// Initialize a new acumulator for total+1s
-								$scope.postByProductTemp[product]['totalResharers']	= 0;	// Initialize a new acumulator for totalResharers
-								
-								$scope.postByProductTemp[product]['product']			= product;
-								$scope.postByProductTemp[product]['totalPlus1s']		= Math.abs($scope.postByProductTemp[product]['totalPlus1s'])		+ Math.abs($scope.data.items[i].plus_oners);
-								$scope.postByProductTemp[product]['totalResharers']		= Math.abs($scope.postByProductTemp[product]['totalResharers'])	+ Math.abs($scope.data.items[i].resharers);
-								
-								var post				= [];
-								post['gde_name']		= $scope.data.items[i].gde_name ;
-								post['title']			= $scope.data.items[i].activity_title;
-								post['url']				= $scope.data.items[i].activity_link;
-								post['gplus_id']		= $scope.data.items[i].gplus_id;
-								post['resharers']		= $scope.data.items[i].resharers;
-								post['post_id']			= $scope.data.items[i].id;
-								post['plus_oners']		= $scope.data.items[i].plus_oners;
-								post['date']			= $scope.data.items[i].post_date;
-								post['id']				= $scope.data.items[i].id;
-								post['product_group']	= $scope.data.items[i].product_groups;
-								post['activity_type']	= $scope.data.items[i].activity_types;
-								$scope.postByProductTemp[product]['posts'].push(post);
-							};
+							}
+
+							$scope.utils.updateStats($scope.postByProductTemp[product], $scope.data.items[i]);
+
+							var post = $scope.utils.postFromApi($scope.data.items[i]);
+							$scope.postByProductTemp[product]['posts'].push(post);
 						}
 					};
 				};
@@ -1154,50 +1067,19 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 						{
 							var activity = $scope.data.items[i].activity_types[j];
 							activity = activity.slice(1,activity.length); // Remove the Hash Tag
-							if ($scope.postByActivityTemp[activity])
+							if (!$scope.postByActivityTemp[activity])
 							{
-								$scope.postByActivityTemp[activity]['activity']		= activity;
-								$scope.postByActivityTemp[activity]['totalPlus1s']		= Math.abs($scope.postByActivityTemp[activity]['totalPlus1s'])		+ Math.abs($scope.data.items[i].plus_oners);
-								$scope.postByActivityTemp[activity]['totalResharers']	= Math.abs($scope.postByActivityTemp[activity]['totalResharers'])	+ Math.abs($scope.data.items[i].resharers);
-								var post				= [];
-								post['gde_name']		= $scope.data.items[i].gde_name ;
-								post['title']			= $scope.data.items[i].activity_title;
-								post['url']				= $scope.data.items[i].activity_link;
-								post['gplus_id']		= $scope.data.items[i].gplus_id;
-								post['resharers']		= $scope.data.items[i].resharers;
-								post['post_id']			= $scope.data.items[i].id;
-								post['plus_oners']		= $scope.data.items[i].plus_oners;
-								post['date']			= $scope.data.items[i].post_date;
-								post['id']				= $scope.data.items[i].id;
-								post['product_group']	= $scope.data.items[i].product_groups;
-								post['activity_type']	= $scope.data.items[i].activity_types;
-								$scope.postByActivityTemp[activity]['posts'].push(post);
-							} else
-							{
-								$scope.postByActivityTemp[activity]					= {}; // Initialize a new JSON unordered array
-								
+								$scope.postByActivityTemp[activity]						= {}; // Initialize a new JSON unordered array
+
+								$scope.postByActivityTemp[activity]['activity']			= activity;
+
 								$scope.postByActivityTemp[activity]['posts']			= [];  // Initialize a new JSON ordered array
-								$scope.postByActivityTemp[activity]['totalPlus1s']		= 0; // Initialize a new acumulator for total+1s
-								$scope.postByActivityTemp[activity]['totalResharers']	= 0; // Initialize a new acumulator for totalResharers
-								
-								$scope.postByActivityTemp[activity]['activity']		= activity;
-								$scope.postByActivityTemp[activity]['totalPlus1s']		= Math.abs($scope.postByActivityTemp[activity]['totalPlus1s']) + Math.abs($scope.data.items[i].plus_oners);
-								$scope.postByActivityTemp[activity]['totalResharers']	= Math.abs($scope.postByActivityTemp[activity]['totalResharers']) + Math.abs($scope.data.items[i].resharers);
-								
-								var post				= [];
-								post['gde_name']		= $scope.data.items[i].gde_name ;
-								post['title']			= $scope.data.items[i].activity_title;
-								post['url']				= $scope.data.items[i].activity_link;
-								post['gplus_id']		= $scope.data.items[i].gplus_id;
-								post['resharers']		= $scope.data.items[i].resharers;
-								post['post_id']			= $scope.data.items[i].id;
-								post['plus_oners']		= $scope.data.items[i].plus_oners;
-								post['date']			= $scope.data.items[i].post_date;
-								post['id']				= $scope.data.items[i].id;
-								post['product_group']	= $scope.data.items[i].product_groups;
-								post['activity_type']	= $scope.data.items[i].activity_types;
-								$scope.postByActivityTemp[activity]['posts'].push(post);
-							};
+							}
+
+							$scope.utils.updateStats($scope.postByActivityTemp[activity], $scope.data.items[i]);
+
+							var post = $scope.utils.postFromApi($scope.data.items[i]);
+							$scope.postByActivityTemp[activity]['posts'].push(post);
 						}
 					};
 				};
@@ -1205,53 +1087,20 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 				for (var i=0;i<$scope.data.items.length;i++) // Posts by GDE Region
 				{
 					var region = $scope.data.items[i].gde_region;
-					
-					if ($scope.postByRegionTemp[region])
+
+					if (!$scope.postByRegionTemp[region])
 					{
+						$scope.postByRegionTemp[region]						= {}; // Initialize a new JSON unordered array
+
 						$scope.postByRegionTemp[region]['region']			= region;
-						$scope.postByRegionTemp[region]['id']				= $scope.data.items[i].gplus_id;
-						$scope.postByRegionTemp[region]['totalPlus1s']		= Math.abs($scope.postByRegionTemp[region]['totalPlus1s'])		+ Math.abs($scope.data.items[i].plus_oners);
-						$scope.postByRegionTemp[region]['totalResharers']	= Math.abs($scope.postByRegionTemp[region]['totalResharers'])	+ Math.abs($scope.data.items[i].resharers);
-						var post = [];
-						post['gde_name']		= $scope.data.items[i].gde_name ;
-						post['title']			= $scope.data.items[i].activity_title;
-						post['url']				= $scope.data.items[i].activity_link;
-						post['gplus_id']		= $scope.data.items[i].gplus_id;
-						post['resharers']		= $scope.data.items[i].resharers;
-						post['post_id']			= $scope.data.items[i].id;
-						post['plus_oners']		= $scope.data.items[i].plus_oners;
-						post['date']			= $scope.data.items[i].post_date;
-						post['id']				= $scope.data.items[i].id;
-						post['product_group']	= $scope.data.items[i].product_groups;
-						post['activity_type']	= $scope.data.items[i].activity_types;
-						$scope.postByRegionTemp[region]['posts'].push(post);
-					} else
-					{
-						$scope.postByRegionTemp[region]					= {}; // Initialize a new JSON unordered array
-						
+
 						$scope.postByRegionTemp[region]['posts']			= [];  // Initialize a new JSON ordered array
-						$scope.postByRegionTemp[region]['totalPlus1s']		= 0; // Initialize a new acumulator for total+1s
-						$scope.postByRegionTemp[region]['totalResharers']	= 0; // Initialize a new acumulator for totalResharers
-						
-						$scope.postByRegionTemp[region]['region']			= region;
-						$scope.postByRegionTemp[region]['id']				= $scope.data.items[i].gplus_id;
-						$scope.postByRegionTemp[region]['totalPlus1s']		= Math.abs($scope.postByRegionTemp[region]['totalPlus1s'])		+ Math.abs($scope.data.items[i].plus_oners);
-						$scope.postByRegionTemp[region]['totalResharers']	= Math.abs($scope.postByRegionTemp[region]['totalResharers'])	+ Math.abs($scope.data.items[i].resharers);
-						
-						var post = [];
-						post['gde_name']		= $scope.data.items[i].gde_name;
-						post['title']			= $scope.data.items[i].activity_title;
-						post['url']				= $scope.data.items[i].activity_link;
-						post['gplus_id']		= $scope.data.items[i].gplus_id;
-						post['resharers']		= $scope.data.items[i].resharers;
-						post['post_id']			= $scope.data.items[i].id;
-						post['plus_oners']		= $scope.data.items[i].plus_oners;
-						post['date']			= $scope.data.items[i].post_date;
-						post['id']				= $scope.data.items[i].id;
-						post['product_group']	= $scope.data.items[i].product_groups;
-						post['activity_type']	= $scope.data.items[i].activity_types;
-						$scope.postByRegionTemp[region]['posts'].push(post);
-					};
+					}
+
+					$scope.utils.updateStats($scope.postByRegionTemp[region], $scope.data.items[i]);
+
+					var post = $scope.utils.postFromApi($scope.data.items[i]);
+					$scope.postByRegionTemp[region]['posts'].push(post);
 				};
 //				console.log(postByRegionTemp);
 				drawGeneralStatistics()
@@ -1295,38 +1144,17 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 					id		: 'gdeName',
 					label	: 'GDE',
 					type	: 'string'
-				},
-				{
-					id		: 'activitiesLogged',
-					label	: 'Activities Logged',
-					type	: 'number'
-				},
-				{
-					id		: 'totalResharers',
-					label	: 'Total Resharers',
-					type	: 'number'
-				},
-				{
-					id		: 'totalPlus1s',
-					label	: 'Total +1s',
-					type	: 'number'
 				}
 			],
 			rows	: []
 		};
+		$scope.utils.addMetricColumns(activitiesByGde);
+
 		for (var i=0;i<$scope.postByGdeName.length;i++)
 		{
-//			console.log($('.userName').text());
-			var gdeName				= $scope.postByGdeName[i].name;
-			var activitiesLogged	= $scope.postByGdeName[i].posts.length;
-			var totalResharers		= $scope.postByGdeName[i].totalResharers;
-			var totalPlus1s			= $scope.postByGdeName[i].totalPlus1s;
-			var gde					= {c:[]};
-			gde.c.push({v:gdeName});
-			gde.c.push({v:activitiesLogged});
-			gde.c.push({v:totalResharers});
-			gde.c.push({v:totalPlus1s});
-			activitiesByGde.rows.push(gde);
+			activitiesByGde.rows.push(
+				$scope.utils.chartDataRow($scope.postByGdeName[i].name, $scope.postByGdeName[i])
+			);
 		};
 //			console.log(activitiesByGde);
 		
@@ -1475,55 +1303,21 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 						//if ($scope.data.items[i].gde_name == loggedGdeName)           //Username filter might filter out some result as the GDE Name associate to the Activity was the Name in Google Plus and now is the one from the GDE Master List
 						if ($scope.data.items[i].gplus_id == loggetGdePlusID)           //Use the user Google Plus ID to filter the activity records
 						{
-							if ($scope.postByGdeNameTemp[$scope.name])
-							{
-								$scope.postByGdeNameTemp[$scope.name]['name']				= $scope.name;
-								$scope.postByGdeNameTemp[$scope.name]['id']					= $scope.data.items[i].gplus_id;
-								$scope.postByGdeNameTemp[$scope.name]['totalPlus1s']		= Math.abs($scope.postByGdeNameTemp[$scope.name]['totalPlus1s']) + Math.abs($scope.data.items[i].plus_oners);
-								$scope.postByGdeNameTemp[$scope.name]['totalResharers']		= Math.abs($scope.postByGdeNameTemp[$scope.name]['totalResharers']) + Math.abs($scope.data.items[i].resharers);
-								var post = {};
-								post['gde_name']		= $scope.data.items[i].gde_name;
-								post['title'] 			= $scope.data.items[i].activity_title;
-								post['url'] 			= $scope.data.items[i].activity_link;
-								post['gplus_id']		= $scope.data.items[i].gplus_id;
-								post['resharers']		= parseInt($scope.data.items[i].resharers);
-								post['post_id']			= $scope.data.items[i].id;
-								post['plus_oners']		= parseInt($scope.data.items[i].plus_oners);
-								post['date']			= $scope.data.items[i].post_date;
-								post['id']				= $scope.data.items[i].id;
-								post['product_group']	= $scope.data.items[i].product_groups;
-								post['activity_type']	= $scope.data.items[i].activity_types;
-								$scope.postByGdeNameTemp[$scope.name]['posts'].push(post);
-								$scope.userPosts.push(post);									// Push another post 
-//								console.log(post);
-							} else
+							if (!$scope.postByGdeNameTemp[$scope.name])
 							{
 								$scope.postByGdeNameTemp[$scope.name]					= {};	// Initialize a new JSON unordered array
-								
-								$scope.postByGdeNameTemp[$scope.name]['posts']			= [];	// Initialize a new JSON ordered array
-								$scope.postByGdeNameTemp[$scope.name]['totalPlus1s']	= 0;	// Initialize a new acumulator for total+1s
-								$scope.postByGdeNameTemp[$scope.name]['totalResharers']	= 0;	// Initialize a new acumulator for totalResharers
-								
+
 								$scope.postByGdeNameTemp[$scope.name]['name']			= $scope.name;
 								$scope.postByGdeNameTemp[$scope.name]['id']				= $scope.data.items[i].gplus_id;
-								$scope.postByGdeNameTemp[$scope.name]['totalPlus1s']	= Math.abs($scope.postByGdeNameTemp[$scope.name]['totalPlus1s']) + Math.abs($scope.data.items[i].plus_oners);
-								$scope.postByGdeNameTemp[$scope.name]['totalResharers']	= Math.abs($scope.postByGdeNameTemp[$scope.name]['totalResharers']) + Math.abs($scope.data.items[i].resharers);
-								
-								var post = {};
-								post['gde_name']		= $scope.data.items[i].gde_name ;
-								post['title']			= $scope.data.items[i].activity_title;
-								post['url']				= $scope.data.items[i].activity_link;
-								post['gplus_id']		= $scope.data.items[i].gplus_id;
-								post['resharers']		= parseInt($scope.data.items[i].resharers);
-								post['post_id']			= $scope.data.items[i].id;
-								post['plus_oners']		= parseInt($scope.data.items[i].plus_oners);
-								post['date']			= $scope.data.items[i].post_date;
-								post['id']				= $scope.data.items[i].id;
-								post['product_group']	= $scope.data.items[i].product_groups;
-								post['activity_type']	= $scope.data.items[i].activity_types;
-								$scope.postByGdeNameTemp[$scope.name]['posts'].push(post);
-								$scope.userPosts.push(post);									// Push first post 
-							};	
+
+								$scope.postByGdeNameTemp[$scope.name]['posts']			= [];	// Initialize a new JSON ordered array
+							}
+
+							$scope.utils.updateStats($scope.postByGdeNameTemp[$scope.name], $scope.data.items[i]);
+
+							var post = $scope.utils.postFromApi($scope.data.items[i]);
+							$scope.postByGdeNameTemp[$scope.name]['posts'].push(post);
+							$scope.userPosts.push(post);
 						};
 					};
 					drawGeneralStatistics();
@@ -1537,52 +1331,21 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 							$scope.name = $scope.data.items[i].gde_name;
 							if ($scope.data.items[i].gde_name == loggedGdeName)
 							{
-								if ($scope.postByGdeNameTemp[$scope.name])
-								{
-									$scope.postByGdeNameTemp[$scope.name]['name']				= $scope.name;
-									$scope.postByGdeNameTemp[$scope.name]['id']					= $scope.data.items[i].gplus_id;
-									$scope.postByGdeNameTemp[$scope.name]['totalPlus1s']		= Math.abs($scope.postByGdeNameTemp[$scope.name]['totalPlus1s']) + Math.abs($scope.data.items[i].plus_oners);
-									$scope.postByGdeNameTemp[$scope.name]['totalResharers']		= Math.abs($scope.postByGdeNameTemp[$scope.name]['totalResharers']) + Math.abs($scope.data.items[i].resharers);
-									var post = [];
-									post['gde_name']		= $scope.data.items[i].gde_name;
-									post['title'] 			= $scope.data.items[i].activity_title;
-									post['url'] 			= $scope.data.items[i].activity_link;
-									post['gplus_id']		= $scope.data.items[i].gplus_id;
-									post['resharers']		= $scope.data.items[i].resharers;
-									post['post_id']			= $scope.data.items[i].id;
-									post['plus_oners']		= $scope.data.items[i].plus_oners;
-									post['date']			= $scope.data.items[i].post_date;
-									post['id']				= $scope.data.items[i].id;
-									post['product_group']	= $scope.data.items[i].product_groups;
-									post['activity_type']	= $scope.data.items[i].activity_types;
-									$scope.postByGdeNameTemp[$scope.name]['posts'].push(post);
-								} else
+								if (!$scope.postByGdeNameTemp[$scope.name])
 								{
 									$scope.postByGdeNameTemp[$scope.name]					= {};	// Initialize a new JSON unordered array
-									
-									$scope.postByGdeNameTemp[$scope.name]['posts']			= [];	// Initialize a new JSON ordered array
-									$scope.postByGdeNameTemp[$scope.name]['totalPlus1s']	= 0;	// Initialize a new acumulator for total+1s
-									$scope.postByGdeNameTemp[$scope.name]['totalResharers']	= 0;	// Initialize a new acumulator for totalResharers
-									
+
 									$scope.postByGdeNameTemp[$scope.name]['name']			= $scope.name;
 									$scope.postByGdeNameTemp[$scope.name]['id']				= $scope.data.items[i].gplus_id;
-									$scope.postByGdeNameTemp[$scope.name]['totalPlus1s']	= Math.abs($scope.postByGdeNameTemp[$scope.name]['totalPlus1s']) + Math.abs($scope.data.items[i].plus_oners);
-									$scope.postByGdeNameTemp[$scope.name]['totalResharers']	= Math.abs($scope.postByGdeNameTemp[$scope.name]['totalResharers']) + Math.abs($scope.data.items[i].resharers);
-									
-									var post = [];
-									post['gde_name']		= $scope.data.items[i].gde_name ;
-									post['title']			= $scope.data.items[i].activity_title;
-									post['url']				= $scope.data.items[i].activity_link;
-									post['gplus_id']		= $scope.data.items[i].gplus_id;
-									post['resharers']		= $scope.data.items[i].resharers;
-									post['post_id']			= $scope.data.items[i].id;
-									post['plus_oners']		= $scope.data.items[i].plus_oners;
-									post['date']			= $scope.data.items[i].post_date;
-									post['id']				= $scope.data.items[i].id;
-									post['product_group']	= $scope.data.items[i].product_groups;
-									post['activity_type']	= $scope.data.items[i].activity_types;
-									$scope.postByGdeNameTemp[$scope.name]['posts'].push(post);
-								};
+
+									$scope.postByGdeNameTemp[$scope.name]['posts']			= [];	// Initialize a new JSON ordered array
+								}
+
+								$scope.utils.updateStats($scope.postByGdeNameTemp[$scope.name], $scope.data.items[i]);
+
+								var post = $scope.utils.postFromApi($scope.data.items[i]);
+								$scope.postByGdeNameTemp[$scope.name]['posts'].push(post);
+								$scope.userPosts.push(post);
 							};
 						};
 						drawGeneralStatistics();
