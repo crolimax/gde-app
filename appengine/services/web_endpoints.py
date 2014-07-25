@@ -60,7 +60,7 @@ class ActivityRecordService(remote.Service):
 @api_root.api_class(resource_name='activity_post', path='activityPost')
 class ActivityPostService(remote.Service):
 
-    @ActivityPost.method(path='/activityPost', http_method='POST',
+    @ActivityPost.method(path='/activityPost/{id}', http_method='POST',
                          name='insert')
     def insert(self, activity_post):
         activity_post.put()
