@@ -2,31 +2,32 @@
 <html lang="en">
 <head>
 	<meta	charset="UTF-8" />
-	<meta	name="viewport"						content="width=device-width">
-	<meta 	name="Robots"						content="index,follow">
+	<meta	name="viewport"				content="width=device-width">
+	<meta 	name="Robots"				content="index,follow">
 	<meta	name="mobile-web-app-capable"		content="yes">
 	<meta	name="apple-mobile-web-app-capable"	content="yes">
 
 	<link	rel="shortcut icon"	href="img/gdeLogo256x256.png"	sizes="256x256">
-	<link	rel="icon"			href="img/favicon.png"			type="image/x-icon"/>
+	<link	rel="icon"		href="img/favicon.png"		type="image/x-icon"/>
 	<title>
 		GDE Tracking App
 	</title>
 	<!-- **********************************************************************	-->
-	<!--						Javascript Libraries							-->
+	<!--				Javascript Libraries				-->
 	<!-- **********************************************************************	-->
-	<script	src="js/resources/jquery-2.1.0.min.js">						</script>
-	<script src="js/resources/angular.min.js">							</script>
-	<script src="js/resources/angular-route.min.js">					</script>
-	<script src="components/platform/platform.js">						</script>
-	<script src="//www.google.com/jsapi" >							   	</script>
+	<script	src="js/resources/jquery-2.1.0.min.js">				</script>
+	<script src="js/resources/angular.min.js">				</script>
+	<script src="js/resources/angular-route.min.js">			</script>
+	<script src="components/platform/platform.js">				</script>
+	<script src="//www.google.com/jsapi" >				   	</script>
 	<script src='//maps.googleapis.com/maps/api/js?sensor=false'>		</script>
 	<!-- **********************************************************************	-->
-	<!--							Polymer Imports								-->
+	<!--				Polymer Imports					-->
 	<!-- **********************************************************************	-->
+	<!-- ---------------------------- Platform --------------------------------	-->
+	<script src="components/web-animations-js/web-animations.js">		</script>
+	
 	<!-- ---------------------------- Core Elements ---------------------------	-->
-	<link	rel="import"
-		href="components/web-animations-js/web-animations.html">
 	<link	rel="import"
 		href="components/core-toolbar/core-toolbar.html">
 	<link	rel="import"
@@ -59,9 +60,11 @@
 		href="components/paper-dialog/paper-dialog.html" >
 	<link	rel="import"
 		href="components/paper-dialog/paper-dialog-transition.html" >
+	<link	rel="import"
+		href="components/paper-toast/paper-toast.html">
 	<!-- ----------------------------------------------------------------------	-->
 	<!-- **********************************************************************	-->
-	<!--								Custom CSS								-->
+	<!--				Custom CSS					-->
 	<!-- **********************************************************************	-->
 	<link	rel="stylesheet"
 		href="css/polymerDetails.css"
@@ -119,20 +122,22 @@
 			</core-toolbar	header>
 			<article	class="scrollBar"	ng-view>
 	<!--	---------------------------------------------------------------------	-->
-	<!--	|					AngularJS templated HTML5 area					|	-->
+	<!--			AngularJS templated HTML5 area				-->
 	<!--	---------------------------------------------------------------------	-->
-	<!--	< ................................................................. >	-->
+	<!--	< ...................................................................	-->
 	<!--	---------------------------------------------------------------------	-->
 			</article>
 	<!--	---------------------------------------------------------------------	-->
-	<!--	|					paper-fab & AngularJS Bind						|	-->
+	<!--				paper-fab & AngularJS Bind			-->
 	<!--	---------------------------------------------------------------------	-->
 			<div ng-controller="fabCtrl" >
 				<paper-fab	class="paper-fab"	icon="chevron-right"	id="fabLeft"></paper-fab>
 			</div>
 	<!--	---------------------------------------------------------------------	-->
-	<!--	|						Polymer Paper Dialogs						|	-->
+	<!--				Polymer Paper Dialogs				-->
 	<!--	---------------------------------------------------------------------	-->
+			<paper-toast id="loading" text="Loading...">
+			</paper-toast>
 			<paper-dialog	id="Googler"			transition="paper-dialog-transition-center"	ng-controller="menuCtrl">
 				<p>
 					<paper-button	raisedButton	affirmative	label="General Statistics"	ng-click="showGeneralStatisticsForGooglers()"></paper-button>
@@ -165,33 +170,33 @@
 						
 					<p>Following a <i>cheat sheet</i> of the Tags:</p>
 					<br/>
-					<table style="float:left;margin-right: 10px;padding-right: 10px;border-style: solid;height: 600px;" class='text-styled' >
+					<table style="float:left;margin-right: 10px;padding-right: 10px;border-style: solid;height: 600px;" class='prettyTable' >
 						<tr>
 							<th colspan="2">
 								Product Tags
 							</th>
 						</tr>
 							
-						<tr><td>#android			</td><td><a href='https://developers.google.com/android/'						target='_blank'>Android</a></td></tr>
-						<tr><td>#admob				</td><td><a href='http://www.google.com/ads/admob/'								target='_blank'>AdMob</a></td></tr>
-						<tr><td>#adwords			</td><td><a href='https://developers.google.com/adwords/api/'					target='_blank'>Google AdWords</a></td></tr>
-						<tr><td>#angularjs			</td><td><a href='https://angularjs.org/'										target='_blank'>Angular JS</a></td></tr>
-						<tr><td>#chrome				</td><td><a href='https://developers.google.com/chrome/'						target='_blank'>Google Chrome</a></td></tr>
-						<tr><td>#html5				</td><td><a href='http://www.html5rocks.com/'									target='_blank'>Chrome: HTML5</a></td></tr>
-						<tr><td>#dartlang			</td><td><a href='http://www.dartlang.org/'										target='_blank'>Chrome: Dart Language</a></td></tr>
+						<tr><td>#android		</td><td><a href='https://developers.google.com/android/'						target='_blank'>Android</a></td></tr>
+						<tr><td>#admob			</td><td><a href='http://www.google.com/ads/admob/'								target='_blank'>AdMob</a></td></tr>
+						<tr><td>#adwords		</td><td><a href='https://developers.google.com/adwords/api/'					target='_blank'>Google AdWords</a></td></tr>
+						<tr><td>#angularjs		</td><td><a href='https://angularjs.org/'										target='_blank'>Angular JS</a></td></tr>
+						<tr><td>#chrome			</td><td><a href='https://developers.google.com/chrome/'						target='_blank'>Google Chrome</a></td></tr>
+						<tr><td>#html5			</td><td><a href='http://www.html5rocks.com/'									target='_blank'>Chrome: HTML5</a></td></tr>
+						<tr><td>#dartlang		</td><td><a href='http://www.dartlang.org/'										target='_blank'>Chrome: Dart Language</a></td></tr>
 						<tr><td>#cloudplatform		</td><td><a href='https://developers.google.com/cloud/'							target='_blank'>Google Cloud Platform</a></td></tr>
 						<tr><td>#googleanalytics	</td><td><a href='https://developers.google.com/analytics/'						target='_blank'>Google Analytics</a></td></tr>
 						<tr><td>#googleappsapi		</td><td><a href='https://developers.google.com/google-apps/'					target='_blank'>Google Apps APIs</a></td></tr>
 						<tr><td>#googleappscript	</td><td><a href='https://developers.google.com/apps-script/'					target='_blank'>Google Apps Script</a></td></tr>
 						<tr><td>#googledrive		</td><td><a href='https://developers.google.com/drive/'							target='_blank'>Google Drive SDK</a></td></tr>
-						<tr><td>#glass				</td><td><a href='https://developers.google.com/glass/'							target='_blank'>Google Glass</a></td></tr>
+						<tr><td>#glass			</td><td><a href='https://developers.google.com/glass/'							target='_blank'>Google Glass</a></td></tr>
 						<tr><td>#googlemapsapi		</td><td><a href='https://developers.google.com/maps/'							target='_blank'>Google Maps APIs</a></td></tr>
-						<tr><td>#googleplus			</td><td><a href='https://developers.google.com/+/'								target='_blank'>Google+ Platform</a></td></tr>
-						<tr><td>#youtube			</td><td><a href='https://developers.google.com/youtube/'						target='_blank'>YouTube APIs</a></td></tr>
-						<tr><td>#uxdesign			</td><td><a href='https://plus.google.com/communities/103651070366324568638'	target='_blank'>UX &amp; Design</a></td></tr>
+						<tr><td>#googleplus		</td><td><a href='https://developers.google.com/+/'								target='_blank'>Google+ Platform</a></td></tr>
+						<tr><td>#youtube		</td><td><a href='https://developers.google.com/youtube/'						target='_blank'>YouTube APIs</a></td></tr>
+						<tr><td>#uxdesign		</td><td><a href='https://plus.google.com/communities/103651070366324568638'	target='_blank'>UX &amp; Design</a></td></tr>
 						
 					</table>
-					<table style="margin-left: 100px;padding-left: 10px;border-style: solid;height: 600px;" class='text-styled' >
+					<table style="margin-left: 100px;padding-left: 10px;border-style: solid;height: 600px;"	class='prettyTable' >
 						<tr>
 							<th colspan="2">
 								Activity Type Tags
@@ -200,14 +205,14 @@
 						<tr><td>#bugreport</td>			<td>BugReports: Report Bug on Google APIs</td></tr>
 						<tr><td>#article</td>			<td>Article: Write technical article about use cases, tips & tricks, particulare use and experience using an API</td></tr>
 						<tr><td>#blogpost</td>			<td>BlogPost: Maybe less technical than Articles, less formal, but still informative and helpful informations for Developers</td></tr>
-						<tr><td>#book</td>				<td>Book: A full book about a technology, best practices, examples, guides, etc... all printed on Paper (or digital)</td></tr>
+						<tr><td>#book</td>			<td>Book: A full book about a technology, best practices, examples, guides, etc... all printed on Paper (or digital)</td></tr>
 						<tr><td>#techdocs</td>			<td>Technical Documentation: Help Improve the documentation on Google Open Source Projects</td></tr>
 						<tr><td>#translation</td>		<td>Translation: Many articles are in English, but Developers are all around the world and it's helpful if content is translated in their native language</td></tr>
 						<tr><td>#techtalk</td>			<td>Tech Talks: Not Scared of the stage? Talk at conventions, GDGs and MeetUps and present technologies to Developers in front of you</td></tr>
-						<tr><td>#opensourcecode</td>	<td>Open Source Code: Got a cool library/application and want to share it because can help other developer? Open source it and share with the World</td></tr>
+						<tr><td>#opensourcecode</td>		<td>Open Source Code: Got a cool library/application and want to share it because can help other developer? Open source it and share with the World</td></tr>
 						<tr><td>#forumpost</td>			<td>Forum Posts: Help answering question directly in Forums and StackOverflow</td></tr>
 						<tr><td>#community</td>			<td>Communty: Engage with the community live</td></tr>
-						<tr><td>#video</td>				<td>Videos: Presentations and tutorials presented with a video are more engaging and help convey the passion we feel about the technology</td></tr>
+						<tr><td>#video</td>			<td>Videos: Presentations and tutorials presented with a video are more engaging and help convey the passion we feel about the technology</td></tr>
 						<tr><td>#tutorial</td>			<td>Tutorials: Lead the developer step by step during his journey for a better knowledge of the technology</td></tr>
 					</table>
 				</div>
@@ -231,12 +236,12 @@
 	</core-drawer-panel>
 	<!-- **********************************************************************	-->
 	<!--                     	  Aditional Scripts                          	-->
-	<!-- ********************************************************************** -->
-	<script src="js/google-plus-signin.js">								</script>
-	<script src='js/resources/underscore-min.js'>						</script>
-	<script src='js/resources/angular-google-maps.js'>					</script>
-	<script src="js/GdeTrackingApp.js">									</script>
-	<script src="js/g+1.js">											</script>
+	<!-- **********************************************************************	-->
+	<script src="js/google-plus-signin.js">				</script>
+	<script src='js/resources/underscore-min.js'>			</script>
+	<script src='js/resources/angular-google-maps.js'>		</script>
+	<script src="js/GdeTrackingApp.js">				</script>
+	<script src="js/g+1.js">					</script>
 	<!-- ********************************************************************** -->
 </body>
 </html>
