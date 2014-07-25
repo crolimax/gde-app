@@ -60,7 +60,7 @@ paper-button {
 	margin				: 1em;
 	width				: 13em;
 	height				: 5em;
-	line-height			: 5em;
+	line-height			: 4.25em;
 }
 paper-button[raisedButton].colored	{
 	fill				: #fafafa;
