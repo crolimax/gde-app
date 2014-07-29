@@ -177,6 +177,7 @@ GdeTrackingApp.run(function ($rootScope) {
 			post.url			= apiData.activity_link;
 			post.gplus_id		= apiData.gplus_id;
 			post.resharers		= parseInt(apiData.resharers || 0, 10);
+      post.comments		= parseInt(apiData.comments || 0, 10);
 			post.post_id		= apiData.id;
 			post.plus_oners		= parseInt(apiData.plus_oners || 0, 10);
 			post.date			= apiData.post_date;
@@ -188,6 +189,7 @@ GdeTrackingApp.run(function ($rootScope) {
 		'updateStats': function (dataset, apiData) {
 			dataset.totalPlus1s		= (dataset.totalPlus1s || 0) + parseInt(apiData.plus_oners || 0, 10);
 			dataset.totalResharers	= (dataset.totalResharers || 0) + parseInt(apiData.resharers || 0, 10);
+			dataset.totalComments	= (dataset.comments || 0) + parseInt(apiData.comments || 0, 10);
 		},
 		'addMetricColumns': function (chartData) {
 			chartData.cols.push({
@@ -205,18 +207,25 @@ GdeTrackingApp.run(function ($rootScope) {
 				label	: 'Total +1s',
 				type	: 'number'
 			});
+			chartData.cols.push({
+				id		: 'totalComments',
+				label	: 'Total Comments',
+				type	: 'number'
+			});
 		},
 		'chartDataRow': function (label, activityRecord) {
 			var row					= {c:[]};
 
 			var activitiesLogged	= activityRecord.posts.length;
 			var totalResharers		= activityRecord.totalResharers;
-			var totalPlus1s			= activityRecord.totalPlus1s;
+			var totalPlus1s			  = activityRecord.totalPlus1s;
+			var totalComments     = activityRecord.totalComments;
 
 			row.c.push({v:label});
 			row.c.push({v:activitiesLogged});
 			row.c.push({v:totalResharers});
 			row.c.push({v:totalPlus1s});
+			row.c.push({v:totalComments});
 
 			return row;
 		}
@@ -663,6 +672,18 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'labelStacking': 'vertical'
 						}
 					});
+					
+					var commentsSlider			= new google.visualization.ControlWrapper();
+					commentsSlider.setControlType('NumberRangeFilter');
+					commentsSlider.setContainerId('commentsSlider');
+					commentsSlider.setOptions(
+					{
+						'filterColumnLabel': 'Total Comments',
+						'ui':
+						{
+							'labelStacking': 'vertical'
+						}
+					});
 
 					var gdeTableChart			= new google.visualization.ChartWrapper();
 					gdeTableChart.setChartType('Table');
@@ -785,6 +806,19 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'labelStacking': 'vertical'
 						}
 					});
+					
+					var platformsCommentsSlider			= new google.visualization.ControlWrapper();
+					platformsCommentsSlider.setControlType('NumberRangeFilter');
+					platformsCommentsSlider.setContainerId('platformsCommentsSlider');
+					platformsCommentsSlider.setOptions(
+					{
+						'filterColumnLabel': 'Total Comments',
+						'ui':
+						{
+							'labelStacking': 'vertical'
+						}
+					});
+					
 
 					var platformsTableChart		= new google.visualization.ChartWrapper();
 					platformsTableChart.setChartType('Table');
@@ -865,6 +899,18 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'labelStacking': 'vertical'
 						}
 					});
+					
+					var activities_CommentsSlider		= new google.visualization.ControlWrapper();
+					activities_CommentsSlider.setControlType('NumberRangeFilter');
+					activities_CommentsSlider.setContainerId('activities_CommentsSlider');
+					activities_CommentsSlider.setOptions(
+					{
+						'filterColumnLabel': 'Total Comments',
+						'ui':
+						{
+							'labelStacking': 'vertical'
+						}
+					});
 
 					var activityTableChart			= new google.visualization.ChartWrapper();
 					activityTableChart.setChartType('Table');
@@ -875,6 +921,18 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 						'sortAscending'	: false,
 						'page'			: 'enable',
 						'pageSize'		:30
+					});
+					
+					var activityCommentsSlider			= new google.visualization.ControlWrapper();
+					activityCommentsSlider.setControlType('NumberRangeFilter');
+					activityCommentsSlider.setContainerId('commentsSlider');
+					activityCommentsSlider.setOptions(
+					{
+						'filterColumnLabel': 'Total Comments',
+						'ui':
+						{
+							'labelStacking': 'vertical'
+						}
 					});
 					
 					var activityBarChart			= new google.visualization.ChartWrapper();
@@ -945,6 +1003,18 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'labelStacking': 'vertical'
 						}
 					});
+					
+					var region_CommentsSlider			= new google.visualization.ControlWrapper();
+					region_CommentsSlider.setControlType('NumberRangeFilter');
+					region_CommentsSlider.setContainerId('region_CommentsSlider');
+					region_CommentsSlider.setOptions(
+					{
+						'filterColumnLabel': 'Total Comments',
+						'ui':
+						{
+							'labelStacking': 'vertical'
+						}
+					});
 
 					var regionTableChart			 = new google.visualization.ChartWrapper();
 					regionTableChart.setChartType('Table');
@@ -976,19 +1046,19 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 					
 		// Draw Charts
 		new google.visualization.Dashboard(document.getElementById('generalStatisticsByPlatform'))
-		.bind([platformsSelector,platformsActivitiesSlider,platformsResharesSlider,platformsPlus1sSlider], [platformsTableChart,platformsBarChart])
+		.bind([platformsSelector,platformsActivitiesSlider,platformsResharesSlider,platformsPlus1sSlider,platformsCommentsSlider], [platformsTableChart,platformsBarChart])
 		.draw(postByProduct_data);
 					
 		new google.visualization.Dashboard(document.getElementById('generalStatisticsByGDE'))
-		.bind([gdeSelector,activitiesSlider,resharesSlider,plus1sSlider], [gdeTableChart,gdePieChart])
+		.bind([gdeSelector,activitiesSlider,resharesSlider,plus1sSlider,commentsSlider], [gdeTableChart,gdePieChart])
 		.draw(activitiesByGde_data);
 					
 		new google.visualization.Dashboard(document.getElementById('generalStatisticsByActivity'))
-		.bind([activities_Selector,activities_ActivitiesSlider,activities_ResharesSlider,activities_Plus1sSlider], [activityTableChart,activityBarChart])
+		.bind([activities_Selector,activities_ActivitiesSlider,activities_ResharesSlider,activities_Plus1sSlider,activities_CommentsSlider], [activityTableChart,activityBarChart])
 		.draw(postByActivity_data);
 					
 		new google.visualization.Dashboard(document.getElementById('generalStatisticsByRegion'))
-		.bind([region_Selector,region_ActivitiesSlider,region_ResharesSlider,region_Plus1sSlider], [regionTableChart,regionBarChart])
+		.bind([region_Selector,region_ActivitiesSlider,region_ResharesSlider,region_Plus1sSlider,region_CommentsSlider], [regionTableChart,regionBarChart])
 		.draw(postByRegion_data);
 	}
 				
@@ -1199,6 +1269,18 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 							'labelStacking': 'vertical'
 						}
 					});
+					
+					var commentsSlider		= new google.visualization.ControlWrapper();
+					commentsSlider.setControlType('NumberRangeFilter');
+					commentsSlider.setContainerId('commentsSlider');
+					commentsSlider.setOptions(
+					{
+						'filterColumnLabel': 'Total Comments',
+						'ui':
+						{
+							'labelStacking': 'vertical'
+						}
+					});
 
 					var gdeTableChart 		= new google.visualization.ChartWrapper();
 					gdeTableChart.setChartType('Table');
@@ -1270,7 +1352,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 						}
 					});
 		new google.visualization.Dashboard(document.getElementById('generalStatisticsByGDE'))// Draw Charts
-		.bind([activitiesSlider,resharesSlider,plus1sSlider], [gdeTableChart,gdeColumnChart])
+		.bind([activitiesSlider,resharesSlider,plus1sSlider,commentsSlider], [gdeTableChart,gdeColumnChart])
 		.draw(activitiesByGde_data);
 	}
 				
