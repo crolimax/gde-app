@@ -19,7 +19,7 @@ class ActivityRecordService(remote.Service):
             raise endpoints.NotFoundException('ActivityRecord not found.')
         return activity_record
 
-    @ActivityRecord.method(path='/activityRecord/{id}', http_method='POST',
+    @ActivityRecord.method(path='/activityRecord', http_method='POST',
                            name='insert')
     def ActivityRecordInsert(self, activity_record):
         activity_record.put()
