@@ -21,21 +21,21 @@ google.load(
 // =====================================================================================================
 //											Polymer
 // =====================================================================================================
-
-function toggleDialog(id) 
+function toggleDialog(id)
 {
 	var dialog = document.querySelector('paper-dialog[id=' + id + ']');
 	dialog.toggle();
 }
-document.addEventListener('polymer-ready', function() 
+document.addEventListener('polymer-ready', function()
 {
 	var navicon		= document.getElementById('navicon');
 	var drawerPanel	= document.getElementById('drawerPanel');
-	navicon.addEventListener('click', function() 
+	navicon.addEventListener('click', function()
 	{
 		drawerPanel.togglePanel();
 	});
 });
+
 // =====================================================================================================
 //											AngularJS
 // =====================================================================================================
@@ -160,17 +160,46 @@ GdeTrackingApp.factory("mapCenters",	[function()
 }]);
 GdeTrackingApp.factory("mapMarkers",	[function()
 {
-	var mapMarkers = [];
+	var mapMarkers	= [];
 	
 	return mapMarkers;
 }]);
+GdeTrackingApp.factory("years",			[function()
+{
+	var years		= [];
+	years			.push({"value":"2013"});
+	years			.push({"value":"2014"});
+	
+	return years;
+}]);
+GdeTrackingApp.factory("months",		[function()
+{
+	var months		= [];
+	months			.push({"value":"January"});
+	months			.push({"value":"February"});
+	months			.push({"value":"March"});
+	months			.push({"value":"April"});
+	months			.push({"value":"May"});
+	months			.push({"value":"June"});
+	months			.push({"value":"July"});
+	months			.push({"value":"August"});
+	months			.push({"value":"September"});
+	months			.push({"value":"October"});
+	months			.push({"value":"November"});
+	months			.push({"value":"December"});
+	
+	return months;
+}]);
 
 // *****************************************************************************************************
-//						utility functions for accumulating and displaying stats
+//						Utility functions for accumulating and displaying stats
 // *****************************************************************************************************
-GdeTrackingApp.run(function ($rootScope) {
-	$rootScope.utils = {
-		'postFromApi': function (apiData) {
+GdeTrackingApp.run(function ($rootScope) 
+{
+	$rootScope.utils = 
+	{
+		'postFromApi': function (apiData) 
+		{
 			var post = {};
 			post.gde_name		= apiData.gde_name;
 			post.title			= apiData.activity_title;
@@ -185,38 +214,47 @@ GdeTrackingApp.run(function ($rootScope) {
 			post.activity_type	= apiData.activity_types;
 			return post;
 		},
-		'updateStats': function (dataset, apiData) {
+		'updateStats': function (dataset, apiData) 
+		{
 			dataset.totalPlus1s		= (dataset.totalPlus1s || 0) + parseInt(apiData.plus_oners || 0, 10);
 			dataset.totalResharers	= (dataset.totalResharers || 0) + parseInt(apiData.resharers || 0, 10);
 		},
-		'addMetricColumns': function (chartData) {
-			chartData.cols.push({
+		'addMetricColumns': function (chartData) 
+		{
+			chartData.cols.push(
+			{
 				id		: 'activitiesLogged',
 				label	: 'Activities Logged',
 				type	: 'number'
 			});
-			chartData.cols.push({
+			chartData.cols.push(
+			{
 				id		: 'totalResharers',
 				label	: 'Total Resharers',
 				type	: 'number'
 			});
-			chartData.cols.push({
+			chartData.cols.push(
+			{
 				id		: 'totalPlus1s',
 				label	: 'Total +1s',
 				type	: 'number'
 			});
 		},
-		'chartDataRow': function (label, activityRecord) {
+		'chartDataRow'	: function (label, activityRecord) 
+		{
 			var row					= {c:[]};
 
 			var activitiesLogged	= activityRecord.posts.length;
 			var totalResharers		= activityRecord.totalResharers;
 			var totalPlus1s			= activityRecord.totalPlus1s;
-
-			row.c.push({v:label});
-			row.c.push({v:activitiesLogged});
-			row.c.push({v:totalResharers});
-			row.c.push({v:totalPlus1s});
+			
+//			var activityDate		= new Date(activityRecord.date);
+//			console.log(activityRecord);
+		
+			row.c					.push({v:label});
+			row.c					.push({v:activitiesLogged});
+			row.c					.push({v:totalResharers});
+			row.c					.push({v:totalPlus1s});
 
 			return row;
 		}
@@ -250,8 +288,9 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 				$scope.userEmails		= resp.emails;
 				$scope.id				= resp.id;
 				$rootScope.usrId		= resp.id;
+//				console.log('User Id:' + resp.id);
 				
-			    for (var i=0;i<$scope.userEmails.length;i++)
+			  for (var i=0;i<$scope.userEmails.length;i++)
 				{
 					var emailDomain = $scope.userEmails[i].value.substring($scope.userEmails[i].value.indexOf('@'));
 					if (emailDomain == '@google.com')	//	Detect if domain matches an official Google domain (Googlers only).
@@ -274,7 +313,7 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 				.success(function(response, status, config)
 				{
 					$scope.type	= response.type;
-					console.log('Welcome '+$scope.userName+'!');
+					console.log('Welcome '+$scope.userName+'.');
 					
 					$('#generalStatisticsForGooglers')			.css('display','none');	//Hide the previously shown menu
 					//Show the right menu by user type
@@ -354,7 +393,7 @@ GdeTrackingApp.controller("fabCtrl",							function($scope,	$location)
 		}	else if ($('paper-fab')	.attr('id')	== 'fabRight')
 		{
 //			console.log('right');
-			$('.gdeList')		.css('opacity' 				, '0');		
+			$('.gdeList')		.css('opacity' 				, '0');
 			$('.scrollBar')		.css('overflow-y' 			, 'hidden');
 			$('.scrollBar')		.css('display' 				, 'block');								//	Hice GDE List
 			$('.mapArea')		.css('-webkit-animation'	, 'mapSlideRight	1s	linear	1	both');	//	-webkit- CSS3 animation
@@ -388,6 +427,9 @@ GdeTrackingApp.controller("menuCtrl",							function($scope,	$location)
 // *****************************************************************************************************
 GdeTrackingApp.controller("startCtrl",							function($scope,	$http,	mapOptions,	mapCenters,	mapMarkers)
 {
+	var loadingToast	= document.querySelector('paper-toast[id="loading"]');	// Show loading sign
+	loadingToast.show();
+	
 	var mapWidth		= screen.width	* 0.7	+ 'px';	// Adjust Google Maps container to 70% of screen width
 	var mapHeight		= screen.height	* 0.6	+ 'px';	// Adjust Google Maps container to 60% of screen height
 	$('.mapZone')						.css('width',	mapWidth);
@@ -451,7 +493,7 @@ GdeTrackingApp.controller("startCtrl",							function($scope,	$http,	mapOptions,
     			$scope.markerClick	= function(name,badge)
     			{
     				window.alert(name+' - ' + badge + ' GDE');
-    			};	
+    			};
 				//	Trigger CSS3 animation after map loads
 				$('paper-fab')	.css('-webkit-animation'	, 'fabAppears	2s	linear	1	both');	//	-webkit- CSS
 				$('paper-fab')	.css('animation'			, 'fabAppears	2s	linear	1	both');	//	W3C	CSS
@@ -471,24 +513,117 @@ GdeTrackingApp.controller("startCtrl",							function($scope,	$http,	mapOptions,
 // *****************************************************************************************************
 //    								Statistics Controllers
 // *****************************************************************************************************
-GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$http)
+GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$location,	$http,	months,	years)
 {
 	$('paper-fab')		.css('-webkit-animation',	'hideFab	1s	linear	1	both');	//	-webkit- CSS3 animation
 	$('paper-fab')		.css('animation',			'hideFab	1s	linear	1	both');	//	W3C	CSS3 animation
 	
+	$scope.months				= months;
+	$scope.years				= years;
+	
 // -----------------------------------------------------------------------------------------------------
 //     								General Statistics by GDE
 // -----------------------------------------------------------------------------------------------------
-	$scope.postByGdeName			= [];
-	$scope.postByRegion				= [];
-	$scope.postByProduct			= [];
-	$scope.postByActivity			= [];
-	$scope.data						= {};
-	$scope.data.items				= [];
-	$scope.postByGdeNameTemp		= {};
-	$scope.postByRegionTemp 		= {};
-	$scope.postByProductTemp		= {};
-	$scope.postByActivityTemp		= {};
+	
+	$scope.dateFilter				= function ()
+	{
+		if ( $scope.monthSelected && $scope.yearSelected )
+		{
+			// ------------------------------------
+			//		Initialize/Empty local data
+			// ------------------------------------
+			$scope.postByGdeName			= [];
+			$scope.postByRegion				= [];
+			$scope.postByProduct			= [];
+			$scope.postByActivity			= [];
+			$scope.data						= {};
+			$scope.data.items				= [];
+			$scope.postByGdeNameTemp		= {};
+			$scope.postByRegionTemp 		= {};
+			$scope.postByProductTemp		= {};
+			$scope.postByActivityTemp		= {};
+			
+// 			console.log($scope.monthSelected.value + " " + $scope.yearSelected.value);
+			var loadingToast	= document.querySelector('paper-toast[id="loading"]');	// Called to show loading sign
+			loadingToast		.show();
+			$('.forGooglers')	.css('display','block');
+			var monthNumber		= "";
+			for (var i=0;i<12;i++)
+			{
+				if (months[i] == $scope.monthSelected)
+				{
+					monthNumber = i;
+				}
+			}
+			
+			switch ($scope.monthSelected.value)
+			{
+				case "January":
+					monthNumber = "%2F0" + monthNumber;
+//					console.log(monthNumber);
+				break
+				
+				case "February":
+					monthNumber = "%2F0" + monthNumber;
+//					console.log(monthNumber);
+				break
+					
+				case "March":
+					monthNumber = "%2F0" + monthNumber
+//					console.log(monthNumber);
+				break
+					
+				case "April":
+					monthNumber = "%2F0" + monthNumber;
+//					console.log(monthNumber);
+				break
+					
+				case "May":
+					monthNumber = "%2F0" + monthNumber;
+//					console.log(monthNumber);
+				break
+					
+				case "June":
+					monthNumber = "%2F0" + monthNumber;
+//					console.log(monthNumber);
+				break
+					
+				case "July":
+					monthNumber = "%2F0" + monthNumber;
+//					console.log(monthNumber);
+				break
+					
+				case "August":
+					monthNumber = "%2F0" + monthNumber;
+//					console.log(monthNumber);
+				break
+					
+				case "September":
+					monthNumber = "%2F0" + monthNumber;
+//					console.log(monthNumber);
+				break
+					
+				case "October":
+					monthNumber = "%2F" + monthNumber;
+//					console.log(monthNumber);
+				break
+					
+				case "November":
+					monthNumber = "%2F" + monthNumber;
+//					console.log(monthNumber);
+				break
+					
+				case "December":
+					monthNumber = "%2F" + monthNumber;
+//					console.log(monthNumber);
+				break
+			}
+			var newUrlTemplate	= getPostsEndPointURL.slice(0,getPostsEndPointURL.indexOf("&minDate"));
+			
+			var newUrl			= newUrlTemplate + "0&minDate=" + $scope.yearSelected.value + (monthNumber+1);
+			$scope.getPostsFromGAE(newUrl);
+		};
+	};
 	var drawGeneralStatistics		= function ()
 	{	// For every GDE in postByGdeNameTemp
 //		console.log('drawGeneralStatistics initiated');
@@ -613,9 +748,9 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 					
 		// Posts by GDE Name
 					var gdeSelector				= new google.visualization.ControlWrapper();
-					gdeSelector.setControlType('CategoryFilter');
-					gdeSelector.setContainerId('gdeSelector');
-					gdeSelector.setOptions(
+					gdeSelector					.setControlType('CategoryFilter');
+					gdeSelector					.setContainerId('gdeSelector');
+					gdeSelector					.setOptions(
 					{
 						'filterColumnLabel'	: 'GDE',
 						'ui':
@@ -629,9 +764,9 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 					});
 					
 					var activitiesSlider		= new google.visualization.ControlWrapper();
-					activitiesSlider.setControlType('NumberRangeFilter');
-					activitiesSlider.setContainerId('activitiesSlider');
-					activitiesSlider.setOptions(
+					activitiesSlider			.setControlType('NumberRangeFilter');
+					activitiesSlider			.setContainerId('activitiesSlider');
+					activitiesSlider			.setOptions(
 					{
 						'filterColumnLabel': 'Activities Logged',
 						'ui':
@@ -653,9 +788,9 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 					});
 					
 					var plus1sSlider			= new google.visualization.ControlWrapper();
-					plus1sSlider.setControlType('NumberRangeFilter');
-					plus1sSlider.setContainerId('plus1sSlider');
-					plus1sSlider.setOptions(
+					plus1sSlider				.setControlType('NumberRangeFilter');
+					plus1sSlider				.setContainerId('plus1sSlider');
+					plus1sSlider				.setOptions(
 					{
 						'filterColumnLabel': 'Total +1s',
 						'ui':
@@ -665,9 +800,9 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 					});
 
 					var gdeTableChart			= new google.visualization.ChartWrapper();
-					gdeTableChart.setChartType('Table');
-					gdeTableChart.setContainerId('gdeTableChart');
-					gdeTableChart.setOptions(
+					gdeTableChart				.setChartType('Table');
+					gdeTableChart				.setContainerId('gdeTableChart');
+					gdeTableChart				.setOptions(
 					{
 						'sortColumn': 1,
 						'sortAscending': false,
@@ -676,61 +811,33 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 					});
 					
 					var gdePieChart				= new google.visualization.ChartWrapper();
-					gdePieChart.setChartType('PieChart');
-					gdePieChart.setContainerId('gdePieChart');
+					gdePieChart					.setChartType('PieChart');
+					gdePieChart					.setContainerId('gdePieChart');
+					var offset					= 0.2; 
+					var slices					= [];
+					for (i=0;i<20;i++)
+					{
+						var slice	= {'offset':offset};
+						offset		= offset - 0.002;
+						slices		.push(slice);
+					};
+					for (i=0;i<160;i++)
+					{
+						var slice	= {'offset':offset};
+						offset		= offset - 0.001;
+						slices		.push(slice);
+					};
+//					console.log(slices);
 					gdePieChart.setOptions(
 					{
 						'width'				: 700,
 						'pieHole'			: 0.5,
 						'reverseCategories'	: true,
 						'pieStartAngle'		: 30,
-						'slices':
-						[
-							{'offset': 0.2},
-							{'offset': 0.195},
-							{'offset': 0.19},
-							{'offset': 0.185},
-							{'offset': 0.18},
-							{'offset': 0.175},
-							{'offset': 0.17},
-							{'offset': 0.165},
-							{'offset': 0.16},
-							{'offset': 0.155},
-							{'offset': 0.15},
-							{'offset': 0.145},
-							{'offset': 0.14},
-							{'offset': 0.135},
-							{'offset': 0.13},
-							{'offset': 0.125},
-							{'offset': 0.12},
-							{'offset': 0.115},
-							{'offset': 0.11},
-							{'offset': 0.105},
-							{'offset': 0.1},
-							{'offset': 0.095},
-							{'offset': 0.09},
-							{'offset': 0.085},
-							{'offset': 0.08},
-							{'offset': 0.075},
-							{'offset': 0.07},
-							{'offset': 0.065},
-							{'offset': 0.06},
-							{'offset': 0.055},
-							{'offset': 0.05},
-							{'offset': 0.045},
-							{'offset': 0.04},
-							{'offset': 0.035},
-							{'offset': 0.03},
-							{'offset': 0.025},
-							{'offset': 0.02},
-							{'offset': 0.015},
-							{'offset': 0.01}
-						],
-						'legend':
+						'slices'			: slices,
+						'legend'			:
 						{
-							'position'	: 'top',
-							'alignment'	: 'center',
-							'maxLines'	: 4
+							'position'	: 'none'
 						}
 					});
 		// Posts by Platform
@@ -809,7 +916,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 						{
 							'position'	:'top',
 							'alignment'	:'center',
-							'maxLines'	:4
+							'maxLines'	:3
 						}
 					});
 					
@@ -996,24 +1103,32 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 	$scope.loadVisualizationLibraries = google.load('visualization', '1.1', null);
 	$scope.getPostsFromGAE = function (getPostsEndPointURL)
 	{
+//		console.log(getPostsEndPointURL);
 		$http({method: 'GET', url: getPostsEndPointURL})
 		.success(function(response, status, config)
 		{
 //			console.log('getPostsFromGAE response ok');
-			for (var i=0;i<response.items.length;i++)
+			if (response.items)	// If there is data
 			{
-				$scope.data.items.push(response.items[i]);
-			};
-			
-			if (response.nextPageToken) // If there is still more data
-			{
-				var nextUrl = 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/activityRecord/activityRecord?limit=100&pageToken='+response.nextPageToken; // Adjust the end point URL
-				$scope.getPostsFromGAE(nextUrl); // Add the next page
+				for (var i=0;i<response.items.length;i++)
+				{
+					$scope.data.items.push(response.items[i]);
+				};
 			} else
 			{
-				// Done
-//				console.log(data.items);
-				for (var i=0;i<$scope.data.items.length;i++) // Posts by GDE Name
+				window.alert('There are no recorded activities after the date you selected.');
+			}
+			if (response.nextPageToken)	// If there is still more data
+			{
+				var newUrlTemplate = getPostsEndPointURL.slice(0,getPostsEndPointURL.indexOf("&pageToken"));
+//				console.log(newUrlTemplate);
+				var nextUrl = newUrlTemplate + '&pageToken='+response.nextPageToken; // Adjust the end point URL
+//				console.log(nextUrl);
+				$scope.getPostsFromGAE(nextUrl);	// Add the next page
+			} else if (response.items)
+			{
+//				console.log($scope.data.items);
+				for (var i=0;i<$scope.data.items.length;i++)	// Posts by GDE Name
 				{
 					var name = $scope.data.items[i].gde_name;
 
@@ -1032,8 +1147,8 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 					var post = $scope.utils.postFromApi($scope.data.items[i]);
 					$scope.postByGdeNameTemp[name]['posts'].push(post);
 				};
-//				console.log(postByGdeNameTemp);
-				for (var i=0;i<$scope.data.items.length;i++)// Posts by Product
+//				console.log($scope.postByGdeNameTemp);
+				for (var i=0;i<$scope.data.items.length;i++)	// Posts by Product
 				{
 					if ($scope.data.items[i].product_groups)
 					{
@@ -1059,7 +1174,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 					};
 				};
 //				console.log($scope.postByProductTemp);
-				for (var i=0;i<$scope.data.items.length;i++)// Posts by Activity Type
+				for (var i=0;i<$scope.data.items.length;i++)	// Posts by Activity Type
 				{
 					if ($scope.data.items[i].activity_types)
 					{
@@ -1084,7 +1199,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 					};
 				};
 //				console.log($scope.postByActivityTemp);
-				for (var i=0;i<$scope.data.items.length;i++) // Posts by GDE Region
+				for (var i=0;i<$scope.data.items.length;i++)	// Posts by GDE Region
 				{
 					var region = $scope.data.items[i].gde_region;
 
@@ -1102,7 +1217,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 					var post = $scope.utils.postFromApi($scope.data.items[i]);
 					$scope.postByRegionTemp[region]['posts'].push(post);
 				};
-//				console.log(postByRegionTemp);
+//				console.log($scope.postByRegionTemp);
 				drawGeneralStatistics()
 			};
 		})
@@ -1112,12 +1227,29 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 			location.reload(true);
 		});
 	};
-	$scope.getPostsFromGAE(getPostsEndPointURL);
 });
-GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$http,	$rootScope)
+
+GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$http,	$rootScope,	months, years)
 {
+	var loadingToast	= document.querySelector('paper-toast[id="loading"]');	// Show loading sign
+	loadingToast		.show();
+	
 	$('paper-fab')		.css('-webkit-animation',	'hideFab	1s	linear	1	both');	//	-webkit- CSS3 animation
 	$('paper-fab')		.css('animation',			'hideFab	1s	linear	1	both');	//	W3C	CSS3 animation
+	
+	$scope.months				= months;
+	$scope.years				= years;
+	$scope.monthSelected		= "";
+	$scope.yearSelected			= "";
+	
+	$scope.newMonth				= function (newMonth)
+	{
+		console.log(newMonth);
+	};
+	$scope.newYear				= function (newYear)
+	{
+		console.log(newYear);
+	};
 	
 // ----------------------------------------------
 // .............My General Statistics............
@@ -1217,77 +1349,36 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 					gdeColumnChart.setOptions(
 					{
 						'width'				:700,
-						'pieHole'			: 0.5,
 						'reverseCategories'	: true,
-						'pieStartAngle'		:30,
-						'slices':
-						[
-							{'offset': 0.2},
-							{'offset': 0.195},
-							{'offset': 0.19},
-							{'offset': 0.185},
-							{'offset': 0.18},
-							{'offset': 0.175},
-							{'offset': 0.17},
-							{'offset': 0.165},
-							{'offset': 0.16},
-							{'offset': 0.155},
-							{'offset': 0.15},
-							{'offset': 0.145},
-							{'offset': 0.14},
-							{'offset': 0.135},
-							{'offset': 0.13},
-							{'offset': 0.125},
-							{'offset': 0.12},
-							{'offset': 0.115},
-							{'offset': 0.11},
-							{'offset': 0.105},
-							{'offset': 0.1},
-							{'offset': 0.095},
-							{'offset': 0.09},
-							{'offset': 0.085},
-							{'offset': 0.08},
-							{'offset': 0.075},
-							{'offset': 0.07},
-							{'offset': 0.065},
-							{'offset': 0.06},
-							{'offset': 0.055},
-							{'offset': 0.05},
-							{'offset': 0.045},
-							{'offset': 0.04},
-							{'offset': 0.035},
-							{'offset': 0.03},
-							{'offset': 0.025},
-							{'offset': 0.02},
-							{'offset': 0.015},
-							{'offset': 0.01}
-						],
 						'legend':
 						{
 							'position'	:'top',
 							'alignment'	:'center',
-							'maxLines'	:4
 						}
 					});
 		new google.visualization.Dashboard(document.getElementById('generalStatisticsByGDE'))// Draw Charts
 		.bind([activitiesSlider,resharesSlider,plus1sSlider], [gdeTableChart,gdeColumnChart])
 		.draw(activitiesByGde_data);
 	}
-				
-	var getPostsEndPointURL = 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/activityRecord/activityRecord?limit=100';
-	$scope.loadVisualizationLibraries = google.load('visualization', '1.1', null);
-	$scope.getPostsFromGAE = function (getPostsEndPointURL)
+	
+	var loggetGdePlusID					= $rootScope.usrId; 
+//	console.log(loggetGdePlusID);
+	var getPostsEndPointURL				= 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/activityRecord/activityRecord?gplus_id=' + loggetGdePlusID + '&limit=100'; // Query activities from the logged GDE
+//	console.log(getPostsEndPointURL);
+	$scope.loadVisualizationLibraries	= google.load('visualization', '1.1', null);
+	$scope.getPostsFromGAE				= function (getPostsEndPointURL)
 	{
 		$http({method: 'GET', url: getPostsEndPointURL})
 		.success(function(response, status, config)
 		{
+			console.log();
 			for (var i=0;i<response.items.length;i++)
 			{
 				$scope.data.items.push(response.items[i]);
 			};
 			if (response.nextPageToken)													// If there is still more data
 			{
-				var nextUrl = 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/activityRecord/activityRecord?limit=100&pageToken='+response.nextPageToken; // Adjust the end point URL
+				var nextUrl = 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/activityRecord/activityRecord?gplus_id=' + loggetGdePlusID + '&limit=100&pageToken='+response.nextPageToken; // Adjust the end point URL
 				$scope.getPostsFromGAE(nextUrl);										// Add the next page
 			} else
 			{																			// Done
@@ -1295,30 +1386,26 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 				if ($('.userName').text())												// Check if the user it's a valid GDE.
 				{
 //					console.log('User was logged in');
-					for (var i=0;i<$scope.data.items.length;i++)						// Posts by GDE Name
+					for (var i=0;i<$scope.data.items.length;i++)
 					{
 						$scope.name = $scope.data.items[i].gde_name;
 						var loggedGdeName = $('.userName').text();
 						var loggetGdePlusID = $rootScope.usrId;
-						//if ($scope.data.items[i].gde_name == loggedGdeName)           //Username filter might filter out some result as the GDE Name associate to the Activity was the Name in Google Plus and now is the one from the GDE Master List
-						if ($scope.data.items[i].gplus_id == loggetGdePlusID)           //Use the user Google Plus ID to filter the activity records
+						if (!$scope.postByGdeNameTemp[$scope.name])
 						{
-							if (!$scope.postByGdeNameTemp[$scope.name])
-							{
-								$scope.postByGdeNameTemp[$scope.name]					= {};	// Initialize a new JSON unordered array
+							$scope.postByGdeNameTemp[$scope.name]					= {};	// Initialize a new JSON unordered array
 
-								$scope.postByGdeNameTemp[$scope.name]['name']			= $scope.name;
-								$scope.postByGdeNameTemp[$scope.name]['id']				= $scope.data.items[i].gplus_id;
+							$scope.postByGdeNameTemp[$scope.name]['name']			= $scope.name;
+							$scope.postByGdeNameTemp[$scope.name]['id']				= $scope.data.items[i].gplus_id;
 
-								$scope.postByGdeNameTemp[$scope.name]['posts']			= [];	// Initialize a new JSON ordered array
-							}
+							$scope.postByGdeNameTemp[$scope.name]['posts']			= [];	// Initialize a new JSON ordered array
+						}
 
-							$scope.utils.updateStats($scope.postByGdeNameTemp[$scope.name], $scope.data.items[i]);
+						$scope.utils.updateStats($scope.postByGdeNameTemp[$scope.name], $scope.data.items[i]);
 
-							var post = $scope.utils.postFromApi($scope.data.items[i]);
-							$scope.postByGdeNameTemp[$scope.name]['posts'].push(post);
-							$scope.userPosts.push(post);
-						};
+						var post = $scope.utils.postFromApi($scope.data.items[i]);
+						$scope.postByGdeNameTemp[$scope.name]['posts'].push(post);
+						$scope.userPosts.push(post);
 					};
 					drawGeneralStatistics();
 				} else {																// Wait for a valid GDE to log.
