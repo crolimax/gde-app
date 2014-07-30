@@ -1,18 +1,32 @@
+<div class="stats dateRange" style="display: none">
+	<h2>Show activities since:</h2>
+	<select	ng-model="monthSelected"	ng-options="month.value for month in months"	ng-change="newMonth(month.value)">
+		<option>
+			-Select month-
+		</option>
+	</select>
+	<select ng-model="yearSelected"		ng-options="year.value for year in years"		ng-change="newYear(year.value)">
+		<option>
+			-Select year-
+		</option>
+	</select>
+	<paper-shadow z="1"></paper-shadow>
+</div>
 <div class="stats">
 	<h1>My General Statistics</h1>
 	<div class="gdesGeneralStats" id="generalStatisticsByGDE">
 		<div>
 			<div id="gdeTableChart"></div>
 			<br/>
-			<div id="activitiesSlider" class="activitiesSlider"></div>
+			<div id="activitiesSlider"	class="activitiesSlider"></div>
 			<br/>
-			<div id="resharesSlider" class="resharesSlider"></div>
+			<div id="resharesSlider"	class="resharesSlider"></div>
 			<br/>
-			<div id="plus1sSlider" class="plus1sSlider"></div>
+			<div id="plus1sSlider"		class="plus1sSlider"></div>
 		</div>
 		<div id="gdeColumnChart"></div>
 	</div>
-	<paper-shadow z="2"></paper-shadow>
+	<paper-shadow z="1"></paper-shadow>
 </div>
 <br/>
 <div class="stats">
@@ -46,10 +60,10 @@
 			</td>
 		</tr>
 	</table>
-	<paper-shadow z="2"></paper-shadow>
+	<paper-shadow z="1"></paper-shadow>
 </div>
 </br>
 <div>
 <a href="#/">
-	<paper-icon-button icon="arrow-back" label="start"></paper-icon-button
+	<paper-icon-button icon="arrow-back" label="map"></paper-icon-button>
 </a>
