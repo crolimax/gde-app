@@ -15,11 +15,11 @@
 	<!-- **********************************************************************	-->
 	<!--				Javascript Libraries				-->
 	<!-- **********************************************************************	-->
-	<script	src="js/resources/jquery-2.1.0.min.js">				</script>
-	<script src="js/resources/angular.min.js">				</script>
-	<script src="js/resources/angular-route.min.js">			</script>
-	<script src="components/platform/platform.js">				</script>
-	<script src="//www.google.com/jsapi" >				   	</script>
+	<script	src="js/resources/jquery-2.1.0.min.js">						</script>
+	<script src="js/resources/angular.min.js">							</script>
+	<script src="js/resources/angular-route.min.js">					</script>
+	<script src="components/platform/platform.js">						</script>
+	<script src="//www.google.com/jsapi" >							   	</script>
 	<script src='//maps.googleapis.com/maps/api/js?sensor=false'>		</script>
 	<!-- **********************************************************************	-->
 	<!--				Polymer Imports					-->
@@ -28,6 +28,7 @@
 	<script src="components/web-animations-js/web-animations.js">		</script>
 	
 	<!-- ---------------------------- Core Elements ---------------------------	-->
+	
 	<link	rel="import"
 		href="components/core-toolbar/core-toolbar.html">
 	<link	rel="import"
@@ -122,19 +123,19 @@
 			</core-toolbar	header>
 			<article	class="scrollBar"	ng-view>
 	<!--	---------------------------------------------------------------------	-->
-	<!--			AngularJS templated HTML5 area				-->
+	<!--					AngularJS templated HTML5 area							-->
 	<!--	---------------------------------------------------------------------	-->
 	<!--	< ...................................................................	-->
 	<!--	---------------------------------------------------------------------	-->
 			</article>
 	<!--	---------------------------------------------------------------------	-->
-	<!--				paper-fab & AngularJS Bind			-->
+	<!--						paper-fab & AngularJS Bind							-->
 	<!--	---------------------------------------------------------------------	-->
 			<div ng-controller="fabCtrl" >
 				<paper-fab	class="paper-fab"	icon="chevron-right"	id="fabLeft"></paper-fab>
 			</div>
 	<!--	---------------------------------------------------------------------	-->
-	<!--				Polymer Paper Dialogs				-->
+	<!--						Polymer Paper Dialogs								-->
 	<!--	---------------------------------------------------------------------	-->
 			<paper-toast id="loading" text="Loading...">
 			</paper-toast>
