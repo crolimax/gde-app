@@ -62,7 +62,7 @@ class ActivityRecordService(remote.Service):
         activity_record.put()
         return activity_record
 
-    @ActivityRecord.method(request_fields=('id',), response_fields=('id',),
+    @ActivityRecord.method(request_fields=('id', 'api_key',), response_fields=('id',),
                            path='/activityRecord/{id}',
                            http_method='DELETE', name='delete')
     def ActivityRecordDelete(self, activity_record):
