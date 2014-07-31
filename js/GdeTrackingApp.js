@@ -220,7 +220,6 @@ GdeTrackingApp.run(function ($rootScope)
 			dataset.totalPlus1s		= (dataset.totalPlus1s		|| 0) + parseInt(apiData.plus_oners	|| 0, 10);
 			dataset.totalResharers	= (dataset.totalResharers	|| 0) + parseInt(apiData.resharers	|| 0, 10);
 			dataset.totalComments	= (dataset.totalComments	|| 0) + parseInt(apiData.comments	|| 0, 10);
-//			console.log(dataset);
 		},
 		'addMetricColumns': function (chartData) 
 		{
@@ -528,16 +527,36 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 	$scope.months				= months;
 	$scope.years				= years;
 	
+	var getPostsEndPointURL = 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/activityRecord/activityRecord?limit=100';
+	
 // -----------------------------------------------------------------------------------------------------
 //     								General Statistics by GDE
 // -----------------------------------------------------------------------------------------------------
 	
+	// ------------------------------------
+	//		Initialize local data
+	// ------------------------------------
+	$scope.postByGdeName			= [];
+	$scope.postByRegion				= [];
+	$scope.postByProduct			= [];
+	$scope.postByActivity			= [];
+	$scope.data						= {};
+	$scope.data.items				= [];
+	$scope.postByGdeNameTemp		= {};
+	$scope.postByRegionTemp 		= {};
+	$scope.postByProductTemp		= {};
+	$scope.postByActivityTemp		= {};
+	// ------------------------------------
+	
+	// ------------------------------------
+	//		Date Range Filter
+	// ------------------------------------
 	$scope.dateFilter				= function ()
 	{
 		if ( $scope.monthSelected && $scope.yearSelected )
 		{
 			// ------------------------------------
-			//		Initialize/Empty local data
+			//		Reset local data
 			// ------------------------------------
 			$scope.postByGdeName			= [];
 			$scope.postByRegion				= [];
@@ -562,7 +581,8 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 					monthNumber = i;
 				}
 			}
-			
+			$scope.monthSince				= monthNumber + 1;
+			$scope.yearSince				= $scope.yearSelected.value;
 			switch ($scope.monthSelected.value)
 			{
 				case "January":
@@ -631,6 +651,8 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 			$scope.getPostsFromGAE(newUrl);
 		};
 	};
+	// ------------------------------------
+	
 	var drawGeneralStatistics		= function ()
 	{	// For every GDE in postByGdeNameTemp
 //		console.log('drawGeneralStatistics initiated');
@@ -1166,9 +1188,11 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 		.bind([region_Selector,region_ActivitiesSlider,region_ResharesSlider,region_Plus1sSlider,region_CommentsSlider], [regionTableChart,regionBarChart])
 		.draw(postByRegion_data);
 	}
-				
-	var getPostsEndPointURL = 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/activityRecord/activityRecord?limit=100';
+	
+	var loadingToast	= document.querySelector('paper-toast[id="loading"]');	// Called to show loading sign
 	$scope.loadVisualizationLibraries = google.load('visualization', '1.1', null);
+	loadingToast		.show();
+	$('.forGooglers')	.css('display','block');			
 	$scope.getPostsFromGAE = function (getPostsEndPointURL)
 	{
 //		console.log(getPostsEndPointURL);
@@ -1296,6 +1320,80 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 			location.reload(true);
 		});
 	};
+	
+	// -------------------------------------
+	//  Start showing last month statistics
+	// -------------------------------------
+	var monthNumber					= "";
+	var today						= new Date();
+	switch (today.getMonth()) // URL encoding the month number
+	{
+				case 0:
+					monthNumber = "%2F0" + (today.getMonth()+1);
+//					console.log(monthNumber);
+				break
+				
+				case 1:
+					monthNumber = "%2F0" + (today.getMonth()+1);
+//					console.log(monthNumber);
+				break
+					
+				case 2:
+					monthNumber = "%2F0" + (today.getMonth()+1)
+//					console.log(monthNumber);
+				break
+					
+				case 3:
+					monthNumber = "%2F0" + (today.getMonth()+1);
+//					console.log(monthNumber);
+				break
+					
+				case 4:
+					monthNumber = "%2F0" + (today.getMonth()+1);
+//					console.log(monthNumber);
+				break
+					
+				case 5:
+					monthNumber = "%2F0" + (today.getMonth()+1);
+//					console.log(monthNumber);
+				break
+					
+				case 6:
+					monthNumber = "%2F0" + (today.getMonth()+1);
+//					console.log(monthNumber);
+				break
+					
+				case 7:
+					monthNumber = "%2F0" + (today.getMonth()+1);
+//					console.log(monthNumber);
+				break
+					
+				case 8:
+					monthNumber = "%2F0" + (today.getMonth()+1);
+//					console.log(monthNumber);
+				break
+					
+				case 9:
+					monthNumber = "%2F" + (today.getMonth()+1);
+//					console.log(monthNumber);
+				break
+					
+				case 10:
+					monthNumber = "%2F" + (today.getMonth()+1);
+//					console.log(monthNumber);
+				break
+					
+				case 11:
+					monthNumber = "%2F" + (today.getMonth()+1);
+//					console.log(monthNumber);
+				break
+	}	
+	var newUrlTemplate				= getPostsEndPointURL.slice(0,getPostsEndPointURL.indexOf("&minDate"));
+	var newUrl						= getPostsEndPointURL + "&minDate=" + today.getFullYear() + monthNumber;
+	$scope.monthSince				= today.getMonth() + 1;
+	$scope.yearSince				= today.getFullYear();
+	$scope.getPostsFromGAE(newUrl);
+	// -------------------------------------
 });
 
 GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$http,	$rootScope,	months, years)
