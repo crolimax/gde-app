@@ -44,10 +44,11 @@ class ActivityRecord(EndpointsModel):
 
     _message_fields_schema = ('id', 'gplus_id', 'gde_name', 'date_created',
                               'date_updated', 'post_date', 'activity_types',
-                              'product_groups', 
-                              'activity_link', 'gplus_posts', 'activity_title',
-                              'plus_oners', 'resharers', 'comments', 'metadata'
-                              )
+                              'product_groups', 'activity_link', 'gplus_posts',
+                              'activity_title', 'plus_oners', 'resharers',
+                              'comments', 'metadata', 'api_key')
+
+    _api_key = None
 
     # we identify GDE's uniquely using this
     gplus_id = ndb.StringProperty()
@@ -73,6 +74,13 @@ class ActivityRecord(EndpointsModel):
 
     #  activity type metadata
     metadata = ndb.StructuredProperty(ActivityMetaData, repeated=True)
+
+    def ApiKeySet(self, value):
+        self._api_key = value
+
+    @EndpointsAliasProperty(setter=ApiKeySet, property_type=messages.StringField)
+    def api_key(self):
+        return self._api_key
 
     def MinDateSet(self, value):
         if value is not None:

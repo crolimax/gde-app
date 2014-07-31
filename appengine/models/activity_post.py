@@ -3,6 +3,7 @@ import logging
 from google.appengine.ext import ndb
 from endpoints_proto_datastore.ndb import EndpointsModel
 from endpoints_proto_datastore.ndb import EndpointsAliasProperty
+from protorpc import messages
 
 ACTIVITY_TYPES = ["#bugreport", "#article", "#blogpost", "#book", "#techdocs",
                   "#translation", "#techtalk", "#opensourcecode",
@@ -18,7 +19,9 @@ class ActivityPost(EndpointsModel):
 
     _message_fields_schema = ('id', 'post_id', 'gplus_id', 'name', 'date',
                               'plus_oners', 'resharers', 'comments', 'title', 'url',
-                              'product_group', 'activity_type', 'links')
+                              'product_group', 'activity_type', 'links', 'api_key')
+
+    _api_key = None
 
     # tempted to use the G+ unique activity id ( stack overflow ?)
     post_id = ndb.StringProperty()
@@ -36,6 +39,13 @@ class ActivityPost(EndpointsModel):
     product_group = ndb.StringProperty(repeated=True)
     activity_type = ndb.StringProperty(repeated=True)
     links = ndb.StringProperty()
+
+    def ApiKeySet(self, value):
+        self._api_key = value
+
+    @EndpointsAliasProperty(setter=ApiKeySet, property_type=messages.StringField)
+    def api_key(self):
+        return self._api_key
 
     def IdSet(self, value):
         if not isinstance(value, basestring):
