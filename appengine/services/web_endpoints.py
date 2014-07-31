@@ -6,7 +6,16 @@ from models import activity_record as ar
 from models import Account
 from datetime import datetime
 
-api_root = endpoints.api(name='gdetracking', version='v1.0b1')
+from .utils import check_auth
+
+import logging
+
+_CLIENT_IDs = [
+    endpoints.API_EXPLORER_CLIENT_ID,
+    '47242318878-dik3r14d8jc528h1ao35f8ehqa7tmpe1.apps.googleusercontent.com'
+]
+
+api_root = endpoints.api(name='gdetracking', version='v1.0b1', allowed_client_ids=_CLIENT_IDs)
 
 
 @api_root.api_class(resource_name='activity_record', path='activityRecord')
@@ -22,6 +31,10 @@ class ActivityRecordService(remote.Service):
     @ActivityRecord.method(path='/activityRecord', http_method='POST',
                            name='insert')
     def ActivityRecordInsert(self, activity_record):
+
+        if not check_auth(activity_record.gplus_id, activity_record.api_key):
+            raise endpoints.UnauthorizedException('Only GDEs and admins may enter or change data.')
+
         activity_record.put()
         return activity_record
 
@@ -30,6 +43,10 @@ class ActivityRecordService(remote.Service):
     def ActivityRecordUpdate(self, activity_record):
         if not activity_record.from_datastore:
             raise endpoints.NotFoundException('ActivityRecord not found.')
+
+        if not check_auth(activity_record.gplus_id, activity_record.api_key):
+            raise endpoints.UnauthorizedException('Only GDEs and admins may enter or change data.')
+
         activity_record.put()
         return activity_record
 
@@ -38,15 +55,23 @@ class ActivityRecordService(remote.Service):
     def ActivityRecordPatch(self, activity_record):
         if not activity_record.from_datastore:
             raise endpoints.NotFoundException('ActivityRecord not found.')
+
+        if not check_auth(activity_record.gplus_id, activity_record.api_key):
+            raise endpoints.UnauthorizedException('Only GDEs and admins may enter or change data.')
+
         activity_record.put()
         return activity_record
 
-    @ActivityRecord.method(request_fields=('id',), response_fields=('id',),
+    @ActivityRecord.method(request_fields=('id', 'api_key',), response_fields=('id',),
                            path='/activityRecord/{id}',
                            http_method='DELETE', name='delete')
     def ActivityRecordDelete(self, activity_record):
         if not activity_record.from_datastore:
             raise endpoints.NotFoundException('ActivityRecord not found.')
+
+        if not check_auth(activity_record.gplus_id, activity_record.api_key):
+            raise endpoints.UnauthorizedException('Only GDEs and admins may enter or change data.')
+
         activity_record.key.delete()
         return activity_record
 
@@ -63,6 +88,9 @@ class ActivityPostService(remote.Service):
     @ActivityPost.method(path='/activityPost/{id}', http_method='POST',
                          name='insert')
     def insert(self, activity_post):
+        if not check_auth(activity_post.gplus_id, activity_post.api_key):
+            raise endpoints.UnauthorizedException('Only GDEs and admins may enter or change data.')
+
         activity_post.put()
         activity_record = ar.find_or_create(activity_post)
         activity_record.add_post(activity_post)
@@ -86,6 +114,9 @@ class AccountService(remote.Service):
 
     @Account.method(path='/account/{id}', http_method='POST', name='insert')
     def AccountInsert(self, account):
+        if not check_auth(None, account.api_key):
+            raise endpoints.UnauthorizedException('Only GDEs and admins may enter or change data.')
+
         account.put()
         return account
 
