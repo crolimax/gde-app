@@ -112,7 +112,7 @@ paper-dialog table		{
     padding				: 1.5em;
     border-radius		: 5px;
     box-shadow			: 0px 1px 4px #777, inset 0px 0px 2px #aaa;
-    transition			: all 1s linear;
+    transition			: all 1s ease-in-out;
 }
 paper-dialog table:hover {
     /* W3C */
@@ -127,7 +127,7 @@ select
 	border-width		: 0;
 	padding				: 1em;
 	margin				: 1em;
-    transition			: all 1s linear;
+    transition			: all 1s ease-in-out;
     box-shadow			: 0px 1px 4px #777, inset 0px 0px 2px #aaa;
 }
 select:hover
@@ -223,7 +223,7 @@ select:hover
 	position			: absolute;
 	right				: 0;
 	width				: 90%;
-    transition			: all 0.4s linear;
+    transition			: all 0.4s ease-in-out;
 }
 .gdeCard {
     /* webkit */
@@ -244,8 +244,8 @@ select:hover
     padding				: 1.5em;
     text-align			: center;
     border-radius		: 5px;
+    transition			: all 1s ease-in-out;
     box-shadow			: 0px 1px 4px #777, inset 0px 0px 2px #aaa;
-    transition			: all 1s linear;
 }
 .gdeCard:hover {
     /* W3C */
@@ -257,41 +257,60 @@ select:hover
 	color				: #212121;
 	text-shadow			: 0 0 1px #212121;
 }
-.badge {
+.gdePic
+{
+    /* W3C */
+	transition			: all 1s linear;
+	box-shadow			: 1px 1px 3px #555, inset 1px 1px 2px #888;
+}
+.gdePic:hover
+{
+    /* W3C */
+	box-shadow			: 1px 1px 5px #444, inset 1px 1px 2px #888;
+}
+.badge 
+{
     /* W3C */
 	height				: 120px;
 	margin				: 5px;
 }
-.flag {
+.flag 
+{
     /* W3C */
 	height				: 30px;
 	margin				: 2px;
 }
-.loading{
+.loading
+{
 	display				: none;
 }
 
-.prettyTable {
+.prettyTable 
+{
 	/* W3C */
-	margin:1em;
-	padding:1em;
+	margin				: 1em;
+	padding				: 1em;
 }
-.prettyTable tr {
+.prettyTable tr 
+{
 	/* W3C */
-	margin:1em;
-	padding:1em;
-	transition: all 0.2s linear;
+	margin				: 1em;
+	padding				: 1em;
+	transition			: all 0.3s ease-in-out;
 }
-.prettyTable tr:nth-child(even) {
+.prettyTable tr:nth-child(even) 
+{
 	/* W3C */
-	background-color: #eee;
+	background-color	: #eee;
 }
-.prettyTable tr:hover {
+.prettyTable tr:hover 
+{
 	/* W3C */
-	background-color: #666;
-	color:#fff!important;
+	background-color	: #666;
+	color				: #fff!important;
 }
-.prettyTable th {
+.prettyTable th 
+{
 	/* W3C */
 	font-size			: 1.17em;
 	color				: #fff !important;
