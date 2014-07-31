@@ -81,13 +81,13 @@
 					<img	class="googleDevelopersLogo" src="img/logo_google_developers.svg"/>
 				</div>
 			</core-toolbar	header>
-			<core-menu	nav>
+			<core-menu	nav	ng-controller="menuCtrl">
 				<core-item>
-					<paper-button	raisedButton	label="Googlers access"		class="colored red"			onclick="toggleDialog('Googler')"				class="forGooglers"		id="generalStatisticsForGooglers">
+					<paper-button	raisedButton	label="Googlers access"		class="colored red"			ng-click="showGeneralStatisticsForGooglers()"	class="forGooglers"		id="generalStatisticsForGooglers">
 					</paper-button>
 				</core-item>
 				<core-item>
-					<paper-button	raisedButton	label="GDE's access"		class="colored blue"		onclick="toggleDialog('GDE')"					class="forGDEs"			id="gdeStatistics">
+					<paper-button	raisedButton	label="GDE's access"		class="colored blue"		ng-click="showGdeStatistics()"					class="forGDEs"			id="gdeStatistics">
 					</paper-button>
 				</core-item>
 				<core-item>
@@ -105,7 +105,7 @@
 				<div	class="gplus">
 					<div 	class="g-plusone"	data-href="http://gdetracking.gweb.io/#/"	data-annotation="inline"	data-width="300"></div>
 				</div>
-			</core-menu	nav>
+			</core-menu>
 		</core-header-panel>
 
 		<core-header-panel	main>
@@ -242,7 +242,6 @@
 	<script src='js/resources/underscore-min.js'>			</script>
 	<script src='js/resources/angular-google-maps.js'>		</script>
 	<script src="js/GdeTrackingApp.js">				</script>
-	<script src="js/g+1.js">					</script>
 	<!-- ********************************************************************** -->
 </body>
 </html>
