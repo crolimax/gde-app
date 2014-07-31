@@ -220,7 +220,7 @@ GdeTrackingApp.run(function ($rootScope)
 			dataset.totalPlus1s		= (dataset.totalPlus1s		|| 0) + parseInt(apiData.plus_oners	|| 0, 10);
 			dataset.totalResharers	= (dataset.totalResharers	|| 0) + parseInt(apiData.resharers	|| 0, 10);
 			dataset.totalComments	= (dataset.totalComments	|| 0) + parseInt(apiData.comments	|| 0, 10);
-			console.log(dataset);
+//			console.log(dataset);
 		},
 		'addMetricColumns': function (chartData) 
 		{
