@@ -205,10 +205,10 @@ GdeTrackingApp.run(function ($rootScope)
 			post.title			= apiData.activity_title;
 			post.url			= apiData.activity_link;
 			post.gplus_id		= apiData.gplus_id;
-			post.resharers		= parseInt(apiData.resharers || 0, 10);
-      post.comments		= parseInt(apiData.comments || 0, 10);
+			post.resharers		= parseInt(apiData.resharers	|| 0, 10);
+			post.comments		= parseInt(apiData.comments		|| 0, 10);
 			post.post_id		= apiData.id;
-			post.plus_oners		= parseInt(apiData.plus_oners || 0, 10);
+			post.plus_oners		= parseInt(apiData.plus_oners	|| 0, 10);
 			post.date			= apiData.post_date;
 			post.id				= apiData.id;
 			post.product_group	= apiData.product_groups;
@@ -217,9 +217,10 @@ GdeTrackingApp.run(function ($rootScope)
 		},
 		'updateStats': function (dataset, apiData) 
 		{
-			dataset.totalPlus1s		= (dataset.totalPlus1s || 0) + parseInt(apiData.plus_oners || 0, 10);
-			dataset.totalResharers	= (dataset.totalResharers || 0) + parseInt(apiData.resharers || 0, 10);
-			dataset.totalComments	= (dataset.comments || 0) + parseInt(apiData.comments || 0, 10);
+			dataset.totalPlus1s		= (dataset.totalPlus1s		|| 0) + parseInt(apiData.plus_oners	|| 0, 10);
+			dataset.totalResharers	= (dataset.totalResharers	|| 0) + parseInt(apiData.resharers	|| 0, 10);
+			dataset.totalComments	= (dataset.totalComments	|| 0) + parseInt(apiData.comments	|| 0, 10);
+			console.log(dataset);
 		},
 		'addMetricColumns': function (chartData) 
 		{
@@ -253,8 +254,8 @@ GdeTrackingApp.run(function ($rootScope)
 
 			var activitiesLogged	= activityRecord.posts.length;
 			var totalResharers		= activityRecord.totalResharers;
-			var totalPlus1s			  = activityRecord.totalPlus1s;
-			var totalComments     = activityRecord.totalComments;
+			var totalPlus1s			= activityRecord.totalPlus1s;
+			var totalComments		= activityRecord.totalComments;
 
 			row.c.push({v:label});
 			row.c.push({v:activitiesLogged});
@@ -1230,7 +1231,8 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 								$scope.postByProductTemp[product]['product']			= product;
 
 								$scope.postByProductTemp[product]['posts']				= [];	// Initialize a new JSON ordered array
-								$scope.postByProductTemp[product]['totalPlus1s']		= 0;	// Initialize a new acumulator for total+1s
+								$scope.postByProductTemp[product]['totalPlus1s']		= 0;	// Initialize a new acumulator for totalPlus1s
+								$scope.postByProductTemp[product]['totalComments']		= 0;	// Initialize a new acumulator for totalComments
 							}
 
 							$scope.utils.updateStats($scope.postByProductTemp[product], $scope.data.items[i]);
@@ -1355,12 +1357,12 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 				$scope.utils.chartDataRow($scope.postByGdeName[i].name, $scope.postByGdeName[i])
 			);
 		};
-//			console.log(activitiesByGde);
+//		console.log(activitiesByGde);
 		
 					
 		// Sort data by Total Activities
-			var activitiesByGde_data		= new google.visualization.DataTable(activitiesByGde);
-			activitiesByGde_data.sort(1);
+		var activitiesByGde_data		= new google.visualization.DataTable(activitiesByGde);
+		activitiesByGde_data.sort(1);
 					
 		// Posts by GDE Name
 					var activitiesSlider	= new google.visualization.ControlWrapper();
