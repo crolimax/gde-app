@@ -11,7 +11,7 @@ var GdeTrackingApp	= angular.module('GdeTrackingApp'	, [ 'ngRoute' , 'google-map
 google.setOnLoadCallback(function ()
 {
     angular.bootstrap(document.body,['GdeTrackingApp']);
-    //TODO: 
+
 });
 google.load(
 	'visualization',
@@ -23,6 +23,21 @@ google.load(
 			]
 	}
 );
+
+function onGapiClientLoad(){
+  //Get the RootScope
+  var rootScope = angular.element(document.body).scope();
+  var ROOT = 'https://omega-keep-406.appspot.com/_ah/api';
+      gapi.client.load('gdetracking', 'v1.0b1', function() {
+        rootScope.is_backend_ready=true;
+        console.log('GdeApp Backend API LOADED!');
+
+        //Broadcast that the API is ready
+        rootScope.$broadcast('event:gde-app-back-end-ready',gapi.client.gdetracking);
+        console.log('event emitted');
+
+      }, ROOT);
+}
 
 // =====================================================================================================
 //											Polymer
@@ -72,7 +87,7 @@ GdeTrackingApp.config(function($routeProvider)
 GdeTrackingApp.factory("gdeList",		[function()
 {
 	var gdeList	= [];
-	
+
 	return gdeList;
 }]);
 GdeTrackingApp.factory("mapOptions",	[function()
@@ -162,7 +177,7 @@ GdeTrackingApp.factory("mapCenters",	[function()
 GdeTrackingApp.factory("mapMarkers",	[function()
 {
 	var mapMarkers	= [];
-	
+
 	return mapMarkers;
 }]);
 GdeTrackingApp.factory("years",			[function()
@@ -170,7 +185,7 @@ GdeTrackingApp.factory("years",			[function()
 	var years		= [];
 	years			.push({"value":"2013"});
 	years			.push({"value":"2014"});
-	
+
 	return years;
 }]);
 GdeTrackingApp.factory("months",		[function()
@@ -188,18 +203,20 @@ GdeTrackingApp.factory("months",		[function()
 	months			.push({"value":"October"});
 	months			.push({"value":"November"});
 	months			.push({"value":"December"});
-	
+
 	return months;
 }]);
 
 // *****************************************************************************************************
 //						Utility functions for accumulating and displaying stats
 // *****************************************************************************************************
-GdeTrackingApp.run(function ($rootScope) 
+GdeTrackingApp.run(function ($rootScope)
 {
-	$rootScope.utils = 
+  $rootScope.is_backend_ready=false;
+
+	$rootScope.utils =
 	{
-		'postFromApi': function (apiData) 
+		'postFromApi': function (apiData)
 		{
 			var post = {};
 			post.gde_name		= apiData.gde_name;
@@ -216,13 +233,13 @@ GdeTrackingApp.run(function ($rootScope)
 			post.activity_type	= apiData.activity_types;
 			return post;
 		},
-		'updateStats': function (dataset, apiData) 
+		'updateStats': function (dataset, apiData)
 		{
 			dataset.totalPlus1s		= (dataset.totalPlus1s		|| 0) + parseInt(apiData.plus_oners	|| 0, 10);
 			dataset.totalResharers	= (dataset.totalResharers	|| 0) + parseInt(apiData.resharers	|| 0, 10);
 			dataset.totalComments	= (dataset.totalComments	|| 0) + parseInt(apiData.comments	|| 0, 10);
 		},
-		'addMetricColumns': function (chartData) 
+		'addMetricColumns': function (chartData)
 		{
 			chartData.cols.push(
 			{
@@ -248,7 +265,7 @@ GdeTrackingApp.run(function ($rootScope)
 				type	: 'number'
 			});
 		},
-		'chartDataRow'	: function (label, activityRecord) 
+		'chartDataRow'	: function (label, activityRecord)
 		{
 			var row					= {c:[]};
 
@@ -267,3 +284,4 @@ GdeTrackingApp.run(function ($rootScope)
 		}
 	};
 });
+

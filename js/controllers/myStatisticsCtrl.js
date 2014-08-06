@@ -3,17 +3,22 @@
 // *****************************************************************************************************
 GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$http,	$rootScope,	months, years)
 {
+  $scope.gdeTrackingAPI = null;
+  if ($rootScope.is_backend_ready){
+    $scope.gdeTrackingAPI = gapi.client.gdetracking;
+  }
+
 	var loadingToast	= document.querySelector('paper-toast[id="loading"]');	// Show loading sign
 	loadingToast		.show();
-	
+
 	$('paper-fab')		.css('-webkit-animation',	'hideFab	1s	linear	1	both');	//	-webkit- CSS3 animation
 	$('paper-fab')		.css('animation',			'hideFab	1s	linear	1	both');	//	W3C	CSS3 animation
-	
+
 	$scope.months				= months;
 	$scope.years				= years;
 	$scope.monthSelected		= "";
 	$scope.yearSelected			= "";
-	
+
 	$scope.newMonth				= function (newMonth)
 	{
 		console.log(newMonth);
@@ -22,7 +27,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	{
 		console.log(newYear);
 	};
-	
+
 // ----------------------------------------------
 // .............My General Statistics............
 // ----------------------------------------------
@@ -61,12 +66,12 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 			);
 		};
 //		console.log(activitiesByGde);
-		
-					
+
+
 		// Sort data by Total Activities
 		var activitiesByGde_data		= new google.visualization.DataTable(activitiesByGde);
 		activitiesByGde_data.sort(1);
-					
+
 		// Posts by GDE Name
 					var activitiesSlider	= new google.visualization.ControlWrapper();
 					activitiesSlider.setControlType('NumberRangeFilter');
@@ -79,7 +84,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 							'labelStacking': 'vertical'
 						}
 					});
-					
+
 					var resharesSlider		= new google.visualization.ControlWrapper();
 					resharesSlider.setControlType('NumberRangeFilter');
 					resharesSlider.setContainerId('resharesSlider');
@@ -91,7 +96,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 							'labelStacking': 'vertical'
 						}
 					});
-					
+
 					var plus1sSlider		= new google.visualization.ControlWrapper();
 					plus1sSlider.setControlType('NumberRangeFilter');
 					plus1sSlider.setContainerId('plus1sSlider');
@@ -103,7 +108,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 							'labelStacking': 'vertical'
 						}
 					});
-					
+
 					var commentsSlider		= new google.visualization.ControlWrapper();
 					commentsSlider.setControlType('NumberRangeFilter');
 					commentsSlider.setContainerId('commentsSlider');
@@ -126,7 +131,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 						'page'			: 'enable',
 						'pageSize'		: 30
 					});
-					
+
 					var gdeColumnChart 		= new google.visualization.ChartWrapper();
 					gdeColumnChart.setChartType('ColumnChart');
 					gdeColumnChart.setContainerId('gdeColumnChart');
@@ -144,93 +149,117 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 		.bind([activitiesSlider,resharesSlider,plus1sSlider,commentsSlider], [gdeTableChart,gdeColumnChart])
 		.draw(activitiesByGde_data);
 	}
-	
-	var loggetGdePlusID					= $rootScope.usrId; 
-//	console.log(loggetGdePlusID);
-	var getPostsEndPointURL				= 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/activityRecord/activityRecord?gplus_id=' + loggetGdePlusID + '&limit=100'; // Query activities from the logged GDE
+
 //	console.log(getPostsEndPointURL);
 	$scope.loadVisualizationLibraries	= google.load('visualization', '1.1', null);
-	$scope.getPostsFromGAE				= function (getPostsEndPointURL)
+	$scope.getPostsFromGAE = function (nextPageToken,gplusId,minDate,maxDate,order)
 	{
-		$http({method: 'GET', url: getPostsEndPointURL})
-		.success(function(response, status, config)
-		{
-			console.log();
-			for (var i=0;i<response.items.length;i++)
-			{
-				$scope.data.items.push(response.items[i]);
-			};
-			if (response.nextPageToken)													// If there is still more data
-			{
-				var nextUrl = 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/activityRecord/activityRecord?gplus_id=' + loggetGdePlusID + '&limit=100&pageToken='+response.nextPageToken; // Adjust the end point URL
-				$scope.getPostsFromGAE(nextUrl);										// Add the next page
-			} else
-			{																			// Done
-//				console.log($scope.data.items);
-				if ($('.userName').text())												// Check if the user it's a valid GDE.
-				{
-//					console.log('User was logged in');
-					for (var i=0;i<$scope.data.items.length;i++)
-					{
-						$scope.name = $scope.data.items[i].gde_name;
-						var loggedGdeName = $('.userName').text();
-						var loggetGdePlusID = $rootScope.usrId;
-						if (!$scope.postByGdeNameTemp[$scope.name])
-						{
-							$scope.postByGdeNameTemp[$scope.name]					= {};	// Initialize a new JSON unordered array
+		//Create request data object
+    var requestData = {};
+    requestData.limit=100;
+    requestData.gplus_id = gplusId;
+    requestData.pageToken=nextPageToken;
+    requestData.minDate=minDate;
+    requestData.maxDate=maxDate;
+    requestData.order=order;
 
-							$scope.postByGdeNameTemp[$scope.name]['name']			= $scope.name;
-							$scope.postByGdeNameTemp[$scope.name]['id']				= $scope.data.items[i].gplus_id;
+    $scope.gdeTrackingAPI.activity_record.list(requestData).execute(
+      function(response)
+  		{
+  		  //Check if the backend returned and error
+        if (response.code){
+          window.alert('There was a problem loading the app. This windows will be re-loaded automatically. Error: '+response.code + ' - '+ response.message);
+          location.reload(true);
+        }else{
+    			//Add response Items to the full list
+    			$scope.data.items = $scope.data.items.concat(response.items);
 
-							$scope.postByGdeNameTemp[$scope.name]['posts']			= [];	// Initialize a new JSON ordered array
-						}
+    			if (response.nextPageToken)	// If there is still more data
+    			{
+    				$scope.getPostsFromGAE(response.nextPageToken,gplusId,minDate,maxDate,order);	// Get the next page
+    			} else
+    			{																			// Done
+    //				console.log($scope.data.items);
+    				if ($rootScope.usrId)												// Check if the user it's an authorized user.
+    				{
+    				  var loggedGdeName = $('.userName').text();
+  						var loggedGdePlusID = $rootScope.usrId;
+    //					console.log('User was logged in');
+    					for (var i=0;i<$scope.data.items.length;i++)
+    					{
+    						$scope.name = $scope.data.items[i].gde_name;
 
-						$scope.utils.updateStats($scope.postByGdeNameTemp[$scope.name], $scope.data.items[i]);
+    						if (!$scope.postByGdeNameTemp[$scope.name])
+    						{
+    							$scope.postByGdeNameTemp[$scope.name]					= {};	// Initialize a new JSON unordered array
 
-						var post = $scope.utils.postFromApi($scope.data.items[i]);
-						$scope.postByGdeNameTemp[$scope.name]['posts'].push(post);
-						$scope.userPosts.push(post);
-					};
-					drawGeneralStatistics();
-				} else {																// Wait for a valid GDE to log.
-//					console.log('User was not logged in');
-					$scope.$on('gde:logged', function(event,loggedGdeName)				// Listen to the gde:logged
-					{
-//						console.log(loggedGdeName);
-						for (var i=0;i<$scope.data.items.length;i++) // Posts by GDE Name
-						{
-							$scope.name = $scope.data.items[i].gde_name;
-							if ($scope.data.items[i].gde_name == loggedGdeName)
-							{
-								if (!$scope.postByGdeNameTemp[$scope.name])
-								{
-									$scope.postByGdeNameTemp[$scope.name]					= {};	// Initialize a new JSON unordered array
+    							$scope.postByGdeNameTemp[$scope.name]['name']			= $scope.name;
+    							$scope.postByGdeNameTemp[$scope.name]['id']				= $scope.data.items[i].gplus_id;
 
-									$scope.postByGdeNameTemp[$scope.name]['name']			= $scope.name;
-									$scope.postByGdeNameTemp[$scope.name]['id']				= $scope.data.items[i].gplus_id;
+    							$scope.postByGdeNameTemp[$scope.name]['posts']			= [];	// Initialize a new JSON ordered array
+    						}
 
-									$scope.postByGdeNameTemp[$scope.name]['posts']			= [];	// Initialize a new JSON ordered array
-								}
+    						$scope.utils.updateStats($scope.postByGdeNameTemp[$scope.name], $scope.data.items[i]);
 
-								$scope.utils.updateStats($scope.postByGdeNameTemp[$scope.name], $scope.data.items[i]);
+    						var post = $scope.utils.postFromApi($scope.data.items[i]);
+    						$scope.postByGdeNameTemp[$scope.name]['posts'].push(post);
+    						$scope.userPosts.push(post);
+    					};
+    					$scope.$apply();
+    					drawGeneralStatistics();
+    				} else {																// Wait for a valid GDE to log in.
+    //					console.log('User was not logged in');
+    					$scope.$on('gde:logged', function(event,loggedGdeName)				// Listen to the gde:logged
+    					{
+    //						console.log(loggedGdeName);
+    						for (var i=0;i<$scope.data.items.length;i++) // Posts by GDE Name
+    						{
+    							$scope.name = $scope.data.items[i].gde_name;
+    							if ($scope.data.items[i].gde_name == loggedGdeName)
+    							{
+    								if (!$scope.postByGdeNameTemp[$scope.name])
+    								{
+    									$scope.postByGdeNameTemp[$scope.name]					= {};	// Initialize a new JSON unordered array
 
-								var post = $scope.utils.postFromApi($scope.data.items[i]);
-								$scope.postByGdeNameTemp[$scope.name]['posts'].push(post);
-								$scope.userPosts.push(post);
-							};
-						};
-						drawGeneralStatistics();
-					});
-				}
-				
-			};
-		})
-		.error(function(response, status, config)
-		{
-			window.alert('There was a problem loading the app. This windows will be re-loaded automatically.');
-			location.reload(true);
-		});
+    									$scope.postByGdeNameTemp[$scope.name]['name']			= $scope.name;
+    									$scope.postByGdeNameTemp[$scope.name]['id']				= $scope.data.items[i].gplus_id;
+
+    									$scope.postByGdeNameTemp[$scope.name]['posts']			= [];	// Initialize a new JSON ordered array
+    								}
+
+    								$scope.utils.updateStats($scope.postByGdeNameTemp[$scope.name], $scope.data.items[i]);
+
+    								var post = $scope.utils.postFromApi($scope.data.items[i]);
+    								$scope.postByGdeNameTemp[$scope.name]['posts'].push(post);
+    								$scope.userPosts.push(post);
+    							};
+    						};
+    						$scope.$apply();
+    						drawGeneralStatistics();
+    					});
+    				}
+    			}
+  			};
+  		}
+		);
 	};
-	
-	$scope.getPostsFromGAE(getPostsEndPointURL);
+
+	if ($rootScope.is_backend_ready){
+	  $scope.getPostsFromGAE(null,$rootScope.usrId,null,null,null);	// Get the GDE Posts
+	}
+
+	//MSO - 20140806 - should never happen, as we redirect the user to the main page if not logged in, but just in case keep is
+	$scope.$on('event:gde-app-back-end-ready', function (event, gdeTrackingAPI)
+	{
+		console.log('myStatisticsCtrl: gde-app-back-end-ready received');
+
+		//Save the API object in the scope
+		$scope.gdeTrackingAPI = gdeTrackingAPI;
+		//Get data from the backend only if posts are not already loaded
+		if($scope.data.items.length==0){
+		  //run the function to get data from the backend
+		  $scope.getPostsFromGAE(null,$rootScope.usrId,null,null,null);	// Get the GDE Posts
+		}
+
+	});
 });

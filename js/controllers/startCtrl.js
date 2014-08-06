@@ -1,11 +1,11 @@
 // *****************************************************************************************************
 //    								Google Maps Controller
 // *****************************************************************************************************
-GdeTrackingApp.controller("startCtrl",							function($scope,	$http,	mapOptions,	mapCenters,	mapMarkers)
+GdeTrackingApp.controller("startCtrl",							function($rootScope, $scope,	$http,	mapOptions,	mapCenters,	mapMarkers)
 {
 	var loadingToast	= document.querySelector('paper-toast[id="loading"]');	// Show loading sign
 	loadingToast.show();
-	
+
 	var mapWidth		= screen.width	* 0.7	+ 'px';	// Adjust Google Maps container to 70% of screen width
 	var mapHeight		= screen.height	* 0.6	+ 'px';	// Adjust Google Maps container to 60% of screen height
 	$('.mapZone')						.css('width',	mapWidth);
@@ -23,65 +23,86 @@ GdeTrackingApp.controller("startCtrl",							function($scope,	$http,	mapOptions,
 	$scope.markers		= mapMarkers;
 	$scope.gdeList		= [];
 	$scope.gdeNumber	= '...';
-	var getGdeListEndPointURL	= 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/account/account?limit=100&type=active';
-	
-	$scope.getGdeList			= function (userURL)
+
+	$scope.gdeTrackingAPI = null;
+  if ($rootScope.is_backend_ready){
+    $scope.gdeTrackingAPI = gapi.client.gdetracking;
+  }
+
+	$scope.getGdeList			= function (nextPageToken)
 	{
-//	    console.log($scope.gdeList.length);
-//	    console.log(userURL);
-	    $http({method: 'GET', url: userURL})
-		.success(function(response, status, config)
-		{
-//			console.log('getPostsFromGAE response ok');
-			for	(var i=0;	i<response.items.length;	i++)
-			{
-			    //MSO - 20140605 - Check the deleted field
-			    if (response.items[i].deleted==false)
-				{
-//					console.log(response.items[i]);
-				    $scope.gdeList.push(response.items[i]);
-				}
-			};
-//			console.log(response);
-			if	(response.nextPageToken)	// If there is still more data
-			{
-				var nextUrl			= getGdeListEndPointURL+'&pageToken='+response.nextPageToken; // Adjust the end point URL
-				$scope.getGdeList(nextUrl);	// Add the next page
-			} else
-			{
-			    $scope.gdeNumber	= $scope.gdeList.length;
-    			for (var i=0;i<$scope.gdeNumber;i++)
-    			{
-    				var coords					= JSON.parse($scope.gdeList[i].geocode);
-    				var badge					= $scope.gdeList[i].pg_filename;
-    				var gdeName					= $scope.gdeList[i].display_name;
-    				var gdeBadge				= $scope.gdeList[i].product_group;
-    				var icon					= 'img/badges/'+badge+'.png';
-					$scope.gdeList[i].pic_url	= ($scope.gdeList[i].pic_url).replace("=50", "=100");
-    				mapMarkers[i]				= {};
-    				mapMarkers[i]["latitude"]	= coords.lat;
-    				mapMarkers[i]["longitude"]	= coords.lng;
-    				mapMarkers[i]["icon"]		= icon;
-    				mapMarkers[i]["name"]		= gdeName;
-    				mapMarkers[i]["badge"]		= gdeBadge;
-    			};
-    			$scope.markers		= mapMarkers;
-    			$scope.markerClick	= function(name,badge)
-    			{
-    				window.alert(name+' - ' + badge + ' GDE');
-    			};
-				//	Trigger CSS3 animation after map loads
-				$('paper-fab')	.css('-webkit-animation'	, 'fabAppears	2s	linear	1	both');	//	-webkit- CSS
-				$('paper-fab')	.css('animation'			, 'fabAppears	2s	linear	1	both');	//	W3C	CSS
-				$('.mapArea')	.css('-webkit-animation'	, 'mapAppears	2s	linear	1	both');	//	-webkit- CSS
-				$('.mapArea')	.css('animation'			, 'mapAppears	2s	linear	1	both');	//	W3C	CSS
-			}
-		})
-		.error(function(response, status, config)
-		{
-			window.alert('There was a problem connecting with Google App Engine. Try again in a few minutes. Error: '+status);
-		});
+    //console.log($scope.gdeList.length);
+    //console.log(userURL);
+    //Create request data object
+    var requestData = {};
+    requestData.limit=100;
+    requestData.type = 'active';
+    requestData.pageToken=nextPageToken;
+
+    $scope.gdeTrackingAPI.account.list(requestData).execute(
+      function(response)
+      {
+        //Check if the backend returned and error
+        if (response.code){
+          window.alert('There was a problem connecting with Google App Engine. Try again in a few minutes. Error: '+response.code + ' - '+ response.message);
+        }else{
+          //response is ok
+          for	(var i=0;	i<response.items.length;	i++)
+          {
+              //MSO - 20140605 - exclude the deleted
+              if (response.items[i].deleted==false)
+              {
+                //console.log(response.items[i]);
+                $scope.gdeList.push(response.items[i]);
+              }
+          };
+          //console.log(response);
+          if	(response.nextPageToken)	// If there is still more data
+          {
+            $scope.getGdeList(response.nextPageToken);	// Get the next page
+          } else
+          {
+            $scope.gdeNumber	= $scope.gdeList.length;
+            for (var i=0;i<$scope.gdeNumber;i++)
+            {
+              var coords					= JSON.parse($scope.gdeList[i].geocode);
+              var badge					= $scope.gdeList[i].pg_filename;
+              var gdeName					= $scope.gdeList[i].display_name;
+              var gdeBadge				= $scope.gdeList[i].product_group;
+              var icon					= 'img/badges/'+badge+'.png';
+              $scope.gdeList[i].pic_url	= ($scope.gdeList[i].pic_url).replace("=50", "=100");
+              mapMarkers[i]				= {};
+              mapMarkers[i]["latitude"]	= coords.lat;
+              mapMarkers[i]["longitude"]	= coords.lng;
+              mapMarkers[i]["icon"]		= icon;
+              mapMarkers[i]["name"]		= gdeName;
+              mapMarkers[i]["badge"]		= gdeBadge;
+            };
+            $scope.markers		= mapMarkers;
+            $scope.markerClick	= function(name,badge)
+            {
+              window.alert(name+' - ' + badge + ' GDE');
+            };
+            //	Trigger CSS3 animation after map loads
+            $('paper-fab')	.css('-webkit-animation'	, 'fabAppears	2s	linear	1	both');	//	-webkit- CSS
+            $('paper-fab')	.css('animation'			, 'fabAppears	2s	linear	1	both');	//	W3C	CSS
+            $('.mapArea')	.css('-webkit-animation'	, 'mapAppears	2s	linear	1	both');	//	-webkit- CSS
+            $('.mapArea')	.css('animation'			, 'mapAppears	2s	linear	1	both');	//	W3C	CSS
+          }
+        }
+
+      }
+		);
 	};
-	$scope.getGdeList(getGdeListEndPointURL);
-	
+
+	$scope.$on('event:gde-app-back-end-ready', function (event, gdeTrackingAPI)
+	{
+		console.log('startCtrl: gde-app-back-end-ready received');
+
+		//Save the API object in the scope
+		$scope.gdeTrackingAPI = gdeTrackingAPI;
+		//run the function to get data from the backend
+		$scope.getGdeList();
+	});
+
 });

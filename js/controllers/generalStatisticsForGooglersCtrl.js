@@ -1,20 +1,19 @@
 // *****************************************************************************************************
 //    								Statistics Controller for Googlers
 // *****************************************************************************************************
-GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$location,	$http,	months,	years)
+GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScope, $scope,	$location,	$http,	months,	years)
 {
+  $scope.gdeTrackingAPI = null;
+  if ($rootScope.is_backend_ready){
+    $scope.gdeTrackingAPI = gapi.client.gdetracking;
+  }
+
 	$('paper-fab')		.css('-webkit-animation',	'hideFab	1s	linear	1	both');	//	-webkit- CSS3 animation
 	$('paper-fab')		.css('animation',			'hideFab	1s	linear	1	both');	//	W3C	CSS3 animation
-	
+
 	$scope.months				= months;
 	$scope.years				= years;
-	
-	var getPostsEndPointURL = 'https://omega-keep-406.appspot.com/_ah/api/gdetracking/v1.0b1/activityRecord/activityRecord?limit=100';
-	
-// -----------------------------------------------------------------------------------------------------
-//     								General Statistics by GDE
-// -----------------------------------------------------------------------------------------------------
-	
+
 	// ------------------------------------
 	//		Initialize local data
 	// ------------------------------------
@@ -29,7 +28,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 	$scope.postByProductTemp		= {};
 	$scope.postByActivityTemp		= {};
 	// ------------------------------------
-	
+
 	// ------------------------------------
 	//		Date Range Filter
 	// ------------------------------------
@@ -50,91 +49,23 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 			$scope.postByRegionTemp 		= {};
 			$scope.postByProductTemp		= {};
 			$scope.postByActivityTemp		= {};
-			
+
 // 			console.log($scope.monthSelected.value + " " + $scope.yearSelected.value);
 			var loadingToast	= document.querySelector('paper-toast[id="loading"]');	// Called to show loading sign
 			loadingToast		.show();
 			$('.forGooglers')	.css('display','block');
-			var monthNumber		= "";
-			for (var i=0;i<12;i++)
-			{
-				if (months[i] == $scope.monthSelected)
-				{
-					monthNumber = i;
-				}
-			}
-			$scope.monthSince				= monthNumber + 1;
+
+			$scope.monthSince				= months.indexOf($scope.monthSelected) + 1;
 			$scope.yearSince				= $scope.yearSelected.value;
-			switch ($scope.monthSelected.value)
-			{
-				case "January":
-					monthNumber = "%2F0" + monthNumber;
-//					console.log(monthNumber);
-				break
-				
-				case "February":
-					monthNumber = "%2F0" + monthNumber;
-//					console.log(monthNumber);
-				break
-					
-				case "March":
-					monthNumber = "%2F0" + monthNumber
-//					console.log(monthNumber);
-				break
-					
-				case "April":
-					monthNumber = "%2F0" + monthNumber;
-//					console.log(monthNumber);
-				break
-					
-				case "May":
-					monthNumber = "%2F0" + monthNumber;
-//					console.log(monthNumber);
-				break
-					
-				case "June":
-					monthNumber = "%2F0" + monthNumber;
-//					console.log(monthNumber);
-				break
-					
-				case "July":
-					monthNumber = "%2F0" + monthNumber;
-//					console.log(monthNumber);
-				break
-					
-				case "August":
-					monthNumber = "%2F0" + monthNumber;
-//					console.log(monthNumber);
-				break
-					
-				case "September":
-					monthNumber = "%2F0" + monthNumber;
-//					console.log(monthNumber);
-				break
-					
-				case "October":
-					monthNumber = "%2F" + monthNumber;
-//					console.log(monthNumber);
-				break
-					
-				case "November":
-					monthNumber = "%2F" + monthNumber;
-//					console.log(monthNumber);
-				break
-					
-				case "December":
-					monthNumber = "%2F" + monthNumber;
-//					console.log(monthNumber);
-				break
-			}
-			var newUrlTemplate	= getPostsEndPointURL.slice(0,getPostsEndPointURL.indexOf("&minDate"));
-			
-			var newUrl			= newUrlTemplate + "0&minDate=" + $scope.yearSelected.value + (monthNumber+1);
-			$scope.getPostsFromGAE(newUrl);
+
+    	if ($rootScope.is_backend_ready){
+    	  var minDate             = $scope.yearSince +'/'+ ($scope.monthSince<10?"0":"")+$scope.monthSince; //Format date into YYYY/MM
+    	  $scope.getPostsFromGAE(null,null,minDate,null,null);	// Get the Posts
+    	}
 		};
 	};
 	// ------------------------------------
-	
+
 	var drawGeneralStatistics		= function ()
 	{	// For every GDE in postByGdeNameTemp
 //		console.log('drawGeneralStatistics initiated');
@@ -243,20 +174,20 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 			);
 		};
 //					console.log(postsByRegion);
-					
+
 		// Sort data by Total Activities
 					var activitiesByGde_data	= new google.visualization.DataTable(activitiesByGde);
 					activitiesByGde_data.sort(1);
-					
+
 					var postByProduct_data		= new google.visualization.DataTable(postByProduct);
 					postByProduct_data.sort(1);
-					
+
 					var postByActivity_data		= new google.visualization.DataTable(postByActivity);
 					postByActivity_data.sort(1);
-					
+
 					var postByRegion_data		= new google.visualization.DataTable(postsByRegion);
 					postByRegion_data.sort(1);
-					
+
 		// Posts by GDE Name
 					var gdeSelector				= new google.visualization.ControlWrapper();
 					gdeSelector					.setControlType('CategoryFilter');
@@ -273,7 +204,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'allowMultiple'			: true
 						}
 					});
-					
+
 					var activitiesSlider		= new google.visualization.ControlWrapper();
 					activitiesSlider			.setControlType('NumberRangeFilter');
 					activitiesSlider			.setContainerId('activitiesSlider');
@@ -285,7 +216,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'labelStacking': 'vertical'
 						}
 					});
-					
+
 					var resharesSlider			= new google.visualization.ControlWrapper();
 					resharesSlider.setControlType('NumberRangeFilter');
 					resharesSlider.setContainerId('resharesSlider');
@@ -297,7 +228,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'labelStacking': 'vertical'
 						}
 					});
-					
+
 					var plus1sSlider			= new google.visualization.ControlWrapper();
 					plus1sSlider				.setControlType('NumberRangeFilter');
 					plus1sSlider				.setContainerId('plus1sSlider');
@@ -309,7 +240,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'labelStacking': 'vertical'
 						}
 					});
-					
+
 					var commentsSlider			= new google.visualization.ControlWrapper();
 					commentsSlider.setControlType('NumberRangeFilter');
 					commentsSlider.setContainerId('commentsSlider');
@@ -332,11 +263,11 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 						'page': 'enable',
 						'pageSize':30
 					});
-					
+
 					var gdePieChart				= new google.visualization.ChartWrapper();
 					gdePieChart					.setChartType('PieChart');
 					gdePieChart					.setContainerId('gdePieChart');
-					var offset					= 0.2; 
+					var offset					= 0.2;
 					var slices					= [];
 					for (i=0;i<20;i++)
 					{
@@ -353,7 +284,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 //					console.log(slices);
 					gdePieChart.setOptions(
 					{
-						'width'				: 700,
+						'width'				: 650,
 						'pieHole'			: 0.5,
 						'reverseCategories'	: true,
 						'pieStartAngle'		: 30,
@@ -379,7 +310,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'allowMultiple': true
 						}
 					});
-					
+
 					var platformsActivitiesSlider = new google.visualization.ControlWrapper();
 					platformsActivitiesSlider.setControlType('NumberRangeFilter');
 					platformsActivitiesSlider.setContainerId('platformsActivitiesSlider');
@@ -391,7 +322,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'labelStacking': 'vertical'
 						}
 					});
-					
+
 					var platformsResharesSlider	= new google.visualization.ControlWrapper();
 					platformsResharesSlider.setControlType('NumberRangeFilter');
 					platformsResharesSlider.setContainerId('platformsResharesSlider');
@@ -403,7 +334,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'labelStacking': 'vertical'
 						}
 					});
-					
+
 					var platformsPlus1sSlider	= new google.visualization.ControlWrapper();
 					platformsPlus1sSlider.setControlType('NumberRangeFilter');
 					platformsPlus1sSlider.setContainerId('platformsPlus1sSlider');
@@ -415,7 +346,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'labelStacking': 'vertical'
 						}
 					});
-					
+
 					var platformsCommentsSlider			= new google.visualization.ControlWrapper();
 					platformsCommentsSlider.setControlType('NumberRangeFilter');
 					platformsCommentsSlider.setContainerId('platformsCommentsSlider');
@@ -427,7 +358,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'labelStacking': 'vertical'
 						}
 					});
-					
+
 
 					var platformsTableChart		= new google.visualization.ChartWrapper();
 					platformsTableChart.setChartType('Table');
@@ -439,13 +370,13 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 						'page'			: 'enable',
 						'pageSize'		:30
 					});
-					
+
 					var platformsBarChart 		= new google.visualization.ChartWrapper();
 					platformsBarChart.setChartType('BarChart');
 					platformsBarChart.setContainerId('platformsBarChart');
 					platformsBarChart.setOptions(
 					{
-						'width'				:700,
+						'width'				:650,
 						'isStacked'			: true,
 						'reverseCategories'	: true,
 						'legend':
@@ -455,7 +386,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'maxLines'	:3
 						}
 					});
-					
+
 		// Posts by Activity
 					var activities_Selector 	= new google.visualization.ControlWrapper();
 					activities_Selector.setControlType('CategoryFilter');
@@ -472,7 +403,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'allowMultiple'			: true
 						}
 					});
-					
+
 					var activities_ActivitiesSlider	= new google.visualization.ControlWrapper();
 					activities_ActivitiesSlider.setControlType('NumberRangeFilter');
 					activities_ActivitiesSlider.setContainerId('activities_ActivitiesSlider');
@@ -484,7 +415,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'labelStacking': 'vertical'
 						}
 					});
-					
+
 					var activities_ResharesSlider	= new google.visualization.ControlWrapper();
 					activities_ResharesSlider.setControlType('NumberRangeFilter');
 					activities_ResharesSlider.setContainerId('activities_ResharesSlider');
@@ -496,7 +427,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'labelStacking': 'vertical'
 						}
 					});
-					
+
 					var activities_Plus1sSlider		= new google.visualization.ControlWrapper();
 					activities_Plus1sSlider.setControlType('NumberRangeFilter');
 					activities_Plus1sSlider.setContainerId('activities_Plus1sSlider');
@@ -508,7 +439,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'labelStacking': 'vertical'
 						}
 					});
-					
+
 					var activities_CommentsSlider		= new google.visualization.ControlWrapper();
 					activities_CommentsSlider.setControlType('NumberRangeFilter');
 					activities_CommentsSlider.setContainerId('activities_CommentsSlider');
@@ -531,7 +462,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 						'page'			: 'enable',
 						'pageSize'		:30
 					});
-					
+
 					var activityCommentsSlider			= new google.visualization.ControlWrapper();
 					activityCommentsSlider.setControlType('NumberRangeFilter');
 					activityCommentsSlider.setContainerId('commentsSlider');
@@ -543,13 +474,13 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'labelStacking': 'vertical'
 						}
 					});
-					
+
 					var activityBarChart			= new google.visualization.ChartWrapper();
 					activityBarChart.setChartType('BarChart');
 					activityBarChart.setContainerId('activityBarChart');
 					activityBarChart.setOptions(
 					{
-						'width'			:700,
+						'width'			:650,
 						'isStacked'		: true,
 						'reverseCategories': true,
 						'legend':
@@ -559,7 +490,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'maxLines'	:4
 						}
 					});
-					
+
 		// Posts by Region
 					var region_Selector				= new google.visualization.ControlWrapper();
 					region_Selector.setControlType('CategoryFilter');
@@ -576,7 +507,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'allowMultiple'			: true
 						}
 					});
-					
+
 					var region_ActivitiesSlider		= new google.visualization.ControlWrapper();
 					region_ActivitiesSlider.setControlType('NumberRangeFilter');
 					region_ActivitiesSlider.setContainerId('region_ActivitiesSlider');
@@ -588,7 +519,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'labelStacking': 'vertical'
 						}
 					});
-					
+
 					var region_ResharesSlider		= new google.visualization.ControlWrapper();
 					region_ResharesSlider.setControlType('NumberRangeFilter');
 					region_ResharesSlider.setContainerId('region_ResharesSlider');
@@ -600,7 +531,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'labelStacking': 'vertical'
 						}
 					});
-					
+
 					var region_Plus1sSlider			= new google.visualization.ControlWrapper();
 					region_Plus1sSlider.setControlType('NumberRangeFilter');
 					region_Plus1sSlider.setContainerId('region_Plus1sSlider');
@@ -612,7 +543,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'labelStacking': 'vertical'
 						}
 					});
-					
+
 					var region_CommentsSlider			= new google.visualization.ControlWrapper();
 					region_CommentsSlider.setControlType('NumberRangeFilter');
 					region_CommentsSlider.setContainerId('region_CommentsSlider');
@@ -635,13 +566,13 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 						'page'			: 'enable',
 						'pageSize'		: 30
 					});
-					
+
 					var regionBarChart 				= new google.visualization.ChartWrapper();
 					regionBarChart.setChartType('BarChart');
 					regionBarChart.setContainerId('regionBarChart');
 					regionBarChart.setOptions(
 					{
-						'width'				:700,
+						'width'				:650,
 						'isStacked'			: true,
 						'reverseCategories'	: true,
 						'legend':
@@ -651,229 +582,186 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($scope,	$
 							'maxLines'	:4
 						}
 					});
-					
-					
+
+
 		// Draw Charts
 		new google.visualization.Dashboard(document.getElementById('generalStatisticsByPlatform'))
 		.bind([platformsSelector,platformsActivitiesSlider,platformsResharesSlider,platformsPlus1sSlider,platformsCommentsSlider], [platformsTableChart,platformsBarChart])
 		.draw(postByProduct_data);
-					
+
 		new google.visualization.Dashboard(document.getElementById('generalStatisticsByGDE'))
 		.bind([gdeSelector,activitiesSlider,resharesSlider,plus1sSlider,commentsSlider], [gdeTableChart,gdePieChart])
 		.draw(activitiesByGde_data);
-					
+
 		new google.visualization.Dashboard(document.getElementById('generalStatisticsByActivity'))
 		.bind([activities_Selector,activities_ActivitiesSlider,activities_ResharesSlider,activities_Plus1sSlider,activities_CommentsSlider], [activityTableChart,activityBarChart])
 		.draw(postByActivity_data);
-					
+
 		new google.visualization.Dashboard(document.getElementById('generalStatisticsByRegion'))
 		.bind([region_Selector,region_ActivitiesSlider,region_ResharesSlider,region_Plus1sSlider,region_CommentsSlider], [regionTableChart,regionBarChart])
 		.draw(postByRegion_data);
 	}
-	
+
 	var loadingToast	= document.querySelector('paper-toast[id="loading"]');	// Called to show loading sign
 	$scope.loadVisualizationLibraries = google.load('visualization', '1.1', null);
 	loadingToast		.show();
-	$('.forGooglers')	.css('display','block');			
-	$scope.getPostsFromGAE = function (getPostsEndPointURL)
+	$('.forGooglers')	.css('display','block');
+
+	$scope.getPostsFromGAE = function (nextPageToken,gplusId,minDate,maxDate,order)
 	{
-//		console.log(getPostsEndPointURL);
-		$http({method: 'GET', url: getPostsEndPointURL})
-		.success(function(response, status, config)
-		{
-//			console.log('getPostsFromGAE response ok');
-			if (response.items)	// If there is data
-			{
-				for (var i=0;i<response.items.length;i++)
-				{
-					$scope.data.items.push(response.items[i]);
-				};
-			} else
-			{
-				window.alert('There are no recorded activities after the date you selected.');
-			}
-			if (response.nextPageToken)	// If there is still more data
-			{
-				var newUrlTemplate = getPostsEndPointURL.slice(0,getPostsEndPointURL.indexOf("&pageToken"));
-//				console.log(newUrlTemplate);
-				var nextUrl = newUrlTemplate + '&pageToken='+response.nextPageToken; // Adjust the end point URL
-//				console.log(nextUrl);
-				$scope.getPostsFromGAE(nextUrl);	// Add the next page
-			} else if (response.items)
-			{
-//				console.log($scope.data.items);
-				for (var i=0;i<$scope.data.items.length;i++)	// Posts by GDE Name
-				{
-					var name = $scope.data.items[i].gde_name;
+    //Create request data object
+    var requestData = {};
+    requestData.limit=100;
+    requestData.gplus_id = gplusId;
+    requestData.pageToken=nextPageToken;
+    requestData.minDate=minDate;
+    requestData.maxDate=maxDate;
+    requestData.order=order;
 
-					if (!$scope.postByGdeNameTemp[name])
-					{
-						$scope.postByGdeNameTemp[name]						= {};	// Initialize a new JSON unordered array
+    $scope.gdeTrackingAPI.activity_record.list(requestData).execute(
+      function(response)
+  		{
+  		  //Check if the backend returned and error
+        if (response.code){
+          window.alert('There was a problem loading the app. This windows will be re-loaded automatically. Error: '+response.code + ' - '+ response.message);
+          location.reload(true);
+        }else{
+  		    //Everything ok, keep going
+    			if (response.items)	// If there is data
+    			{
+    			  //Add response Items to the full list
+    			  $scope.data.items = $scope.data.items.concat(response.items);
 
-						$scope.postByGdeNameTemp[name]['name']				= name;
-						$scope.postByGdeNameTemp[name]['id']				= $scope.data.items[i].gplus_id;
+    			} else
+    			{
+    				window.alert('There are no recorded activities after the date you selected.');
+    			}
+    			if (response.nextPageToken)	// If there is still more data
+    			{
+    				$scope.getPostsFromGAE(response.nextPageToken,gplusId,minDate,maxDate,order);	// Get the next page
+    			} else if (response.items)
+    			{
+    //				console.log($scope.data.items);
+    				for (var i=0;i<$scope.data.items.length;i++)
+    				{
+    				  // Posts by GDE Name
+    					var name = $scope.data.items[i].gde_name;
 
-						$scope.postByGdeNameTemp[name]['posts']				= [];	// Initialize a new JSON ordered array
-					}
+    					if (!$scope.postByGdeNameTemp[name])
+    					{
+    						$scope.postByGdeNameTemp[name]						= {};	// Initialize a new JSON unordered array
 
-					$scope.utils.updateStats($scope.postByGdeNameTemp[name], $scope.data.items[i]);
+    						$scope.postByGdeNameTemp[name]['name']				= name;
+    						$scope.postByGdeNameTemp[name]['id']				= $scope.data.items[i].gplus_id;
 
-					var post = $scope.utils.postFromApi($scope.data.items[i]);
-					$scope.postByGdeNameTemp[name]['posts'].push(post);
-				};
-//				console.log($scope.postByGdeNameTemp);
-				for (var i=0;i<$scope.data.items.length;i++)	// Posts by Product
-				{
-					if ($scope.data.items[i].product_groups)
-					{
-						for (var j=0;j<$scope.data.items[i].product_groups.length;j++)
-						{
-							var product = $scope.data.items[i].product_groups[j];
-							product = product.slice(1,product.length); // Remove the Hash Tag
-							if (!$scope.postByProductTemp[product])
-							{
-								$scope.postByProductTemp[product]						= {};	// Initialize a new JSON unordered array
+    						$scope.postByGdeNameTemp[name]['posts']				= [];	// Initialize a new JSON ordered array
+    					}
 
-								$scope.postByProductTemp[product]['product']			= product;
+    					$scope.utils.updateStats($scope.postByGdeNameTemp[name], $scope.data.items[i]);
 
-								$scope.postByProductTemp[product]['posts']				= [];	// Initialize a new JSON ordered array
-								$scope.postByProductTemp[product]['totalPlus1s']		= 0;	// Initialize a new acumulator for totalPlus1s
-								$scope.postByProductTemp[product]['totalComments']		= 0;	// Initialize a new acumulator for totalComments
-							}
+    					var post = $scope.utils.postFromApi($scope.data.items[i]);
+    					$scope.postByGdeNameTemp[name]['posts'].push(post);
+    					//===============================================//
+    					// Posts by Product
+    					if ($scope.data.items[i].product_groups)
+    					{
+    						for (var j=0;j<$scope.data.items[i].product_groups.length;j++)
+    						{
+    							var product = $scope.data.items[i].product_groups[j];
+    							product = product.slice(1,product.length); // Remove the Hash Tag
+    							if (!$scope.postByProductTemp[product])
+    							{
+    								$scope.postByProductTemp[product]						= {};	// Initialize a new JSON unordered array
 
-							$scope.utils.updateStats($scope.postByProductTemp[product], $scope.data.items[i]);
+    								$scope.postByProductTemp[product]['product']			= product;
 
-							var post = $scope.utils.postFromApi($scope.data.items[i]);
-							$scope.postByProductTemp[product]['posts'].push(post);
-						}
-					};
-				};
-//				console.log($scope.postByProductTemp);
-				for (var i=0;i<$scope.data.items.length;i++)	// Posts by Activity Type
-				{
-					if ($scope.data.items[i].activity_types)
-					{
-						for (j=0;j<$scope.data.items[i].activity_types.length;j++)
-						{
-							var activity = $scope.data.items[i].activity_types[j];
-							activity = activity.slice(1,activity.length); // Remove the Hash Tag
-							if (!$scope.postByActivityTemp[activity])
-							{
-								$scope.postByActivityTemp[activity]						= {}; // Initialize a new JSON unordered array
+    								$scope.postByProductTemp[product]['posts']				= [];	// Initialize a new JSON ordered array
+    								$scope.postByProductTemp[product]['totalPlus1s']		= 0;	// Initialize a new acumulator for totalPlus1s
+    								$scope.postByProductTemp[product]['totalComments']		= 0;	// Initialize a new acumulator for totalComments
+    							}
 
-								$scope.postByActivityTemp[activity]['activity']			= activity;
+    							$scope.utils.updateStats($scope.postByProductTemp[product], $scope.data.items[i]);
 
-								$scope.postByActivityTemp[activity]['posts']			= [];  // Initialize a new JSON ordered array
-							}
+    							var post = $scope.utils.postFromApi($scope.data.items[i]);
+    							$scope.postByProductTemp[product]['posts'].push(post);
+    						}
+    					};
+    					//===============================================//
+    					// Posts by Activity Type
+    					if ($scope.data.items[i].activity_types)
+    					{
+    						for (j=0;j<$scope.data.items[i].activity_types.length;j++)
+    						{
+    							var activity = $scope.data.items[i].activity_types[j];
+    							activity = activity.slice(1,activity.length); // Remove the Hash Tag
+    							if (!$scope.postByActivityTemp[activity])
+    							{
+    								$scope.postByActivityTemp[activity]						= {}; // Initialize a new JSON unordered array
 
-							$scope.utils.updateStats($scope.postByActivityTemp[activity], $scope.data.items[i]);
+    								$scope.postByActivityTemp[activity]['activity']			= activity;
 
-							var post = $scope.utils.postFromApi($scope.data.items[i]);
-							$scope.postByActivityTemp[activity]['posts'].push(post);
-						}
-					};
-				};
-//				console.log($scope.postByActivityTemp);
-				for (var i=0;i<$scope.data.items.length;i++)	// Posts by GDE Region
-				{
-					var region = $scope.data.items[i].gde_region;
+    								$scope.postByActivityTemp[activity]['posts']			= [];  // Initialize a new JSON ordered array
+    							}
 
-					if (!$scope.postByRegionTemp[region])
-					{
-						$scope.postByRegionTemp[region]						= {}; // Initialize a new JSON unordered array
+    							$scope.utils.updateStats($scope.postByActivityTemp[activity], $scope.data.items[i]);
 
-						$scope.postByRegionTemp[region]['region']			= region;
+    							var post = $scope.utils.postFromApi($scope.data.items[i]);
+    							$scope.postByActivityTemp[activity]['posts'].push(post);
+    						}
+    					};
+    					//===============================================//
+    					// Posts by GDE Region
+    					var region = $scope.data.items[i].gde_region;
 
-						$scope.postByRegionTemp[region]['posts']			= [];  // Initialize a new JSON ordered array
-					}
+    					if (!$scope.postByRegionTemp[region])
+    					{
+    						$scope.postByRegionTemp[region]						= {}; // Initialize a new JSON unordered array
 
-					$scope.utils.updateStats($scope.postByRegionTemp[region], $scope.data.items[i]);
+    						$scope.postByRegionTemp[region]['region']			= region;
 
-					var post = $scope.utils.postFromApi($scope.data.items[i]);
-					$scope.postByRegionTemp[region]['posts'].push(post);
-				};
-//				console.log($scope.postByRegionTemp);
-				drawGeneralStatistics()
-			};
-		})
-		.error(function(response, status, config)
-		{
-			window.alert('There was a problem loading the app. This windows will be re-loaded automatically.');
-			location.reload(true);
-		});
+    						$scope.postByRegionTemp[region]['posts']			= [];  // Initialize a new JSON ordered array
+    					}
+
+    					$scope.utils.updateStats($scope.postByRegionTemp[region], $scope.data.items[i]);
+
+    					var post = $scope.utils.postFromApi($scope.data.items[i]);
+    					$scope.postByRegionTemp[region]['posts'].push(post);
+    					//===============================================//
+    				};
+    				drawGeneralStatistics()
+    			};
+        }
+  		}
+  	);
 	};
-	
+
 	// -------------------------------------
 	//  Start showing last month statistics
 	// -------------------------------------
-	var monthNumber					= "";
-	var today						= new Date();
-	switch (today.getMonth()) // URL encoding the month number
-	{
-				case 0:
-					monthNumber = "%2F0" + (today.getMonth()+1);
-//					console.log(monthNumber);
-				break
-				
-				case 1:
-					monthNumber = "%2F0" + (today.getMonth()+1);
-//					console.log(monthNumber);
-				break
-					
-				case 2:
-					monthNumber = "%2F0" + (today.getMonth()+1)
-//					console.log(monthNumber);
-				break
-					
-				case 3:
-					monthNumber = "%2F0" + (today.getMonth()+1);
-//					console.log(monthNumber);
-				break
-					
-				case 4:
-					monthNumber = "%2F0" + (today.getMonth()+1);
-//					console.log(monthNumber);
-				break
-					
-				case 5:
-					monthNumber = "%2F0" + (today.getMonth()+1);
-//					console.log(monthNumber);
-				break
-					
-				case 6:
-					monthNumber = "%2F0" + (today.getMonth()+1);
-//					console.log(monthNumber);
-				break
-					
-				case 7:
-					monthNumber = "%2F0" + (today.getMonth()+1);
-//					console.log(monthNumber);
-				break
-					
-				case 8:
-					monthNumber = "%2F0" + (today.getMonth()+1);
-//					console.log(monthNumber);
-				break
-					
-				case 9:
-					monthNumber = "%2F" + (today.getMonth()+1);
-//					console.log(monthNumber);
-				break
-					
-				case 10:
-					monthNumber = "%2F" + (today.getMonth()+1);
-//					console.log(monthNumber);
-				break
-					
-				case 11:
-					monthNumber = "%2F" + (today.getMonth()+1);
-//					console.log(monthNumber);
-				break
-	}	
-	var newUrlTemplate				= getPostsEndPointURL.slice(0,getPostsEndPointURL.indexOf("&minDate"));
-	var newUrl						= getPostsEndPointURL + "&minDate=" + today.getFullYear() + monthNumber;
+	var today						    = new Date();
+
 	$scope.monthSince				= today.getMonth() + 1;
 	$scope.yearSince				= today.getFullYear();
-	$scope.getPostsFromGAE(newUrl);
+
+	if ($rootScope.is_backend_ready){
+	  var minDate             = $scope.yearSince +'/'+ ($scope.monthSince<10?"0":"")+$scope.monthSince; //Format date into YYYY/MM
+	  $scope.getPostsFromGAE(null,null,minDate,null,null);	// Get the Posts
+	}
+
 	// -------------------------------------
+	//MSO - 20140806 - should never happen, as we redirect the user to the main page if not logged in, but just in case keep is
+	$scope.$on('event:gde-app-back-end-ready', function (event, gdeTrackingAPI)
+	{
+		console.log('generalStatisticsForGooglersCtrl: gde-app-back-end-ready received');
+
+		//Save the API object in the scope
+		$scope.gdeTrackingAPI = gdeTrackingAPI;
+		//Get data from the backend only if posts are not already loaded
+		if($scope.data.items.length==0){
+		  //run the function to get data from the backend
+		  var minDate             = $scope.yearSince +'/'+ ($scope.monthSince<10?"0":"")+$scope.monthSince; //Format date into YYYY/MM
+		  $scope.getPostsFromGAE(null,null,minDate,null,null);	// Get the Posts
+		}
+
+	});
 });
