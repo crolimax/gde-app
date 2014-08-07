@@ -34,8 +34,10 @@
 <div class="stats">
 	<table class="prettyTable">
 		<tr>
+		  <th>
+		  </th>
 			<th>
-				Title
+				Activity Title
 			</th>
 			<th>
 				+1's
@@ -50,21 +52,24 @@
 				Date
 			</th>
 		</tr>
-		<tr ng-repeat="post in userPosts | orderBy : 'plus_oners' : true">
+		<tr ng-repeat="activity in userActivities | orderBy : 'plus_oners' : true">
+		  <td>
+		    <paper-icon-button icon="create" ng-click="editGDEActivity(activity.id)"></paper-icon-button>
+		  </td>
 			<td>
-				<a href={{post.url}} target="_blank">{{post.title}}</a>
+				<a href={{activity.url}} target="_blank">{{activity.title}}</a>
 			</td>
 			<td>
-				{{post.plus_oners}}
+				{{activity.plus_oners}}
 			</td>
 			<td>
-				{{post.resharers}}
+				{{activity.resharers}}
 			</td>
 			<td>
-				{{post.comments}}
+				{{activity.comments}}
 			</td>
 			<td>
-				{{post.date}}
+				{{activity.date}}
 			</td>
 		</tr>
 	</table>
@@ -75,3 +80,70 @@
 <a href="#/">
 	<paper-icon-button icon="arrow-back" label="map"></paper-icon-button>
 </a>
+
+
+<!-- Activity record detail -->
+<paper-dialog	id="singleActivity"			transition="paper-dialog-transition-center">
+  <p class="editDialog">
+    <core-scroll-header-panel condenses>
+
+      <core-toolbar>
+        <div flex></div>
+        <div class="bottom indent title" style="color:white">Title</div>
+      </core-toolbar>
+
+      <div class="content">
+        <paper-input required label="Title of the activity" ng-model="currentActivity.activity_title"></paper-input>
+        <div style="text-align:center">
+          <paper-input floatingLabel label="Date Created" disabled type="datetime" ng-model="currentActivity.date_created" style="width:20em;" ></paper-input>
+          <paper-input floatingLabel label="Date Updated" disabled type="datetime" ng-model="currentActivity.date_updated" style="width:20em;" ></paper-input>
+          <br/>
+        </div>
+        <div style="text-align:center">
+          <paper-input floatingLabel label="+1's" ng-model="currentActivity.plus_oners" style="width:20em;" type="number"></paper-input>
+          <paper-input floatingLabel label="Resharers" ng-model="currentActivity.resharers" style="width:20em;" type="number" ></paper-input>
+          <paper-input floatingLabel label="Comments" ng-model="currentActivity.comments" style="width:20em;" type="number"></paper-input>
+          <br/>
+        </div>
+
+        <a href={{currentActivity.activity_link}} style="text-align:left" target="_blank">Activity Link</a>
+
+        <h4>Google + Posts</h4>
+        <a ng-repeat="post in currentActivityPosts" style="float:left;width:10em"
+          href={{post.url}} target="_blank">Original Post</a>
+        <br/>
+        <h4>Activity Types</h4>
+        <div ng-repeat="actType in currentActivity.activity_types" style="float:left;width:7em">
+
+          <div class="card paper-shadow-top paper-shadow-top-z-1">
+            <div class="card-inner paper-shadow-bottom paper-shadow-bottom-z-1">
+              {{actType}}
+            </div>
+          </div>
+
+        </div>
+
+        <br/>
+        <h2>Products</h2>
+        <div ng-repeat="product in currentActivity.product_groups" style="float:left;width:10em">
+
+          <div class="card paper-shadow-top paper-shadow-top-z-1">
+            <div class="card-inner paper-shadow-bottom paper-shadow-bottom-z-1">
+              {{product}}
+            </div>
+          </div>
+
+        </div>
+        <br/>
+
+        <h3>Activity Metadata</h3>
+
+
+      </div>
+
+    </core-scroll-header-panel>
+
+  </p>
+  <paper-button label="Cancel" dismissive></paper-button>
+  <paper-button label="Save" affirmative autofocus ng-click="saveGDEActivity()"></paper-button>
+</paper-dialog>

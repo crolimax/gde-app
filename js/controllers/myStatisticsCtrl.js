@@ -1,7 +1,7 @@
 // *****************************************************************************************************
 //    								Statistics Controller for GDE
 // *****************************************************************************************************
-GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$http,	$rootScope,	months, years)
+GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$http,	$rootScope,	months, years,activityTypes)
 {
   $scope.gdeTrackingAPI = null;
   if ($rootScope.is_backend_ready){
@@ -31,20 +31,20 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 // ----------------------------------------------
 // .............My General Statistics............
 // ----------------------------------------------
-	$scope.postByGdeName		= [];
+	$scope.activitiesByGdeName		= [];
 	$scope.data					= {};
 	$scope.data.items			= [];
-	$scope.postByGdeNameTemp	= {};
+	$scope.activitiesByGdeNameTemp	= {};
 	$scope.name					= '';
-	$scope.userPosts			= [];
+	$scope.userActivities			= [];
 	var drawGeneralStatistics	= function ()
-	{	// For every GDE in postByGdeNameTemp
+	{	// For every GDE in activitiesByGdeNameTemp
 //		console.log('drawGeneralStatistics initiated');
-		$.each($scope.postByGdeNameTemp, function(k,v)
+		$.each($scope.activitiesByGdeNameTemp, function(k,v)
 		{
-			$scope.postByGdeName.push($scope.postByGdeNameTemp[k]); // Push it as a new object in a JSON ordered array.
+			$scope.activitiesByGdeName.push($scope.activitiesByGdeNameTemp[k]); // Push it as a new object in a JSON ordered array.
 		});
-//		console.log($scope.postByGdeName);
+//		console.log($scope.activitiesByGdeName);
 		var activitiesByGde =
 		{
 			cols:
@@ -59,10 +59,10 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 		};
 		$scope.utils.addMetricColumns(activitiesByGde);
 
-		for (var i=0;i<$scope.postByGdeName.length;i++)
+		for (var i=0;i<$scope.activitiesByGdeName.length;i++)
 		{
 			activitiesByGde.rows.push(
-				$scope.utils.chartDataRow($scope.postByGdeName[i].name, $scope.postByGdeName[i])
+				$scope.utils.chartDataRow($scope.activitiesByGdeName[i].name, $scope.activitiesByGdeName[i])
 			);
 		};
 //		console.log(activitiesByGde);
@@ -72,7 +72,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 		var activitiesByGde_data		= new google.visualization.DataTable(activitiesByGde);
 		activitiesByGde_data.sort(1);
 
-		// Posts by GDE Name
+		// Activities by GDE Name
 					var activitiesSlider	= new google.visualization.ControlWrapper();
 					activitiesSlider.setControlType('NumberRangeFilter');
 					activitiesSlider.setContainerId('activitiesSlider');
@@ -150,9 +150,8 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 		.draw(activitiesByGde_data);
 	}
 
-//	console.log(getPostsEndPointURL);
 	$scope.loadVisualizationLibraries	= google.load('visualization', '1.1', null);
-	$scope.getPostsFromGAE = function (nextPageToken,gplusId,minDate,maxDate,order)
+	$scope.getActivitiesFromGAE = function (nextPageToken,gplusId,minDate,maxDate,order)
 	{
 		//Create request data object
     var requestData = {};
@@ -176,7 +175,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
     			if (response.nextPageToken)	// If there is still more data
     			{
-    				$scope.getPostsFromGAE(response.nextPageToken,gplusId,minDate,maxDate,order);	// Get the next page
+    				$scope.getActivitiesFromGAE(response.nextPageToken,gplusId,minDate,maxDate,order);	// Get the next page
     			} else
     			{																			// Done
     //				console.log($scope.data.items);
@@ -189,21 +188,21 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     					{
     						$scope.name = $scope.data.items[i].gde_name;
 
-    						if (!$scope.postByGdeNameTemp[$scope.name])
+    						if (!$scope.activitiesByGdeNameTemp[$scope.name])
     						{
-    							$scope.postByGdeNameTemp[$scope.name]					= {};	// Initialize a new JSON unordered array
+    							$scope.activitiesByGdeNameTemp[$scope.name]					= {};	// Initialize a new JSON unordered array
 
-    							$scope.postByGdeNameTemp[$scope.name]['name']			= $scope.name;
-    							$scope.postByGdeNameTemp[$scope.name]['id']				= $scope.data.items[i].gplus_id;
+    							$scope.activitiesByGdeNameTemp[$scope.name]['name']			= $scope.name;
+    							$scope.activitiesByGdeNameTemp[$scope.name]['id']				= $scope.data.items[i].gplus_id;
 
-    							$scope.postByGdeNameTemp[$scope.name]['posts']			= [];	// Initialize a new JSON ordered array
+    							$scope.activitiesByGdeNameTemp[$scope.name]['activities']			= [];	// Initialize a new JSON ordered array
     						}
 
-    						$scope.utils.updateStats($scope.postByGdeNameTemp[$scope.name], $scope.data.items[i]);
+    						$scope.utils.updateStats($scope.activitiesByGdeNameTemp[$scope.name], $scope.data.items[i]);
 
-    						var post = $scope.utils.postFromApi($scope.data.items[i]);
-    						$scope.postByGdeNameTemp[$scope.name]['posts'].push(post);
-    						$scope.userPosts.push(post);
+    						var activity = $scope.utils.activityFromApi($scope.data.items[i]);
+    						$scope.activitiesByGdeNameTemp[$scope.name]['activities'].push(activity);
+    						$scope.userActivities.push(activity);
     					};
     					$scope.$apply();
     					drawGeneralStatistics();
@@ -212,26 +211,26 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     					$scope.$on('gde:logged', function(event,loggedGdeName)				// Listen to the gde:logged
     					{
     //						console.log(loggedGdeName);
-    						for (var i=0;i<$scope.data.items.length;i++) // Posts by GDE Name
+    						for (var i=0;i<$scope.data.items.length;i++) //activities by GDE Name
     						{
     							$scope.name = $scope.data.items[i].gde_name;
     							if ($scope.data.items[i].gde_name == loggedGdeName)
     							{
-    								if (!$scope.postByGdeNameTemp[$scope.name])
+    								if (!$scope.activitiesByGdeNameTemp[$scope.name])
     								{
-    									$scope.postByGdeNameTemp[$scope.name]					= {};	// Initialize a new JSON unordered array
+    									$scope.activitiesByGdeNameTemp[$scope.name]					= {};	// Initialize a new JSON unordered array
 
-    									$scope.postByGdeNameTemp[$scope.name]['name']			= $scope.name;
-    									$scope.postByGdeNameTemp[$scope.name]['id']				= $scope.data.items[i].gplus_id;
+    									$scope.activitiesByGdeNameTemp[$scope.name]['name']			= $scope.name;
+    									$scope.activitiesByGdeNameTemp[$scope.name]['id']				= $scope.data.items[i].gplus_id;
 
-    									$scope.postByGdeNameTemp[$scope.name]['posts']			= [];	// Initialize a new JSON ordered array
+    									$scope.activitiesByGdeNameTemp[$scope.name]['activities']			= [];	// Initialize a new JSON ordered array
     								}
 
-    								$scope.utils.updateStats($scope.postByGdeNameTemp[$scope.name], $scope.data.items[i]);
+    								$scope.utils.updateStats($scope.activitiesByGdeNameTemp[$scope.name], $scope.data.items[i]);
 
-    								var post = $scope.utils.postFromApi($scope.data.items[i]);
-    								$scope.postByGdeNameTemp[$scope.name]['posts'].push(post);
-    								$scope.userPosts.push(post);
+    								var activity = $scope.utils.activityFromApi($scope.data.items[i]);
+    								$scope.activitiesByGdeNameTemp[$scope.name]['activities'].push(activity);
+    								$scope.userActivities.push(activity);
     							};
     						};
     						$scope.$apply();
@@ -245,8 +244,10 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	};
 
 	if ($rootScope.is_backend_ready){
-	  $scope.getPostsFromGAE(null,$rootScope.usrId,null,null,null);	// Get the GDE Posts
+	  $scope.getActivitiesFromGAE(null,$rootScope.usrId,null,null,null);	// Get the GDE Activites
 	}
+
+
 
 	//MSO - 20140806 - should never happen, as we redirect the user to the main page if not logged in, but just in case keep is
 	$scope.$on('event:gde-app-back-end-ready', function (event, gdeTrackingAPI)
@@ -255,11 +256,69 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
 		//Save the API object in the scope
 		$scope.gdeTrackingAPI = gdeTrackingAPI;
-		//Get data from the backend only if posts are not already loaded
+		//Get data from the backend only if activities are not already loaded
 		if($scope.data.items.length==0){
 		  //run the function to get data from the backend
-		  $scope.getPostsFromGAE(null,$rootScope.usrId,null,null,null);	// Get the GDE Posts
+		  $scope.getActivitiesFromGAE(null,$rootScope.usrId,null,null,null);	// Get the GDE Activites
 		}
 
 	});
+
+	//Edit an Activity
+	$scope.currentActivity			= null;
+	$scope.editGDEActivity = function(activityId)
+	{
+	  console.log(activityId)
+	  //Set the current Editing Activity
+	  $scope.currentActivity = $.grep($scope.data.items, function(item){
+	    return item.id== activityId;
+	  })[0];
+
+	  //console.log(JSON.stringify($scope.currentActivity));
+
+	  //Load ActivityPost Items for the current ActivityRecord
+	  getActivityPosts($scope.currentActivity);
+
+	  //Display the Edit Activity Dialog
+	  toggleDialog('singleActivity');
+
+	};
+	$scope.currentActivityPosts = [];
+	var getActivityPosts = function (activityRecord){
+    $scope.currentActivityPosts = []; //Clean the array
+    //Get the all the posts
+    $.each(activityRecord.gplus_posts,
+      function(index,value){
+        console.log('loading:'+value);
+        var requestData = {};
+        requestData.limit=1;
+        requestData.id = value;
+
+        $scope.gdeTrackingAPI.activity_post.get(requestData).execute(
+          function(response)
+      		{
+      		  //Check if the backend returned and error
+            if (response.code){
+              console.log('gdeTrackingAPI.activity_post.get('+value+') responded with Response Code: '+response.code + ' - '+ response.message);
+            }else{
+              //Push the ActivityPost to the array
+              $scope.currentActivityPosts.push(response);
+              $scope.$apply();
+            }
+
+      		}
+      	);
+      }
+    );
+
+  }
+
+
+	$scope.saveGDEActivity = function(){
+	  console.log(JSON.stringify($scope.currentActivity));
+
+	  //TODO: Save the Updated Activity to the BackEnd
+
+	};
+
 });

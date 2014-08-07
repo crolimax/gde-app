@@ -3,7 +3,7 @@
 // =====================================================================================================
 //											AngularJS
 // =====================================================================================================
-var GdeTrackingApp	= angular.module('GdeTrackingApp'	, [ 'ngRoute' , 'google-maps' , 'googlePlusSignin' ]);
+var GdeTrackingApp	= angular.module('GdeTrackingApp'	, [ 'ngRoute' , 'google-maps' , 'googlePlusSignin' , 'ng-polymer-elements']);
 
 // =====================================================================================================
 //								Google JS API & AngularJS load control
@@ -207,31 +207,74 @@ GdeTrackingApp.factory("months",		[function()
 	return months;
 }]);
 
+GdeTrackingApp.factory("activityTypes",		[function()
+{
+	var activityTypes		= [];
+	activityTypes.push({tag:'#bugreport',description:'BugReports: Report Bug on Google APIs'});
+  activityTypes.push({tag:'#article',description:'Article: Write technical article about use cases, tips & tricks, particulare use and experience using an API'});
+  activityTypes.push({tag:'#blogpost',description:'BlogPost: Maybe less technical than Articles, less formal, but still informative and helpful informations for Developers'});
+  activityTypes.push({tag:'#book',description:'Book: A full book about a technology, best practices, examples, guides, etc... all printed on Paper (or digital)'});
+  activityTypes.push({tag:'#techdocs',description:'Technical Documentation: Help Improve the documentation on Google Open Source Projects'});
+  activityTypes.push({tag:'#translation',description:'Translation: Many articles are in English, but Developers are all around the world and it\'s helpful if content is translated in their native language'});
+  activityTypes.push({tag:'#techtalk',description:'Tech Talks: Not Scared of the stage? Talk at conventions, GDGs and MeetUps and present technologies to Developers in front of you'});
+  activityTypes.push({tag:'#opensourcecode',description:'Open Source Code: Got a cool library/application and want to share it because can help other developer? Open source it and share with the World'});
+  activityTypes.push({tag:'#forumpost',description:'Forum Posts: Help answering question directly in Forums and StackOverflow'});
+  activityTypes.push({tag:'#community',description:'Communty: Engage with the community live'});
+  activityTypes.push({tag:'#video',description:'Videos: Presentations and tutorials presented with a video are more engaging and help convey the passion we feel about the technology'});
+  activityTypes.push({tag:'#tutorial',description:'Tutorials: Lead the developer step by step during his journey for a better knowledge of the technology'});
+
+	return activityTypes;
+}]);
+
+GdeTrackingApp.factory("productGroups",		[function()
+{
+	var productGroups		= [];
+	productGroups.push({tag:'#android',url:'https://developers.google.com/android/',description:'Android'});
+  productGroups.push({tag:'#admob',url:'http://www.google.com/ads/admob/',description:'AdMob'});
+  productGroups.push({tag:'#adwords',url:'https://developers.google.com/adwords/api/',description:'Google AdWords'});
+  productGroups.push({tag:'#angularjs',url:'https://angularjs.org/',description:'Angular JS'});
+  productGroups.push({tag:'#chrome',url:'https://developers.google.com/chrome/',description:'Google Chrome'});
+  productGroups.push({tag:'#html5',url:'http://www.html5rocks.com/',description:'Chrome: HTML5'});
+  productGroups.push({tag:'#dartlang',url:'http://www.dartlang.org/',description:'Chrome: Dart Language'});
+  productGroups.push({tag:'#cloudplatform',url:'https://developers.google.com/cloud/',description:'Google Cloud Platform'});
+  productGroups.push({tag:'#googleanalytics',url:'https://developers.google.com/analytics/',description:'Google Analytics'});
+  productGroups.push({tag:'#googleappsapi',url:'https://developers.google.com/google-apps/',description:'Google Apps APIs'});
+  productGroups.push({tag:'#googleappscript',url:'https://developers.google.com/apps-script/',description:'Google Apps Script'});
+  productGroups.push({tag:'#googledrive',url:'https://developers.google.com/drive/',description:'Google Drive SDK'});
+  productGroups.push({tag:'#glass',url:'https://developers.google.com/glass/',description:'Google Glass'});
+  productGroups.push({tag:'#googlemapsapi',url:'https://developers.google.com/maps/',description:'Google Maps APIs'});
+  productGroups.push({tag:'#googleplus',url:'https://developers.google.com/+/',description:'Google+ Platform'});
+  productGroups.push({tag:'#youtube',url:'https://developers.google.com/youtube/',description:'YouTube APIs'});
+  productGroups.push({tag:'#uxdesign',url:'https://plus.google.com/communities/103651070366324568638',description:'UX &amp; Design'});
+
+	return productGroups;
+}]);
+
 // *****************************************************************************************************
 //						Utility functions for accumulating and displaying stats
 // *****************************************************************************************************
-GdeTrackingApp.run(function ($rootScope)
+GdeTrackingApp.run(function ($rootScope,activityTypes,productGroups)
 {
   $rootScope.is_backend_ready=false;
 
 	$rootScope.utils =
 	{
-		'postFromApi': function (apiData)
+		'activityFromApi': function (apiData)
 		{
-			var post = {};
-			post.gde_name		= apiData.gde_name;
-			post.title			= apiData.activity_title;
-			post.url			= apiData.activity_link;
-			post.gplus_id		= apiData.gplus_id;
-			post.resharers		= parseInt(apiData.resharers	|| 0, 10);
-			post.comments		= parseInt(apiData.comments		|| 0, 10);
-			post.post_id		= apiData.id;
-			post.plus_oners		= parseInt(apiData.plus_oners	|| 0, 10);
-			post.date			= apiData.post_date;
-			post.id				= apiData.id;
-			post.product_group	= apiData.product_groups;
-			post.activity_type	= apiData.activity_types;
-			return post;
+			var activity = {};
+			activity.gde_name		= apiData.gde_name;
+			activity.title			= apiData.activity_title;
+			activity.url			= apiData.activity_link;
+			activity.gplus_id		= apiData.gplus_id;
+			activity.resharers		= parseInt(apiData.resharers	|| 0, 10);
+			activity.comments		= parseInt(apiData.comments		|| 0, 10);
+			activity.activity_id		= apiData.id;
+			activity.plus_oners		= parseInt(apiData.plus_oners	|| 0, 10);
+			activity.date			= apiData.activity_date;
+			activity.id				= apiData.id;
+			activity.product_group	= apiData.product_groups;
+			activity.activity_type	= apiData.activity_types;
+			return activity;
 		},
 		'updateStats': function (dataset, apiData)
 		{
@@ -269,7 +312,7 @@ GdeTrackingApp.run(function ($rootScope)
 		{
 			var row					= {c:[]};
 
-			var activitiesLogged	= activityRecord.posts.length;
+			var activitiesLogged	= activityRecord.activities.length;
 			var totalResharers		= activityRecord.totalResharers;
 			var totalPlus1s			= activityRecord.totalPlus1s;
 			var totalComments		= activityRecord.totalComments;
@@ -283,5 +326,8 @@ GdeTrackingApp.run(function ($rootScope)
 			return row;
 		}
 	};
+
+	$rootScope.activityTypes = activityTypes;
+	$rootScope.productGroups = productGroups;
 });
 

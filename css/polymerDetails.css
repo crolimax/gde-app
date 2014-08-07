@@ -55,7 +55,7 @@ paper-dialog {
 core-menu	{
 	position			: absolute;
 	top					: 70px;
-	height				: 85%;	
+	height				: 85%;
 }
 paper-button {
 	margin				: 1em;
@@ -94,6 +94,11 @@ paper-fab	{
 	bottom				: 5em;
 	z-index				: 1;
 }
+
+paper-input{
+  width:100%;
+
+}
 /*	*********************************************************************************	*/
 /*								AngularJS Directives									*/
 /*	*********************************************************************************	*/
@@ -121,7 +126,7 @@ paper-dialog table:hover {
 /*	*********************************************************************************	*/
 /*									Custom Classes										*/
 /*	*********************************************************************************	*/
-select 
+select
 {
     /* W3C */
 	border-width		: 0;
@@ -212,7 +217,7 @@ select:hover
     -webkit-box-align	: start;
     -webkit-box-orient	: horizontal;
     -webkit-box-flex	: 1;
-	
+
     /* W3C */
     display				: box;
     box-pack			: start;
@@ -236,7 +241,7 @@ select:hover
     box-orient			: vertical;
     box-pack			: center;
     box-align			: center;
-	
+
 	background-color	: #f5f5f5;
 	width				: 300px;
 	height				: 450px;
@@ -268,13 +273,13 @@ select:hover
     /* W3C */
 	box-shadow			: 1px 1px 5px #444, inset 1px 1px 2px #888;
 }
-.badge 
+.badge
 {
     /* W3C */
 	height				: 120px;
 	margin				: 5px;
 }
-.flag 
+.flag
 {
     /* W3C */
 	height				: 30px;
@@ -285,31 +290,31 @@ select:hover
 	display				: none;
 }
 
-.prettyTable 
+.prettyTable
 {
 	/* W3C */
 	margin				: 1em;
 	padding				: 1em;
 }
-.prettyTable tr 
+.prettyTable tr
 {
 	/* W3C */
 	margin				: 1em;
 	padding				: 1em;
 	transition			: all 0.3s ease-in-out;
 }
-.prettyTable tr:nth-child(even) 
+.prettyTable tr:nth-child(even)
 {
 	/* W3C */
 	background-color	: #eee;
 }
-.prettyTable tr:hover 
+.prettyTable tr:hover
 {
 	/* W3C */
 	background-color	: #666;
 	color				: #fff!important;
 }
-.prettyTable th 
+.prettyTable th
 {
 	/* W3C */
 	font-size			: 1.17em;
@@ -321,7 +326,7 @@ select:hover
 	border-radius		: 5px;
 }
 
-.stats 
+.stats
 {
 	border-radius	: 5px;
 	margin			: 1em;
@@ -336,7 +341,7 @@ select:hover
 {
 	width			: 30%;
 }
-.gdesGeneralStats 
+.gdesGeneralStats
 {
     display:-webkit-box;
     -webkit-box-pack:start;
@@ -351,13 +356,13 @@ select:hover
     box-orient: horizontal;
     box-flex:1;
 }
-.countryButtons	
+.countryButtons
 {
 	position		: absolute;
 	bottom			: -170px;
 	left			: 0;
 }
-.countryButtons	paper-icon-button	
+.countryButtons	paper-icon-button
 {
 	margin 			: 1em;
 	padding			: 0.5em;
@@ -384,7 +389,7 @@ select:hover
 		top				: 0px;
 	}
 }
-@keyframes mapAppears 
+@keyframes mapAppears
 {
     0%
 	{
@@ -414,7 +419,7 @@ select:hover
 		right			: 5%;
 	}
 }
-@keyframes fabAppears 
+@keyframes fabAppears
 {
     0%
 	{
@@ -433,83 +438,83 @@ select:hover
 /*	---------------------------------------------------------------------------------	*/
 /*									paper-fab goes left									*/
 /*	---------------------------------------------------------------------------------	*/
-@-webkit-keyframes fabGoesLeft 
+@-webkit-keyframes fabGoesLeft
 {
     0%
-	{ 
+	{
 		right			: 5%;
 	}
 	30%
-	{ 
+	{
 		right			: 20%;
 	}
 	70%
-	{ 
+	{
 		right			: 60%;
 	}
 	90%
-	{ 
+	{
 		right			: 85%;
 		transform		: rotate(0deg);
 	}
 	100%
-	{ 
+	{
 		right			: 85%;
 		transform		: rotate(180deg);
 	}
 }
-@keyframes fabGoesLeft 
+@keyframes fabGoesLeft
 {
     0%
-	{ 
+	{
 		right			: 5%;
 	}
 	30%
-	{ 
+	{
 		right			: 20%;
 	}
 	70%
-	{ 
+	{
 		right			: 60%;
 	}
 	90%
-	{ 
+	{
 		right			: 85%;
 		transform		: rotate(0deg);
 	}
 	100%
-	{ 
+	{
 		right			: 85%;
 		transform		: rotate(180deg);
 	}
 }
-@-webkit-keyframes mapSlideLeft 
+@-webkit-keyframes mapSlideLeft
 {
-    0%		
-	{ 
+    0%
+	{
 		left			: 0px;
 		top				: 0px;
 	}
 	30%
-	{ 
+	{
 		left			: -200px;
 		top				: 0px;
 	}
 	100%
-	{ 
+	{
 		left			: -2000px;
 		top				: 0px;
 	}
 }
-@keyframes mapSlideLeft 
+@keyframes mapSlideLeft
 {
     0%
-	{ 
+	{
 		-left			: 0px;
 		top				: 0px;
 	}
 	30%
-	{	
+	{
 		left			: -200px;
 		top				: 0px;
 	}
@@ -523,84 +528,84 @@ select:hover
 /*	---------------------------------------------------------------------------------	*/
 /*									paper-fab goes right								*/
 /*	---------------------------------------------------------------------------------	*/
-@-webkit-keyframes fabGoesRight 
+@-webkit-keyframes fabGoesRight
 {
     100%
-	{ 
+	{
 		right			: 5%;
 		transform		: rotate(0deg);
 	}
 	90%
-	{ 
+	{
 		right			: 5%;
 		transform		: rotate(180deg);
 	}
 	70%
-	{ 
+	{
 		right			: 10%;
 		transform		: rotate(180deg);
 	}
 	0%
-	{ 
+	{
 		right			: 85%;
 		transform		: rotate(180deg);
 	}
 }
-@keyframes fabGoesRight 
+@keyframes fabGoesRight
 {
     100%
-	{ 
+	{
 		right			: 5%;
 		transform		: rotate(0deg);
 	}
 	90%
-	{ 
+	{
 		right			: 5%;
 		transform		: rotate(180deg);
 	}
 	70%
-	{ 
+	{
 		right			: 10%;
 		transform		: rotate(180deg);
 	}
 	0%
-	{ 
+	{
 		right			: 85%;
 		transform		: rotate(180deg);
 	}
 }
-@-webkit-keyframes mapSlideRight 
+@-webkit-keyframes mapSlideRight
 {
-    100%		
-	{ 
+    100%
+	{
 		left			: 0px;
 		top				: 0px;
 	}
 	30%
-	{ 
+	{
 		left			: -200px;
 		top				: 0px;
 	}
 	0%
-	{ 
+	{
 		left			: -2000px;
 		top				: 0px;
 	}
 }
-@keyframes mapSlideRight 
+@keyframes mapSlideRight
 {
-    100%		
-	{ 
+    100%
+	{
 		left			: 0px;
 		top				: 0px;
 	}
 	30%
-	{ 
+	{
 		left			: -200px;
 		top				: 0px;
 	}
 	0%
-	{ 
+	{
 		left			: -2000px;
 		top				: 0px;
 	}
@@ -609,14 +614,14 @@ select:hover
 /*	---------------------------------------------------------------------------------	*/
 /*										hide paper-fab									*/
 /*	---------------------------------------------------------------------------------	*/
-@-webkit-keyframes hideFab 
+@-webkit-keyframes hideFab
 {
     100%
 	{
 		right			: -20%;
 	}
 }
-@keyframes hideFab 
+@keyframes hideFab
 {
     100%
 	{
