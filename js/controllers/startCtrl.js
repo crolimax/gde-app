@@ -88,12 +88,17 @@ GdeTrackingApp.controller("startCtrl",							function($rootScope, $scope,	$http,
             $('paper-fab')	.css('animation'			, 'fabAppears	2s	linear	1	both');	//	W3C	CSS
             $('.mapArea')	.css('-webkit-animation'	, 'mapAppears	2s	linear	1	both');	//	-webkit- CSS
             $('.mapArea')	.css('animation'			, 'mapAppears	2s	linear	1	both');	//	W3C	CSS
+            $scope.$apply();
           }
         }
 
       }
 		);
 	};
+
+  if ($rootScope.is_backend_ready){
+    $scope.getGdeList();
+  }
 
 	$scope.$on('event:gde-app-back-end-ready', function (event, gdeTrackingAPI)
 	{
