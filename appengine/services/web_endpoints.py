@@ -15,7 +15,7 @@ _CLIENT_IDs = [
     '47242318878-dik3r14d8jc528h1ao35f8ehqa7tmpe1.apps.googleusercontent.com'
 ]
 
-api_root = endpoints.api(name='gdetracking', version='v1.0b1', allowed_client_ids=_CLIENT_IDs)
+api_root = endpoints.api(name='gdetracking', version='v1.0b2', allowed_client_ids=_CLIENT_IDs)
 
 
 @api_root.api_class(resource_name='activity_record', path='activityRecord')
