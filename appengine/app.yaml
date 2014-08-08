@@ -9,13 +9,17 @@ handlers:
   static_files: favicon.ico
   upload: favicon\.ico
 
+- url: /robots\.txt
+  static_files: static/robots.txt
+  upload: static/robots\.txt
+
 # Endpoints handler
 - url: /_ah/spi/.*
   script: services.register.application
 # Cron job handler
 - url: /tasks/.*
   script: services.register_tasks.app
-
+  login: admin
 
 
 libraries:
