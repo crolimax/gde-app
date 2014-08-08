@@ -121,6 +121,15 @@ paper-dialog table:hover {
 /*	*********************************************************************************	*/
 /*									Custom Classes										*/
 /*	*********************************************************************************	*/
+window
+{
+	background-color	: #f5f5f5;
+	width				: 300px;
+	height				: 450px;
+    margin				: 0.5em;
+    padding				: 1.5em;
+    text-align			: center;
+}
 select 
 {
     /* W3C */
@@ -134,6 +143,19 @@ select:hover
 {
     /* W3C */
     box-shadow			: 0px 3px 6px #555, inset 0px 0px 3px #999;
+}
+.center
+{
+    /* webkit */
+    display				: -webkit-box;
+    -webkit-box-orient	: vertical;
+    -webkit-box-pack	: center;
+    -webkit-box-align	: center;
+    /* W3C */
+    display				: box;
+    box-orient			: vertical;
+    box-pack			: center;
+    box-align			: center;
 }
 .scrollBar	{
 	display				: block;
@@ -225,7 +247,8 @@ select:hover
 	width				: 90%;
     transition			: all 0.4s ease-in-out;
 }
-.gdeCard {
+.gdeCard 
+{
     /* webkit */
     display				: -webkit-box;
     -webkit-box-orient	: vertical;
