@@ -85,12 +85,9 @@
 <!-- Activity record detail -->
 <paper-dialog	id="singleActivity"			transition="paper-dialog-transition-center">
   <p class="editDialog">
-    <core-scroll-header-panel condenses>
+    <core-scroll-header-panel >
 
-      <core-toolbar>
-        <div flex></div>
-        <div class="bottom indent title" style="color:white">Title</div>
-      </core-toolbar>
+      <div class="core-header" >{{currentActivity.activity_title}}</div>
 
       <div class="content">
         <paper-input required label="Title of the activity" ng-model="currentActivity.activity_title"></paper-input>
@@ -106,14 +103,19 @@
           <br/>
         </div>
 
-        <a href={{currentActivity.activity_link}} style="text-align:left" target="_blank">Activity Link</a>
+        <div class="card paper-shadow-top paper-shadow-top-z-1">
+          <div class="card-inner paper-shadow-bottom paper-shadow-bottom-z-1">
+            <h4>Links</h4>
+            <a href={{currentActivity.activity_link}} style="text-align:left" target="_blank">Activity Link</a>
 
-        <h4>Google + Posts</h4>
-        <a ng-repeat="post in currentActivityPosts" style="float:left;width:10em"
-          href={{post.url}} target="_blank">Original Post</a>
-        <br/>
+            <a ng-repeat="post in currentActivityPosts" style="float:left;width:10em"
+              href={{post.url}} target="_blank">Original Post</a>
+          </div>
+        </div>
+
+
         <h4>Activity Types</h4>
-        <div ng-repeat="actType in currentActivity.activity_types" style="float:left;width:7em">
+        <div ng-repeat="actType in currentActivity.activity_types" style="float:left;width:auto">
 
           <div class="card paper-shadow-top paper-shadow-top-z-1">
             <div class="card-inner paper-shadow-bottom paper-shadow-bottom-z-1">
@@ -122,10 +124,10 @@
           </div>
 
         </div>
-
+        <!--TODO: Add a FAB or a Toggle Button that displays the full activityTypes list with checkbox for selection -->
         <br/>
-        <h2>Products</h2>
-        <div ng-repeat="product in currentActivity.product_groups" style="float:left;width:10em">
+        <h4>Products</h4>
+        <div ng-repeat="product in currentActivity.product_groups" style="float:left;width:auto">
 
           <div class="card paper-shadow-top paper-shadow-top-z-1">
             <div class="card-inner paper-shadow-bottom paper-shadow-bottom-z-1">
@@ -134,9 +136,10 @@
           </div>
 
         </div>
+        <!--TODO: Add a FAB or a Toggle Button that displays the full ProductGroups list with checkbox for selection -->
         <br/>
 
-        <h3>Activity Metadata</h3>
+        <h4>Activity Metadata</h4>
 
 
       </div>
