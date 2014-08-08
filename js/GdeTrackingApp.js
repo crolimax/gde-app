@@ -28,7 +28,7 @@ function onGapiClientLoad(){
   //Get the RootScope
   var rootScope = angular.element(document.body).scope();
   var ROOT = 'https://omega-keep-406.appspot.com/_ah/api';
-      gapi.client.load('gdetracking', 'v1.0b1', function() {
+      gapi.client.load('gdetracking', 'v1.0b2', function() {
         rootScope.is_backend_ready=true;
         console.log('GdeApp Backend API LOADED!');
 
