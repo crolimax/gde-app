@@ -1,7 +1,19 @@
 <core-item	class="mapArea">
 	<google-map	center="map.center"	zoom="map.zoom"	draggable="true"	options='{"mapTypeId":"terrain"}'>
 		<markers>
-			<marker ng-repeat="marker in markers"	coords="marker" icon="marker.icon"	click="markerClick(marker.name,marker.badge)">
+			<marker ng-repeat="marker in markers"	coords="marker" icon="marker.icon"	click="markerClick(marker.id)">
+				<window isIconVisibleOnClick="false">
+					<div style="width:300px" class="center">
+						<img class="flag" src="img/flags/{{marker.ctry_filename}}.svg"></img> <small>{{marker.country}}</small>
+						<br/>
+						<h2>{{marker.name}}</h2>
+						<img src="{{marker.pic}}" class="gdePic"/>
+						<br/>
+						<h3>{{marker.badge}}</h3>
+						<img class="badge" src="img/badges/{{marker.badge}}.svg"></img>
+						<br/>
+					</div>
+				</window>
 			</marker>
 		</markers>
 	</google-map>
