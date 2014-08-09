@@ -4,8 +4,6 @@
 			<marker ng-repeat="marker in markers"	coords="marker" icon="marker.icon"	click="markerClick(marker.id)">
 				<window isIconVisibleOnClick="false">
 					<div style="width:300px" class="center">
-						<img class="flag" src="img/flags/{{marker.ctry_filename}}.svg"></img> <small>{{marker.country}}</small>
-						<br/>
 						<h2>{{marker.name}}</h2>
 						<img src="{{marker.pic}}" class="gdePic"/>
 						<br/>
