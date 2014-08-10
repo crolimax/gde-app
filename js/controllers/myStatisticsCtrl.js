@@ -1,7 +1,7 @@
 // *****************************************************************************************************
 //    								Statistics Controller for GDE
 // *****************************************************************************************************
-GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$http,	$rootScope,	months, years,activityTypes)
+GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$http,	$rootScope,	months, years)
 {
   $scope.gdeTrackingAPI = null;
   if ($rootScope.is_backend_ready){
@@ -153,6 +153,15 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	$scope.loadVisualizationLibraries	= google.load('visualization', '1.1', null);
 	$scope.getActivitiesFromGAE = function (nextPageToken,gplusId,minDate,maxDate,order)
 	{
+	  //Empty the scope objects on the first run
+	  if (!nextPageToken){
+	    $scope.activitiesByGdeName		= [];
+    	$scope.data.items			= [];
+    	$scope.activitiesByGdeNameTemp	= {};
+    	$scope.name					= '';
+    	$scope.userActivities			= [];
+	  }
+
 		//Create request data object
     var requestData = {};
     requestData.limit=100;
@@ -268,31 +277,32 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	$scope.currentActivityPosts = [];
 	var getActivityPosts = function (activityRecord){
     $scope.currentActivityPosts = []; //Clean the array
-    //Get the all the posts
-    $.each(activityRecord.gplus_posts,
-      function(index,value){
-        console.log('loading:'+value);
-        var requestData = {};
-        requestData.limit=1;
-        requestData.id = value;
+    if (activityRecord.gplus_posts){
+      //Get the all the posts
+      $.each(activityRecord.gplus_posts,
+        function(index,value){
+          console.log('loading:'+value);
+          var requestData = {};
+          requestData.limit=1;
+          requestData.id = value;
 
-        $scope.gdeTrackingAPI.activity_post.get(requestData).execute(
-          function(response)
-      		{
-      		  //Check if the backend returned and error
-            if (response.code){
-              console.log('gdeTrackingAPI.activity_post.get('+value+') responded with Response Code: '+response.code + ' - '+ response.message);
-            }else{
-              //Push the ActivityPost to the array
-              $scope.currentActivityPosts.push(response);
-              $scope.$apply();
-            }
+          $scope.gdeTrackingAPI.activity_post.get(requestData).execute(
+            function(response)
+        		{
+        		  //Check if the backend returned and error
+              if (response.code){
+                console.log('gdeTrackingAPI.activity_post.get('+value+') responded with Response Code: '+response.code + ' - '+ response.message);
+              }else{
+                //Push the ActivityPost to the array
+                $scope.currentActivityPosts.push(response);
+                $scope.$apply();
+              }
 
-      		}
-      	);
-      }
-    );
-
+        		}
+        	);
+        }
+      );
+    }
   }
 
   var populatePGs = function(){
@@ -301,7 +311,11 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 		{
 		  var pg = $rootScope.productGroups[k];
 		  var pgSelector = {};
-		  pgSelector.selected = ($scope.currentActivity.product_groups.indexOf(pg.tag)>=0);
+		  if ($scope.currentActivity.product_groups){
+		    pgSelector.selected = ($scope.currentActivity.product_groups.indexOf(pg.tag)>=0);
+		  }else{
+		    pgSelector.selected = false;
+		  }
 		  pgSelector.tag = pg.tag;
 		  pgSelector.description = pg.description;
 
@@ -317,7 +331,11 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 		{
 		  var pg = $rootScope.activityTypes[k];
 		  var actSelector = {};
-		  actSelector.selected = ($scope.currentActivity.activity_types.indexOf(pg.tag)>=0);
+		  if ($scope.currentActivity.activity_types){
+		    actSelector.selected = ($scope.currentActivity.activity_types.indexOf(pg.tag)>=0);
+		  }else{
+		    actSelector.selected = false;
+		  }
 		  actSelector.tag = pg.tag;
 		  actSelector.description = pg.description;
 
@@ -334,17 +352,19 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
   };
 
 	$scope.editGDEActivity = function(activityId){
-	  console.log(activityId)
+	  //console.log(activityId)
 	  //Set the current Editing Activity
 	  $scope.currentActivity = $.grep($scope.data.items, function(item){
 	    return item.id== activityId;
 	  })[0];
 
+	  //Populate Product Groups and Activities for the selection table
 	  populatePGs();
 	  populateATs();
 
-	  $scope.currentActivity.date_updatedLocale = new Date($scope.currentActivity.date_updated).toLocaleDateString();
-    $scope.currentActivity.date_createdLocale = new Date($scope.currentActivity.date_created).toLocaleDateString();
+	  $scope.currDate_updatedLocale = new Date($scope.currentActivity.date_updated).toLocaleDateString();
+    $scope.currDate_createdLocale = new Date($scope.currentActivity.date_created).toLocaleDateString();
+    $scope.currPost_dateLocale = new Date($scope.currentActivity.post_date).toLocaleDateString();
 
 	  //console.log(JSON.stringify($scope.currentActivity));
 
@@ -362,15 +382,25 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	  //Initialize the new Activity
 	  $scope.currentActivity ={};
 
+    //Cleanups and defaults
+    $scope.currentActivityPosts = [];
+
+    //Init
     $scope.currentActivity.gplus_id = $rootScope.usrId;
-    $scope.currentActivity.date_updated = new Date().toISOString();
-    $scope.currentActivity.date_created = new Date().toISOString();
-
-    $scope.currentActivity.date_updatedLocale = new Date().toLocaleDateString();
-    $scope.currentActivity.date_createdLocale = new Date().toLocaleDateString();
-
+    $scope.currentActivity.activity_title='';
+    $scope.currentActivity.activity_link = '';
+    $scope.currentActivity.post_date = new Date().toLocaleDateString();
     $scope.currentActivity.activity_types = [];
     $scope.currentActivity.product_groups = [];
+    $scope.currentActivity.gplus_posts = [];
+    $scope.resharers=0;
+    $scope.plus_oners=0;
+    $scope.comments=0;
+
+
+    $scope.currDate_updatedLocale = new Date().toLocaleDateString();
+    $scope.currDate_createdLocale = new Date().toLocaleDateString();
+    $scope.currPost_dateLocale = new Date($scope.currentActivity.post_date).toLocaleDateString();
 
     populatePGs();
 	  populateATs();
@@ -382,8 +412,8 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	}
 
 	$scope.updCurrActivity = function(type){
-	  console.log(type);
-	  if (type=='AT'){
+	  //console.log(type);
+	  if (type=='at'){
 	    $scope.currentActivity.activity_types = [];
   	  $.each($scope.currActivityTypesList, function(k,v)
   		{
@@ -392,7 +422,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
   		    $scope.currentActivity.activity_types.push(at.tag);
   		  }
   		});
-  		console.log(JSON.stringify($scope.currentActivity.activity_types));
+  		//console.log(JSON.stringify($scope.currentActivity.activity_types));
 	  }else{
 	    $scope.currentActivity.product_groups = [];
   	  $.each($scope.currProductGroupList, function(k,v)
@@ -403,16 +433,89 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
   		    $scope.currentActivity.product_groups.push(pg.tag);
   		  }
   		});
-  		console.log(JSON.stringify($scope.currentActivity.product_groups));
+  		//console.log(JSON.stringify($scope.currentActivity.product_groups));
 	  }
 
 	};
 
 	$scope.saveGDEActivity = function(){
-	  console.log(JSON.stringify($scope.currentActivity));
 
-	  //TODO: Save the Updated Activity to the BackEnd
+    //Update Date variales to avoid insert/Update errors
+    var post_date = new Date($scope.currPost_dateLocale);
+	  $scope.currentActivity.post_date =
+	      post_date.getFullYear() +'/'+
+	      ((post_date.getMonth()+1)<10?"0":"")+(post_date.getMonth()+1) +'/'+
+	      (post_date.getDate()<10?"0":"")+post_date.getDate()
+	      ;
+	  $scope.currentActivity.date_created = null;
+	  $scope.currentActivity.date_updated = null;
 
+	  $scope.currentActivity.gde_name = $scope.name;
+
+    $scope.gdeTrackingAPI.activity_record.insert($scope.currentActivity).execute(
+      function(response)
+  		{
+
+        if (response.code){
+          console.log('gdeTrackingAPI.activity_record.insert(DATA) responded with Response Code: '+response.code + ' - '+ response.message);
+          console.log(JSON.stringify($scope.currentActivity));
+        }else{
+          //Delete the activity from the local arrays if in edit
+          if ($scope.editMode='Edit'){
+            //Find the activity index
+            var itmId=null;
+            for (var i=0;i<$scope.data.items.length;i++){
+              if ($scope.data.items[i].id== response.id){
+                itmId=i;
+                break;
+              }
+
+            }
+            if(itmId){
+              //Remove the Old Item
+              $scope.data.items.splice(itmId,1);
+            }
+            itmId=null;
+            //activitiesByGdeNameTemp[$scope.name]
+            for (var i=0;i<$scope.activitiesByGdeNameTemp[$scope.name]['activities'].length;i++){
+              if ($scope.activitiesByGdeNameTemp[$scope.name]['activities'][i].id== response.id){
+                itmId=i;
+                break;
+              }
+
+            }
+            if(itmId){
+              //Remove the Old Item
+              $scope.activitiesByGdeNameTemp[$scope.name]['activities'].splice(itmId,1);
+            }
+            itmId=null;
+            for (var i=0;i<$scope.userActivities.length;i++){
+              if ($scope.userActivities[i].id== response.id){
+                itmId=i;
+                break;
+              }
+
+            }
+            if(itmId){
+              //Remove the Old Item
+              $scope.userActivities.splice(itmId,1);
+            }
+          }
+          //Update the local Arrays
+          $scope.data.items.push(response);
+          $scope.utils.updateStats($scope.activitiesByGdeNameTemp[$scope.name], response);
+          var activity = $scope.utils.activityFromApi(response);
+					$scope.activitiesByGdeNameTemp[$scope.name]['activities'].push(response);
+          $scope.userActivities.push(activity);
+
+          //Apply and refresh
+          $scope.$apply();
+          //drawGeneralStatistics();
+
+        }
+
+  		}
+  	);
 	};
 
 });

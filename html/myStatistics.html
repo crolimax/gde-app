@@ -93,11 +93,15 @@
 
     <div class="content">
       <paper-input floatingLabel label="Title of the activity" ng-model="currentActivity.activity_title"></paper-input>
+      <br/>
       <div style="text-align:center">
-        <paper-input floatingLabel label="Date Created" type="datetime" ng-model="currentActivity.date_createdLocale" style="width:20em;" ></paper-input>
-        <paper-input floatingLabel label="Date Updated" disabled type="datetime" ng-model="currentActivity.date_updatedLocale" style="width:20em;" ></paper-input>
-        <br/>
+        <paper-input floatingLabel label="Activity Date" type="datetime" ng-model="currPost_dateLocale" style="width:20em;" ></paper-input>
       </div>
+      <div style="text-align:center">
+        <paper-input floatingLabel label="Date Created" disabled type="datetime" ng-model="currDate_createdLocale" style="width:20em;" ></paper-input>
+        <paper-input floatingLabel label="Date Updated" disabled type="datetime" ng-model="currDate_updatedLocale" style="width:20em;" ></paper-input>
+      </div>
+      <br/>
       <div style="text-align:center">
         <paper-input floatingLabel label="+1's" ng-model="currentActivity.plus_oners" style="width:20em;" type="number"></paper-input>
         <paper-input floatingLabel label="Resharers" ng-model="currentActivity.resharers" style="width:20em;" type="number" ></paper-input>
@@ -106,7 +110,8 @@
       </div>
 
       <h4>Links</h4>
-      <a href={{currentActivity.activity_link}} style="text-align:left" target="_blank">Activity Link</a>
+      <a href={{currentActivity.activity_link}} style="text-align:left" target="_blank" ng-if="currentActivity.activity_link">Activity Link</a>
+      <paper-input floatingLabel label="Activity Link" ng-model="currentActivity.activity_link" ng-if="!currentActivity.activity_link" style="width:20em;"></paper-input>
       <br/>
       <a ng-repeat="post in currentActivityPosts" style="float:left;width:10em"
         href={{post.url}} target="_blank">Original Post</a>
@@ -140,7 +145,7 @@
       <paper-button label="Select" ng-click="showProductGroups()"></paper-button>
       <br/>
 
-      <h4>Activity Metadata</h4>
+      <!--<h4>Activity Metadata</h4>-->
       <!--TODO:  Dynamically Change the Detail by activity Type -->
 
     </div>
