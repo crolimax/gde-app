@@ -247,9 +247,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	  $scope.getActivitiesFromGAE(null,$rootScope.usrId,null,null,null);	// Get the GDE Activites
 	}
 
-
-
-	//MSO - 20140806 - should never happen, as we redirect the user to the main page if not logged in, but just in case keep is
+	//MSO - 20140806 - should never happen, as we redirect the user to the main page if not logged in, but just in case keep it
 	$scope.$on('event:gde-app-back-end-ready', function (event, gdeTrackingAPI)
 	{
 		console.log('myStatisticsCtrl: gde-app-back-end-ready received');
@@ -264,25 +262,9 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
 	});
 
-	//Edit an Activity
+	//Edit/new an Activity
 	$scope.currentActivity			= null;
-	$scope.editGDEActivity = function(activityId)
-	{
-	  console.log(activityId)
-	  //Set the current Editing Activity
-	  $scope.currentActivity = $.grep($scope.data.items, function(item){
-	    return item.id== activityId;
-	  })[0];
-
-	  //console.log(JSON.stringify($scope.currentActivity));
-
-	  //Load ActivityPost Items for the current ActivityRecord
-	  getActivityPosts($scope.currentActivity);
-
-	  //Display the Edit Activity Dialog
-	  toggleDialog('singleActivity');
-
-	};
+	$scope.editMode			= "";
 	$scope.currentActivityPosts = [];
 	var getActivityPosts = function (activityRecord){
     $scope.currentActivityPosts = []; //Clean the array
@@ -313,6 +295,110 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
   }
 
+  var populatePGs = function(){
+    $scope.currProductGroupList=[];
+	  $.each($rootScope.productGroups, function(k,v)
+		{
+		  var pg = $rootScope.productGroups[k];
+		  var pgSelector = {};
+		  pgSelector.selected = ($scope.currentActivity.product_groups.indexOf(pg.tag)>=0);
+		  pgSelector.tag = pg.tag;
+		  pgSelector.description = pg.description;
+
+			$scope.currProductGroupList.push(pgSelector); // Push it as a new object in a JSON array.
+		});
+
+
+  };
+
+  var populateATs = function(){
+    $scope.currActivityTypesList=[];
+	  $.each($rootScope.activityTypes, function(k,v)
+		{
+		  var pg = $rootScope.activityTypes[k];
+		  var actSelector = {};
+		  actSelector.selected = ($scope.currentActivity.activity_types.indexOf(pg.tag)>=0);
+		  actSelector.tag = pg.tag;
+		  actSelector.description = pg.description;
+
+			$scope.currActivityTypesList.push(actSelector); // Push it as a new object in a JSON array.
+		});
+  };
+
+	$scope.editGDEActivity = function(activityId){
+	  console.log(activityId)
+	  //Set the current Editing Activity
+	  $scope.currentActivity = $.grep($scope.data.items, function(item){
+	    return item.id== activityId;
+	  })[0];
+
+	  populatePGs();
+	  populateATs();
+
+	  $scope.currentActivity.date_updatedLocale = new Date($scope.currentActivity.date_updated).toLocaleDateString();
+    $scope.currentActivity.date_createdLocale = new Date($scope.currentActivity.date_created).toLocaleDateString();
+
+	  //console.log(JSON.stringify($scope.currentActivity));
+
+    $scope.editMode ="Edit";
+	  //Load ActivityPost Items for the current ActivityRecord
+	  getActivityPosts($scope.currentActivity);
+
+	  //Display the Edit Activity Dialog
+	  toggleDialog('singleActivity');
+
+	};
+
+	$scope.newActivity = function(){
+
+	  //Initialize the new Activity
+	  $scope.currentActivity ={};
+
+    $scope.currentActivity.gplus_id = $rootScope.usrId;
+    $scope.currentActivity.date_updated = new Date().toISOString();
+    $scope.currentActivity.date_created = new Date().toISOString();
+
+    $scope.currentActivity.date_updatedLocale = new Date().toLocaleDateString();
+    $scope.currentActivity.date_createdLocale = new Date().toLocaleDateString();
+
+    $scope.currentActivity.activity_types = [];
+    $scope.currentActivity.product_groups = [];
+
+    populatePGs();
+	  populateATs();
+
+	  $scope.editMode = "Create New";
+
+	  //Display the Edit Activity Dialog
+	  toggleDialog('singleActivity');
+	}
+
+	$scope.updCurrActivity = function(type){
+	  console.log(type);
+	  if (type=='AT'){
+	    $scope.currentActivity.activity_types = [];
+  	  $.each($scope.currActivityTypesList, function(k,v)
+  		{
+  		  var at = $scope.currActivityTypesList[k];
+  		  if (at.selected){
+  		    $scope.currentActivity.activity_types.push(at.tag);
+  		  }
+  		});
+  		console.log(JSON.stringify($scope.currentActivity.activity_types));
+	  }else{
+	    $scope.currentActivity.product_groups = [];
+  	  $.each($scope.currProductGroupList, function(k,v)
+  		{
+  		  var pg = $scope.currProductGroupList[k];
+
+  		  if (pg.selected){
+  		    $scope.currentActivity.product_groups.push(pg.tag);
+  		  }
+  		});
+  		console.log(JSON.stringify($scope.currentActivity.product_groups));
+	  }
+
+	};
 
 	$scope.saveGDEActivity = function(){
 	  console.log(JSON.stringify($scope.currentActivity));

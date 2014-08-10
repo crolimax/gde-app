@@ -270,7 +270,7 @@ GdeTrackingApp.run(function ($rootScope,activityTypes,productGroups)
 			activity.comments		= parseInt(apiData.comments		|| 0, 10);
 			activity.activity_id		= apiData.id;
 			activity.plus_oners		= parseInt(apiData.plus_oners	|| 0, 10);
-			activity.date			= apiData.activity_date;
+			activity.date			= apiData.post_date;
 			activity.id				= apiData.id;
 			activity.product_group	= apiData.product_groups;
 			activity.activity_type	= apiData.activity_types;
