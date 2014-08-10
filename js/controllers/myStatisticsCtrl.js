@@ -325,6 +325,14 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 		});
   };
 
+  $scope.showActivityTypes= function(){
+    toggleDialog('selectActivityTypes');
+  };
+
+	$scope.showProductGroups= function(){
+    toggleDialog('selectProductGroups');
+  };
+
 	$scope.editGDEActivity = function(activityId){
 	  console.log(activityId)
 	  //Set the current Editing Activity
