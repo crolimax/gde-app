@@ -106,6 +106,11 @@ class UpdateActivityPosts(webapp2.RequestHandler):
                 logging.info('bad post spotted')
                 bad_posts.append(activity.url)
 
+        if len(bad_posts) > 0:
+            self.send_update_mail(bad_posts, previous_activity.gplus_id)
+        bad_posts = []
+        previous_activity = activity
+
 
         metrics["count"] = count
         metrics["updated_count"] = updated_count
