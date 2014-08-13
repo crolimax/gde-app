@@ -178,7 +178,7 @@ select:hover
     flex-direction		: row;
     align-items			: flex-start;
 }
-#gdeStatistics,	#generalStatisticsForGooglers	{
+#gdeStatistics,	#generalStatisticsForGooglers, #gdeAvatarBuilder	{
 	display				: none;
 }
 .plusLogin	#userImg	{
@@ -317,7 +317,6 @@ select:hover
 {
 	display				: none;
 }
-
 .prettyTable
 {
 	/* W3C */
@@ -353,17 +352,12 @@ select:hover
 	background-color	: #666;
 	border-radius		: 5px;
 }
-
 .stats
 {
 	border-radius	: 5px;
 	margin			: 1em;
 	padding			: 1em;
 	text-align		: center;
-}
-.forGooglers
-{
-	display				:none;
 }
 .dateRange
 {

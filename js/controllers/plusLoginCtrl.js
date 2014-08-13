@@ -39,6 +39,7 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
             case 'active':
               console.log('You are a GDE!');
               $('#gdeStatistics')					.css('display','block');
+              $('#gdeAvatarBuilder')				.css('display','block');
               $rootScope.usrId		= userId; //User authorized, save the Id in the rootScope
               break;
             default:
