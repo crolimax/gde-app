@@ -52,6 +52,9 @@ paper-dialog {
 	min-width			: 430px;
 	min-height			: 30%
 }
+paper-dialog.tall{
+  height:90%;
+}
 core-menu	{
 	position			: absolute;
 	top					: 70px;
@@ -96,7 +99,7 @@ paper-fab	{
 }
 
 paper-input{
-  width:100%;
+  width:auto;
 
 }
 
