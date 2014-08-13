@@ -138,11 +138,11 @@ class UpdateActivityPosts(webapp2.RequestHandler):
         prod_group = entity.get_product_groups(post['object']['content'])
         act_type = entity.get_activity_types(post['object']['content'])
 
-        if len(entity.product_group) != len(prod_group):
+        if sorted(entity.product_group) != sorted(prod_group):
             changed = True
             entity.product_group = prod_group
 
-        if len(entity.activity_type) != len(act_type):
+        if sorted(entity.activity_type) != sorted(act_type):
             changed = True
             entity.activity_type = act_type
 
