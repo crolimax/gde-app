@@ -22,7 +22,7 @@ angular.module('googlePlusSignin', []).
       // Some default values, based on prior versions of this directive
       var defaults = {
         callback: 'signinCallback',
-        cookiepolicy: 'single_host_origin',
+        cookiepolicy: 'none',
         //requestvisibleactions: 'http://schemas.google.com/AddActivity',
         scope: 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email',
         width: 'wide'
