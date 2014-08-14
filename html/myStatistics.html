@@ -86,26 +86,30 @@
 
 
 <!-- Activity record detail -->
-<paper-dialog	id="singleActivity"			transition="paper-dialog-transition-center">
-  <p class="editDialog">
+<paper-dialog	id="singleActivity"	class="tall" transition="paper-dialog-transition-center" >
 
-    <div class="core-header" >{{editMode}} Activity</div>
+  <core-scroll-header-panel>
 
-    <div class="content">
-      <paper-input floatingLabel label="Title of the activity" ng-model="currentActivity.activity_title"></paper-input>
+    <core-toolbar class="medium-tall">
+
+      <div class="bottom indent title">{{editMode}} Activity : {{currentActivity.activity_title}}</div>
+
+    </core-toolbar>
+
+    <div class="content" >
+      <div style="height: 128px;"></div>
+      <paper-input floatingLabel label="Title of the activity" ng-model="currentActivity.activity_title"  style="width:100%;"></paper-input>
       <br/>
       <div style="text-align:center">
-        <paper-input floatingLabel label="Activity Date" type="datetime" ng-model="currPost_dateLocale" style="width:20em;" ></paper-input>
-      </div>
-      <div style="text-align:center">
-        <paper-input floatingLabel label="Date Created" disabled type="datetime" ng-model="currDate_createdLocale" style="width:20em;" ></paper-input>
-        <paper-input floatingLabel label="Date Updated" disabled type="datetime" ng-model="currDate_updatedLocale" style="width:20em;" ></paper-input>
+        <paper-input floatingLabel label="Activity Date" type="datetime" ng-model="currPost_dateLocale" ></paper-input>
+        <paper-input floatingLabel label="Date Created" disabled type="datetime" ng-model="currDate_createdLocale"  ></paper-input>
+        <paper-input floatingLabel label="Date Updated" disabled type="datetime" ng-model="currDate_updatedLocale"  ></paper-input>
       </div>
       <br/>
       <div style="text-align:center">
-        <paper-input floatingLabel label="+1's" ng-model="currentActivity.plus_oners" style="width:20em;" type="number"></paper-input>
-        <paper-input floatingLabel label="Resharers" ng-model="currentActivity.resharers" style="width:20em;" type="number" ></paper-input>
-        <paper-input floatingLabel label="Comments" ng-model="currentActivity.comments" style="width:20em;" type="number"></paper-input>
+        <paper-input floatingLabel label="+1's" ng-model="currentActivity.plus_oners"  type="number"></paper-input>
+        <paper-input floatingLabel label="Resharers" ng-model="currentActivity.resharers"  type="number" ></paper-input>
+        <paper-input floatingLabel label="Comments" ng-model="currentActivity.comments" type="number"></paper-input>
         <br/>
       </div>
 
@@ -115,44 +119,55 @@
       <br/>
       <a ng-repeat="post in currentActivityPosts" style="float:left;width:10em"
         href={{post.url}} target="_blank">Original Post</a>
+      <br/>
+      <div horizontal layout> <!--Polymer Layout attributes-->
+        <div flex>
+          <h4>Activity Types</h4>
+          <div ng-repeat="actType in currentActivity.activity_types" style="float:left;width:auto">
 
+            <div class="card paper-shadow-top paper-shadow-top-z-1">
+              <div class="card-inner paper-shadow-bottom paper-shadow-bottom-z-1">
+                <span style="padding:10px;margin:10px">{{actType}}</span>
+              </div>
+            </div>
 
-      <h4>Activity Types</h4>
-      <div ng-repeat="actType in currentActivity.activity_types" style="float:left;width:auto">
-
-        <div class="card paper-shadow-top paper-shadow-top-z-1">
-          <div class="card-inner paper-shadow-bottom paper-shadow-bottom-z-1">
-            <span style="padding:10px;margin:10px">{{actType}}</span>
           </div>
+          <br/>
+          <paper-button label="Select" ng-click="showActivityTypes()"></paper-button>
         </div>
+        <div flex>
+          <h4>Products</h4>
+          <div ng-repeat="product in currentActivity.product_groups" style="float:left;width:auto">
 
-      </div>
-      <br/>
-      <paper-button label="Select" ng-click="showActivityTypes()"></paper-button>
-      <br/>
+            <div class="card paper-shadow-top paper-shadow-top-z-1">
+              <div class="card-inner paper-shadow-bottom paper-shadow-bottom-z-1">
+                <span style="padding:10px;margin:10px">{{product}}</span>
+              </div>
+            </div>
 
-      <h4>Products</h4>
-      <div ng-repeat="product in currentActivity.product_groups" style="float:left;width:auto">
-
-        <div class="card paper-shadow-top paper-shadow-top-z-1">
-          <div class="card-inner paper-shadow-bottom paper-shadow-bottom-z-1">
-            <span style="padding:10px;margin:10px">{{product}}</span>
           </div>
+          <br/>
+          <paper-button label="Select" ng-click="showProductGroups()"></paper-button>
         </div>
-
       </div>
-      <br/>
-      <paper-button label="Select" ng-click="showProductGroups()"></paper-button>
       <br/>
 
       <!--<h4>Activity Metadata</h4>-->
       <!--TODO:  Dynamically Change the Detail by activity Type -->
 
+      <div vertical layout end>
+        <div>
+          <paper-button raisedButton class ="colored red"label="Cancel" dismissive></paper-button>
+          <paper-button raisedButton class ="colored blue" label="Save" affirmative ng-click="saveGDEActivity()"></paper-button>
+        </div>
+      </div>
+
+
+
     </div>
 
-  </p>
-  <paper-button label="Cancel" dismissive></paper-button>
-  <paper-button label="Save" affirmative autofocus ng-click="saveGDEActivity()"></paper-button>
+  </core-scroll-header-panel>
+
 </paper-dialog>
 <!-- Activity Type Selection -->
 <paper-dialog	id="selectActivityTypes"	transition="paper-dialog-transition-center">
@@ -172,8 +187,12 @@
 	  </tr>
 	</table>
 
-  <paper-button label="Cancel" dismissive></paper-button>
-  <paper-button label="Save" affirmative autofocus ng-click="updCurrActivity('at')"></paper-button>
+  <div vertical layout start>
+    <div>
+      <paper-button label="Cancel" dismissive></paper-button>
+      <paper-button label="Save" affirmative ng-click="updCurrActivity('at')" ></paper-button>
+    </div>
+  </div>
 </paper-dialog>
 <!-- Product Groups Selection -->
 <paper-dialog	id="selectProductGroups"	transition="paper-dialog-transition-center">
@@ -195,7 +214,12 @@
 	  </tr>
 	</table>
 
-  <paper-button label="Cancel" dismissive></paper-button>
-  <paper-button label="Save" affirmative autofocus ng-click="updCurrActivity('pg')" ></paper-button>
+  <div vertical layout start>
+    <div>
+      <paper-button label="Cancel" dismissive></paper-button>
+      <paper-button label="Save" affirmative ng-click="updCurrActivity('pg')" ></paper-button>
+    </div>
+  </div>
+
 </paper-dialog>
 <script src="js/googleUniversalAnalytics.js"></script>
