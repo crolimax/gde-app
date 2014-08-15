@@ -66,7 +66,9 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 			});
 			request.execute(function(resp)
 			{
-//				console.log(resp);
+
+        $('gde-badge').get(0).updateImage(resp.image.url.replace(/\?.*$/,""));
+
 				$rootScope.$broadcast('gde:logged',resp.displayName);
 				$scope.userName			= resp.displayName;
 				$scope.userImageUrl		= (resp.image.url).replace("=50", "=90");

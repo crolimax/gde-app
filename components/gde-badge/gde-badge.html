@@ -84,6 +84,10 @@
                     this.image = this.user.image.url.split('?')[0];
                     this.extraclass = 'active';
                 }
+            },
+            updateImage: function(url){
+                this.image = url;
+                this.extraclass = 'active';
             }
         });
     </script>
