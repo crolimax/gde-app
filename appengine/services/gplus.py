@@ -48,6 +48,7 @@ class UpdateActivityPosts(webapp2.RequestHandler):
         #build the service object for the gplus api
         service = build('plus', 'v1', developerKey=API_KEY)
         #get all the activities (last 6 months enough?)
+        # activities = ActivityPost.query(ActivityPost.gplus_id == '117346385807218227082').order(ActivityPost.gplus_id)
         activities = ActivityPost.query().order(ActivityPost.gplus_id)
         count = 0
         updated_count = 0
@@ -177,17 +178,18 @@ class UpdateActivityPosts(webapp2.RequestHandler):
             email = account.email
 
         body_s = "The GDE Tracking team thanks you for using the tool. \n\n"
-        body_s += "The following post(s) is(are) missing Activity Type and/or Product Group hashtags. \n"
-        body_s += "Because of this, it(they) does not reflect in the program stats. \n\n"
+        body_s += "The following post(s) is(are) missing Activity Type and/or Product Group hashtags. "
+        body_s += "Because of this, it(they) does not reflect in your GDE stats. \n\n"
 
         for bad_post in bad_posts:
             body_s += "%s \n" % bad_post 
 
         body_s += "\nKindly update your post(s) with #hashtags. A reminder of the valid "
-        body_s += "hashtags can be found in the 'How Its Used?' section of http://gdetracking.gweb.io/"
+        body_s += "hashtags can be found in the 'How Its Used?' section of http://gdetracking.gweb.io/. \n\n"
+        body_s += "GDE Tracking Team"
 
         mail.send_mail(sender="GDE Tracking App Support <no-reply@omega-keep-406.appspotmail.com>",
-              to="Patrick Martinent <patrick.martinent@gmail.com>",
+              to=email,
               subject="GDE Activity Tracker : Missing hashtags on ActivityPost for %s " % datetime.now().strftime("%Y-%m-%d"),
               body="""%s""" % body_s)
 
