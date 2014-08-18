@@ -66,24 +66,24 @@ GdeTrackingApp.controller("startCtrl",							function($rootScope, $scope,	$http,
 					for (var i=0;i<$scope.gdeNumber;i++)
 					{
 						$scope.gdeList[i].pic_url		= ($scope.gdeList[i].pic_url).replace("=50", "=100");
-
-						var coords						= $scope.gdeList[i].geocode;
+					  
+						var coords						= JSON.parse($scope.gdeList[i].geocode);
 						var badge						= $scope.gdeList[i].pg_filename;
 						var icon						= 'img/badges/'+badge+'.png';
-
+					  
 						var gdeName						= $scope.gdeList[i].display_name;
 						var gdePic						= $scope.gdeList[i].pic_url;
 						var gdeBadge					= badge;
 						var gdeProducts					= $scope.gdeList[i].product_group;
 						var gdeCountry					= $scope.gdeList[i].country;
 						var ctry_filename				= $scope.gdeList[i].ctry_filename;
-
+					  
 						mapMarkers[i]					= {};
-
+					  
 						mapMarkers[i]["latitude"]		= coords.lat;
 						mapMarkers[i]["longitude"]		= coords.lng;
 						mapMarkers[i]["icon"]			= icon;
-
+					  
 						mapMarkers[i]["id"]				= "gde" + i;;
 						mapMarkers[i]["name"]			= gdeName;
 						mapMarkers[i]["badge"]			= gdeBadge;
@@ -110,7 +110,7 @@ GdeTrackingApp.controller("startCtrl",							function($rootScope, $scope,	$http,
 			}
 		});
 	};
-
+	
 	if ($rootScope.is_backend_ready){
 	  $scope.getGdeList();
 	}
