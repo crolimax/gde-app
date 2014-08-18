@@ -4,13 +4,18 @@ from endpoints_proto_datastore.ndb import EndpointsAliasProperty
 from protorpc import messages
 
 
+class AccountGeoCode(EndpointsModel):
+    lat = ndb.FloatProperty()
+    lng = ndb.FloatProperty()
+
+
 class Account(EndpointsModel):
 
     _message_fields_schema = ('id', 'gplus_id', 'gplus_page', 'type',
                               'display_name', 'pic_url', 'geocode',
-                              'real_name', 'email', 'location', 'region',
+                              'real_name', 'location', 'region',
                               'country', 'ctry_filename', 'product_group',
-                              'pg_filename', 'deleted', 'api_key')
+                              'pg_filename', 'deleted')
 
     _api_key = None
 
@@ -24,7 +29,7 @@ class Account(EndpointsModel):
     region = ndb.StringProperty()
     country = ndb.StringProperty()
     ctry_filename = ndb.StringProperty()
-    geocode = ndb.StringProperty()
+    geocode = ndb.StructuredProperty(AccountGeoCode)
     product_group = ndb.StringProperty(repeated=True)
     pg_filename = ndb.StringProperty()
     deleted = ndb.BooleanProperty()
