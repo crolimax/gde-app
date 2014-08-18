@@ -280,7 +280,7 @@ GdeTrackingApp.run(function ($rootScope,activityTypes,productGroups)
 			activity.comments		= parseInt(apiData.comments		|| 0, 10);
 			activity.activity_id		= apiData.id;
 			activity.plus_oners		= parseInt(apiData.plus_oners	|| 0, 10);
-			activity.date			= apiData.post_date;
+			activity.date			= $rootScope.utils.dateToCommonString(new Date(apiData.post_date));
 			activity.id				= apiData.id;
 			activity.product_group	= apiData.product_groups;
 			activity.activity_type	= apiData.activity_types;
@@ -334,7 +334,27 @@ GdeTrackingApp.run(function ($rootScope,activityTypes,productGroups)
 			row.c.push({v:totalComments});
 
 			return row;
+		},
+		'dateToCommonString'	: function (origDate)
+		{
+			var yyyy = origDate.getFullYear().toString();
+      var mm = (origDate.getMonth()+1).toString(); // getMonth() is zero-based
+      var dd  = origDate.getDate().toString();
+      return '' + yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]); // padding
+
+		},
+		'commonStringToDate'	: function (origStringDate)
+		{
+			var dateParts = origStringDate.split('-');
+			if (dateParts.length!=3){
+			  return 'Invalid Date';
+			}else{
+			  return new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+			}
+
 		}
+
+
 	};
 
 	$rootScope.activityTypes = activityTypes;
