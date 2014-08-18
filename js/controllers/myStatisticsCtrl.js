@@ -362,9 +362,23 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	  populatePGs();
 	  populateATs();
 
-	  $scope.currDate_updatedLocale = new Date($scope.currentActivity.date_updated).toLocaleDateString();
-    $scope.currDate_createdLocale = new Date($scope.currentActivity.date_created).toLocaleDateString();
-    $scope.currPost_dateLocale = new Date($scope.currentActivity.post_date).toLocaleDateString();
+	  $scope.currDate_updatedLocale = $rootScope.utils.dateToCommonString(new Date($scope.currentActivity.date_updated));
+    $scope.currDate_createdLocale = $rootScope.utils.dateToCommonString(new Date($scope.currentActivity.date_created));
+    $scope.currPost_dateLocale = $rootScope.utils.dateToCommonString(new Date($scope.currentActivity.post_date));
+    $scope.currActLink= $scope.currentActivity.activity_link;
+
+    if ($scope.currentActivity.plus_oners==null || $scope.currentActivity.plus_oners==""){
+	    $scope.currentActivity.plus_oners=0;
+
+	  }
+	  if ($scope.currentActivity.resharers==null || $scope.currentActivity.resharers==""){
+	    $scope.currentActivity.resharers=0;
+
+	  }
+	  if ($scope.currentActivity.comments==null || $scope.currentActivity.comments==""){
+	    $scope.currentActivity.comments=0;
+	  }
+
 
 	  //console.log(JSON.stringify($scope.currentActivity));
 
@@ -389,18 +403,21 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     $scope.currentActivity.gplus_id = $rootScope.usrId;
     $scope.currentActivity.activity_title='';
     $scope.currentActivity.activity_link = '';
-    $scope.currentActivity.post_date = new Date().toLocaleDateString();
+    $scope.currentActivity.post_date = $rootScope.utils.dateToCommonString(new Date());
+    $scope.currentActivity.date_updated = $rootScope.utils.dateToCommonString(new Date());
+    $scope.currentActivity.date_created = $rootScope.utils.dateToCommonString(new Date());
     $scope.currentActivity.activity_types = [];
     $scope.currentActivity.product_groups = [];
     $scope.currentActivity.gplus_posts = [];
-    $scope.resharers=0;
-    $scope.plus_oners=0;
-    $scope.comments=0;
+    $scope.currentActivity.resharers=0;
+    $scope.currentActivity.plus_oners=0;
+    $scope.currentActivity.comments=0;
 
 
-    $scope.currDate_updatedLocale = new Date().toLocaleDateString();
-    $scope.currDate_createdLocale = new Date().toLocaleDateString();
-    $scope.currPost_dateLocale = new Date($scope.currentActivity.post_date).toLocaleDateString();
+    $scope.currDate_updatedLocale = $rootScope.utils.dateToCommonString(new Date($scope.currentActivity.date_updated));
+    $scope.currDate_createdLocale = $rootScope.utils.dateToCommonString(new Date($scope.currentActivity.date_created));
+    $scope.currPost_dateLocale = $rootScope.utils.dateToCommonString(new Date($scope.currentActivity.post_date));
+    $scope.currActLink= '';
 
     populatePGs();
 	  populateATs();
@@ -440,82 +457,102 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
 	$scope.saveGDEActivity = function(){
 
-    //Update Date variales to avoid insert/Update errors
-    var post_date = new Date($scope.currPost_dateLocale);
-	  $scope.currentActivity.post_date =
-	      post_date.getFullYear() +'/'+
-	      ((post_date.getMonth()+1)<10?"0":"")+(post_date.getMonth()+1) +'/'+
-	      (post_date.getDate()<10?"0":"")+post_date.getDate()
-	      ;
-	  $scope.currentActivity.date_created = null;
-	  $scope.currentActivity.date_updated = null;
+    var readyToSave = false;
+    //Update Date variales to avoid Insert/Update errors
+    var post_date = $rootScope.utils.commonStringToDate($scope.currPost_dateLocale);
+    if (post_date!='Invalid Date'){
+      //store the data
+      $scope.currentActivity.post_date = post_date.toISOString();
+      readyToSave=true;
+    }
 
-	  $scope.currentActivity.gde_name = $scope.name;
+    if (!readyToSave){
+      alert('Invalid Activity Date format, please use YYYY-MM-DD');
+    }else{
 
-    $scope.gdeTrackingAPI.activity_record.insert($scope.currentActivity).execute(
-      function(response)
-  		{
+  	  $scope.currentActivity.gde_name = $scope.name;
 
-        if (response.code){
-          console.log('gdeTrackingAPI.activity_record.insert(DATA) responded with Response Code: '+response.code + ' - '+ response.message);
-          console.log(JSON.stringify($scope.currentActivity));
-        }else{
-          //Delete the activity from the local arrays if in edit
-          if ($scope.editMode='Edit'){
-            //Find the activity index
-            var itmId=null;
-            for (var i=0;i<$scope.data.items.length;i++){
-              if ($scope.data.items[i].id== response.id){
-                itmId=i;
-                break;
+  	  //Sanity Checks on Number
+  	  if ($scope.currentActivity.plus_oners==null || $scope.currentActivity.plus_oners==""){
+  	    $scope.currentActivity.plus_oners=0;
+
+  	  }
+  	  if ($scope.currentActivity.resharers==null || $scope.currentActivity.resharers==""){
+  	    $scope.currentActivity.resharers=0;
+
+  	  }
+  	  if ($scope.currentActivity.comments==null || $scope.currentActivity.comments==""){
+  	    $scope.currentActivity.comments=0;
+  	  }
+
+      $scope.gdeTrackingAPI.activity_record.insert($scope.currentActivity).execute(
+        function(response)
+    		{
+
+          if (response.code){
+            console.log('gdeTrackingAPI.activity_record.insert(DATA) responded with Response Code: '+response.code + ' - '+ response.message);
+            console.log(JSON.stringify($scope.currentActivity));
+            alert(response.message);
+          }else{
+            //Delete the activity from the local arrays if in edit
+            if ($scope.editMode=='Edit'){
+              //Find the activity index
+              var itmId=null;
+              for (var i=0;i<$scope.data.items.length;i++){
+                if ($scope.data.items[i].id== response.id){
+                  itmId=i;
+                  break;
+                }
+
               }
-
-            }
-            if(itmId){
-              //Remove the Old Item
-              $scope.data.items.splice(itmId,1);
-            }
-            itmId=null;
-            //activitiesByGdeNameTemp[$scope.name]
-            for (var i=0;i<$scope.activitiesByGdeNameTemp[$scope.name]['activities'].length;i++){
-              if ($scope.activitiesByGdeNameTemp[$scope.name]['activities'][i].id== response.id){
-                itmId=i;
-                break;
+              if(itmId){
+                //Remove the Old Item
+                $scope.data.items.splice(itmId,1);
               }
+              itmId=null;
+              //activitiesByGdeNameTemp[$scope.name]
+              for (var i=0;i<$scope.activitiesByGdeNameTemp[$scope.name]['activities'].length;i++){
+                if ($scope.activitiesByGdeNameTemp[$scope.name]['activities'][i].id== response.id){
+                  itmId=i;
+                  break;
+                }
 
-            }
-            if(itmId){
-              //Remove the Old Item
-              $scope.activitiesByGdeNameTemp[$scope.name]['activities'].splice(itmId,1);
-            }
-            itmId=null;
-            for (var i=0;i<$scope.userActivities.length;i++){
-              if ($scope.userActivities[i].id== response.id){
-                itmId=i;
-                break;
               }
+              if(itmId){
+                //Remove the Old Item
+                $scope.activitiesByGdeNameTemp[$scope.name]['activities'].splice(itmId,1);
+              }
+              itmId=null;
+              for (var i=0;i<$scope.userActivities.length;i++){
+                if ($scope.userActivities[i].id== response.id){
+                  itmId=i;
+                  break;
+                }
 
+              }
+              if(itmId){
+                //Remove the Old Item
+                $scope.userActivities.splice(itmId,1);
+              }
             }
-            if(itmId){
-              //Remove the Old Item
-              $scope.userActivities.splice(itmId,1);
-            }
+            //Update the local Arrays
+            $scope.data.items.push(response);
+            $scope.utils.updateStats($scope.activitiesByGdeNameTemp[$scope.name], response);
+            var activity = $scope.utils.activityFromApi(response);
+  					$scope.activitiesByGdeNameTemp[$scope.name]['activities'].push(response);
+            $scope.userActivities.push(activity);
+
+            //Apply and refresh
+            $scope.$apply();
+            //drawGeneralStatistics();
+
+            //Hide the dialog
+            toggleDialog('singleActivity');
           }
-          //Update the local Arrays
-          $scope.data.items.push(response);
-          $scope.utils.updateStats($scope.activitiesByGdeNameTemp[$scope.name], response);
-          var activity = $scope.utils.activityFromApi(response);
-					$scope.activitiesByGdeNameTemp[$scope.name]['activities'].push(response);
-          $scope.userActivities.push(activity);
 
-          //Apply and refresh
-          $scope.$apply();
-          //drawGeneralStatistics();
-
-        }
-
-  		}
-  	);
+    		}
+    	);
+    }
 	};
 
 });

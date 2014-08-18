@@ -50,7 +50,7 @@
 			<th>
 				Comments
 			</th>
-			<th>
+			<th style="width:3em">
 				Date
 			</th>
 		</tr>
@@ -105,17 +105,19 @@
         <paper-input floatingLabel label="Date Created" disabled type="datetime" ng-model="currDate_createdLocale"  ></paper-input>
         <paper-input floatingLabel label="Date Updated" disabled type="datetime" ng-model="currDate_updatedLocale"  ></paper-input>
       </div>
-      <br/>
-      <div style="text-align:center">
+      <div style="text-align:center" ng-if="currentActivityPosts.length!=0">
+        <paper-input floatingLabel disabled label="+1's" ng-model="currentActivity.plus_oners"  type="number"></paper-input>
+        <paper-input floatingLabel disabled label="Resharers" ng-model="currentActivity.resharers"  type="number" ></paper-input>
+        <paper-input floatingLabel disabled label="Comments" ng-model="currentActivity.comments" type="number"></paper-input>
+      </div>
+      <div style="text-align:center" ng-if="currentActivityPosts.length==0">
         <paper-input floatingLabel label="+1's" ng-model="currentActivity.plus_oners"  type="number"></paper-input>
         <paper-input floatingLabel label="Resharers" ng-model="currentActivity.resharers"  type="number" ></paper-input>
         <paper-input floatingLabel label="Comments" ng-model="currentActivity.comments" type="number"></paper-input>
-        <br/>
       </div>
-
       <h4>Links</h4>
-      <a href={{currentActivity.activity_link}} style="text-align:left" target="_blank" ng-if="currentActivity.activity_link">Activity Link</a>
-      <paper-input floatingLabel label="Activity Link" ng-model="currentActivity.activity_link" ng-if="!currentActivity.activity_link" style="width:20em;"></paper-input>
+      <a href={{currentActivity.activity_link}} style="text-align:left" target="_blank" ng-if="currActLink">Activity Link</a>
+      <paper-input floatingLabel label="Activity Link" ng-model="currentActivity.activity_link" ng-if="!currActLink" style="width:100%;"></paper-input>
       <br/>
       <a ng-repeat="post in currentActivityPosts" style="float:left;width:10em"
         href={{post.url}} target="_blank">Original Post</a>
@@ -158,7 +160,7 @@
       <div vertical layout end>
         <div>
           <paper-button raisedButton class ="colored red"label="Cancel" dismissive></paper-button>
-          <paper-button raisedButton class ="colored blue" label="Save" affirmative ng-click="saveGDEActivity()"></paper-button>
+          <paper-button raisedButton class ="colored blue" label="Save" ng-click="saveGDEActivity()"></paper-button>
         </div>
       </div>
 
