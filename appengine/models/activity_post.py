@@ -9,7 +9,7 @@ ACTIVITY_TYPES = ["#bugreport", "#article", "#blogpost", "#book", "#techdocs",
                   "#translation", "#techtalk", "#opensourcecode",
                   "#forumpost", "#community", "#video", "#tutorial", "#interview"];
 
-PRODUCT_GROUPS = ["#android", "#admob", "#adwords", "#angulars", "#chrome",
+PRODUCT_GROUPS = ["#android", "#admob", "#adwords", "#angularjs", "#chrome",
                   "#dart", "#dartlang", "#cloudplatform", "#googleanalytics",
                   "#googleappsapi","#googleappsscript", "#googledrive",
                   "#glass", "#googlemapsapi", "#googleplus", "#youtube",
