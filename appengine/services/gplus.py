@@ -48,23 +48,38 @@ class UpdateActivityPosts(webapp2.RequestHandler):
         #build the service object for the gplus api
         service = build('plus', 'v1', developerKey=API_KEY)
         #get all the activities (last 6 months enough?)
-        activities = ActivityPost.query()
+        # activities = ActivityPost.query(ActivityPost.gplus_id == '117346385807218227082').order(ActivityPost.gplus_id)
+        activities = ActivityPost.query().order(ActivityPost.gplus_id)
         count = 0
         updated_count = 0
+
+        # activities are ordered so we can send only one mail per gde
+        first_time = True
+        bad_posts = []
         for activity in activities:
+            if first_time:
+                first_time = False
+                previous_activity = activity
+
+            if previous_activity.gplus_id != activity.gplus_id:
+                if len(bad_posts) > 0:
+                    self.send_update_mail(bad_posts, previous_activity.gplus_id)
+                bad_posts = []
+                previous_activity = activity
+
             count += 1
             #get the activity from gplus
             try:
                 plus_activity = service.activities().get(
                     activityId=activity.post_id,
-                    fields='object(plusoners/totalItems,replies/totalItems,resharers/totalItems)').execute()
+                    fields='object(plusoners/totalItems,replies/totalItems,resharers/totalItems,content)').execute()
             except:
                 #try again
                 logging.info('trying to get gplus activities again')
                 try:
                     plus_activity = service.activities().get(
                         activityId=activity.post_id,
-                        fields='object(plusoners/totalItems,replies/totalItems,resharers/totalItems)').execute()
+                        fields='object(plusoners/totalItems,replies/totalItems,resharers/totalItems,content)').execute()
                 except:
                     logging.info('failed again, giving up')
 
@@ -86,6 +101,17 @@ class UpdateActivityPosts(webapp2.RequestHandler):
                 #create a list of updated posts
                 updated_count += 1
                 records.append(updated_activity.url)
+
+            # does the activity have the necessary hashtags? NOT -> bad_posts
+            if len(activity.product_group) == 0 or len(activity.activity_type) is 0:
+                logging.info('bad post spotted')
+                bad_posts.append(activity.url)
+
+        if len(bad_posts) > 0:
+            self.send_update_mail(bad_posts, previous_activity.gplus_id)
+        bad_posts = []
+        previous_activity = activity
+
 
         metrics["count"] = count
         metrics["updated_count"] = updated_count
@@ -110,6 +136,17 @@ class UpdateActivityPosts(webapp2.RequestHandler):
             changed = True
             entity.comments = post['object']['replies']['totalItems']
 
+        prod_group = entity.get_product_groups(post['object']['content'])
+        act_type = entity.get_activity_types(post['object']['content'])
+
+        if sorted(entity.product_group) != sorted(prod_group):
+            changed = True
+            entity.product_group = prod_group
+
+        if sorted(entity.activity_type) != sorted(act_type):
+            changed = True
+            entity.activity_type = act_type
+
         if changed:
             return entity
         else:
@@ -131,6 +168,30 @@ class UpdateActivityPosts(webapp2.RequestHandler):
               to="Patrick Martinent <patrick.martinent@gmail.com>",
               subject="GAE CRON JOB : Update ActivityPost for %s " % datetime.now().strftime("%Y-%m-%d"),
               body="""%s""" % body_string)
+
+    def send_update_mail(self, bad_posts, gplus_id):
+        """Send out a mail with a link to the post for update"""
+        # get the user
+        accounts = Account.query(Account.gplus_id == gplus_id)
+
+        for account in accounts:
+            email = account.email
+
+        body_s = "The GDE Tracking team thanks you for using the tool. \n\n"
+        body_s += "The following post(s) is(are) missing Activity Type and/or Product Group hashtags. "
+        body_s += "Because of this, it(they) does not reflect in your GDE stats. \n\n"
+
+        for bad_post in bad_posts:
+            body_s += "%s \n" % bad_post 
+
+        body_s += "\nKindly update your post(s) with #hashtags. A reminder of the valid "
+        body_s += "hashtags can be found in the 'How Its Used?' section of http://gdetracking.gweb.io/. \n\n"
+        body_s += "GDE Tracking Team"
+
+        mail.send_mail(sender="GDE Tracking App Support <no-reply@omega-keep-406.appspotmail.com>",
+              to=email,
+              subject="GDE Activity Tracker : Missing hashtags on ActivityPost for %s " % datetime.now().strftime("%Y-%m-%d"),
+              body="""%s""" % body_s)
 
 
 class NewActivityPosts(webapp2.RequestHandler):
