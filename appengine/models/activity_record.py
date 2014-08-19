@@ -1,6 +1,7 @@
 from google.appengine.ext import ndb
 from endpoints_proto_datastore.ndb import EndpointsModel
 from endpoints_proto_datastore.ndb import EndpointsAliasProperty
+from endpoints_proto_datastore.ndb import EndpointsVariantIntegerProperty
 from datetime import datetime
 from protorpc import messages
 
@@ -27,7 +28,7 @@ class ActivityMetaData(EndpointsModel):
 
     # impact is about the number of people impacted
     # views for #blogpost, attendess for #techtalks ...
-    impact = ndb.IntegerProperty()
+    impact = EndpointsVariantIntegerProperty(variant=messages.Variant.INT32)
 
     # for some acivities, links to slides, video's etc 
     other_link1 = ndb.StringProperty()
@@ -37,7 +38,7 @@ class ActivityMetaData(EndpointsModel):
     # community, techtalk
     location = ndb.StringProperty()
     google_expensed = ndb.BooleanProperty()
-    us_approx_amount = ndb.IntegerProperty()
+    us_approx_amount = EndpointsVariantIntegerProperty(variant=messages.Variant.INT32)
 
 
 class ActivityRecord(EndpointsModel):
@@ -65,9 +66,9 @@ class ActivityRecord(EndpointsModel):
     activity_title = ndb.StringProperty()
     gplus_posts = ndb.StringProperty(repeated=True)
     # cumulative plus_oners & resharers
-    plus_oners = ndb.IntegerProperty()
-    resharers = ndb.IntegerProperty()
-    comments = ndb.IntegerProperty()
+    plus_oners = EndpointsVariantIntegerProperty(variant=messages.Variant.INT32)
+    resharers = EndpointsVariantIntegerProperty(variant=messages.Variant.INT32)
+    comments = EndpointsVariantIntegerProperty(variant=messages.Variant.INT32)
     # activity types and product groups
     activity_types = ndb.StringProperty(repeated=True)
     product_groups = ndb.StringProperty(repeated=True)

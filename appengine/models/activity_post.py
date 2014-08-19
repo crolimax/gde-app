@@ -3,6 +3,7 @@ import logging
 from google.appengine.ext import ndb
 from endpoints_proto_datastore.ndb import EndpointsModel
 from endpoints_proto_datastore.ndb import EndpointsAliasProperty
+from endpoints_proto_datastore.ndb import EndpointsVariantIntegerProperty
 from protorpc import messages
 
 ACTIVITY_TYPES = ["#bugreport", "#article", "#blogpost", "#book", "#techdocs",
@@ -30,9 +31,9 @@ class ActivityPost(EndpointsModel):
     name = ndb.StringProperty()
     # date at which the activity (post) was made
     date = ndb.StringProperty()
-    plus_oners = ndb.IntegerProperty()
-    resharers = ndb.IntegerProperty()
-    comments = ndb.IntegerProperty()
+    plus_oners = EndpointsVariantIntegerProperty(variant=messages.Variant.INT32)
+    resharers = EndpointsVariantIntegerProperty(variant=messages.Variant.INT32)
+    comments = EndpointsVariantIntegerProperty(variant=messages.Variant.INT32) 
     title = ndb.StringProperty()
     # url of the post (question for stack overflow)
     url = ndb.StringProperty()
