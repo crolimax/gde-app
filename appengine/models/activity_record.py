@@ -173,3 +173,17 @@ def find_or_create(activity_post):
     else:
         # TODO : DON'T KNOW WHAT TO DO HERE
         return remote.ApplicationError("Mutiple Matching ActivityRecord")
+
+
+def find(activity_post):
+    activity_link = activity_post.links
+    if activity_post.links == "":
+        activity_link = activity_post.url
+
+    records = ActivityRecord.query(ActivityRecord.activity_link ==
+                                   activity_link).fetch(1)
+
+    if (len(records) == 0):
+        return None
+
+    return records[0]

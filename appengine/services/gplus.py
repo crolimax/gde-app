@@ -107,8 +107,17 @@ class UpdateActivityPosts(webapp2.RequestHandler):
 
             # does the activity have the necessary hashtags? NOT -> bad_posts
             if len(activity.product_group) == 0 or len(activity.activity_type) is 0:
-                logging.info('bad post spotted')
-                bad_posts.append(activity.url)
+                # check associated AR as well
+                really_bad = False
+                activity_record = ar.find(activity)
+                if activity_record is None:
+                    really_bad = True
+                elif len(activity_record.activity_types) == 0 or len(activity_record.product_groups) == 0:
+                    really_bad = True
+
+                if really_bad:
+                    logging.info('bad post spotted')
+                    bad_posts.append(activity.url)
 
         if len(bad_posts) > 0:
             self.send_update_mail(bad_posts, previous_activity.gplus_id)
