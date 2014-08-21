@@ -319,10 +319,12 @@ def is_gde_post(activity):
     # find out wether the verb of the post is 'post'
     # alternatively is the verb is 'share' then verify that
     # actor.id of the share and the original post are the same
-    valid_post = False
-    if activity["verb"] == 'post':
-        return True
-    elif activity["object"]["actor"]["id"] == activity["actor"]["id"]:
-        return True
+    if 'verb' in activity:
+        if activity["verb"] == 'post':
+            return True
+        elif activity["object"]["actor"]["id"] == activity["actor"]["id"]:
+            return True
+        else:
+            return False
     else:
-        return False
+        return True
