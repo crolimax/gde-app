@@ -86,6 +86,12 @@ class UpdateActivityPosts(webapp2.RequestHandler):
                     logging.info('failed again, giving up')
                     continue
 
+            if not is_gde_post(plus_activity):
+                # #gde tag has been removed from post
+                # This post and associated AR should be deleted
+                # For now we just skip any further action on this post
+                continue
+
             # toogle one of the two lines below
 
             # comment if you need to update every activity post
@@ -260,7 +266,7 @@ class NewActivityPosts(webapp2.RequestHandler):
             for gplus_activity in gplus_activities:
                 if gplus_activity["updated"] > last_activity_date:
                     # ensure this is a gde post
-                    if self.is_gde_post(gplus_activity):
+                    if is_gde_post(gplus_activity):
 
                         #create a new activity
                         new_activity = ActivityPost(id=gplus_activity["id"])
@@ -283,23 +289,6 @@ class NewActivityPosts(webapp2.RequestHandler):
         self.send_transcript_mail(metrics)
         logging.info('End NewActivityPosts')
 
-    def is_gde_post(self, activity):
-        """Identify gde post."""
-        # first find out wether the post contains #gde
-        result = re.search('(#(gde</a>))', activity["object"]["content"], flags=re.IGNORECASE)
-        if result is None:
-            return False
-        # find out wether the verb of the post is 'post'
-        # alternatively is the verb is 'share' then verify that
-        # actor.id of the share and the original post are the same
-        valid_post = False
-        if activity["verb"] == 'post':
-            return True
-        elif activity["object"]["actor"]["id"] == activity["actor"]["id"]:
-            return True
-        else:
-            return False
-
     def send_transcript_mail(self, metrics):
         """Send out a mail with some metrics about the process."""
         body_string = "Started at %s \n" % metrics["start"]
@@ -318,5 +307,22 @@ class NewActivityPosts(webapp2.RequestHandler):
               body="""%s""" % body_string)
 
 
-
-
+def is_gde_post(activity):
+    """Identify gde post."""
+    # first find out wether the post contains #gde
+    content = activity['object']['content']
+    if 'annotation' in activity:
+        content += ' ' + activity['annotation']
+    result = re.search('(#(gde</a>))', content, flags=re.IGNORECASE)
+    if result is None:
+        return False
+    # find out wether the verb of the post is 'post'
+    # alternatively is the verb is 'share' then verify that
+    # actor.id of the share and the original post are the same
+    valid_post = False
+    if activity["verb"] == 'post':
+        return True
+    elif activity["object"]["actor"]["id"] == activity["actor"]["id"]:
+        return True
+    else:
+        return False
