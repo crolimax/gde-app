@@ -343,13 +343,13 @@ GdeTrackingApp.run(function ($rootScope,activityTypes,productGroups)
       return '' + yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]); // padding
 
 		},
-		'commonStringToDate'	: function (origStringDate)
+		'verifyDateStringFormat'	: function (origStringDate)
 		{
 			var dateParts = origStringDate.split('-');
 			if (dateParts.length!=3){
 			  return 'Invalid Date';
 			}else{
-			  return new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+			  return origStringDate;
 			}
 
 		}

@@ -459,10 +459,10 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
     var readyToSave = false;
     //Update Date variales to avoid Insert/Update errors
-    var post_date = $rootScope.utils.commonStringToDate($scope.currPost_dateLocale);
+    var post_date = $rootScope.utils.verifyDateStringFormat($scope.currPost_dateLocale);
     if (post_date!='Invalid Date'){
-      //store the data
-      $scope.currentActivity.post_date = post_date.toISOString();
+      //store the date
+      $scope.currentActivity.post_date = post_date;
       readyToSave=true;
     }
 
