@@ -94,9 +94,36 @@ def check_auth(gplus_id, api_key):
     return False
 
 
+class UpdateDates(webapp2.RequestHandler):
+
+    """Update dates for https://github.com/maiera/gde-app/issues/86. """
+
+    def get(self):
+        """Process the job."""
+
+        logging.info('Start date format update')
+        activities = ActivityRecord.query()
+        count = 0
+        for activity in activities:
+            count += 1
+            # logging.info(activity.id)
+            try:
+                date = datetime.strptime(activity.post_date, '%Y/%m/%d')
+                date_formated = date.strftime("%Y-%m-%d")
+                activity.post_date = date_formated
+            except:
+                logging.info('failed')
+                logging.info(activity.id) 
+            else:
+                # pass
+                activity.put()
+            
+        logging.info('End date format update, processed %s activities' % count)
+
+
 class ReconstructDataSet(webapp2.RequestHandler):
 
-    """Updates Existing Activity Posts."""
+    """Updates Existing Activity Posts. """
 
     def get(self):
         """Process the job."""
