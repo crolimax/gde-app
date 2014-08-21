@@ -68,20 +68,23 @@ class UpdateActivityPosts(webapp2.RequestHandler):
                 previous_activity = activity
 
             count += 1
-            #get the activity from gplus
+
+            # get the activity from gplus
+            fields = 'annotation,object(plusoners/totalItems,replies/totalItems,resharers/totalItems,content)'
             try:
                 plus_activity = service.activities().get(
                     activityId=activity.post_id,
-                    fields='object(plusoners/totalItems,replies/totalItems,resharers/totalItems,content)').execute()
+                    fields=fields).execute()
             except:
-                #try again
+                # try again
                 logging.info('trying to get gplus activities again')
                 try:
                     plus_activity = service.activities().get(
                         activityId=activity.post_id,
-                        fields='object(plusoners/totalItems,replies/totalItems,resharers/totalItems,content)').execute()
+                        fields=fields).execute()
                 except:
                     logging.info('failed again, giving up')
+                    continue
 
             # toogle one of the two lines below
 
@@ -91,7 +94,7 @@ class UpdateActivityPosts(webapp2.RequestHandler):
             # comment is you need to only update changed activity posts
             # plus_oners, resharers, replies ( comments )
             #updated_activity = activity
-            
+
             if not updated_activity is None:
                 logging.info('updated gplus post id %s' % updated_activity.post_id)
                 updated_activity.put()
@@ -136,8 +139,12 @@ class UpdateActivityPosts(webapp2.RequestHandler):
             changed = True
             entity.comments = post['object']['replies']['totalItems']
 
-        prod_group = entity.get_product_groups(post['object']['content'])
-        act_type = entity.get_activity_types(post['object']['content'])
+        content = post['object']['content']
+        if 'annotation' in post:
+            content += ' ' + post['annotation']
+
+        prod_group = entity.get_product_groups(content)
+        act_type = entity.get_activity_types(content)
 
         if sorted(entity.product_group) != sorted(prod_group):
             changed = True
