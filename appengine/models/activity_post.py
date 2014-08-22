@@ -68,8 +68,13 @@ class ActivityPost(EndpointsModel):
         self.plus_oners=gplus_post['object']['plusoners']['totalItems']
         self.resharers=gplus_post['object']['resharers']['totalItems']
         self.comments=gplus_post['object']['replies']['totalItems']
-        self.activity_type = self.get_activity_types(gplus_post["object"]["content"])
-        self.product_group = self.get_product_groups(gplus_post["object"]["content"])
+
+        content = gplus_post["object"]["content"]
+        if 'annotation' in gplus_post:
+            content += ' ' + gplus_post['annotation']
+
+        self.activity_type = self.get_activity_types(content)
+        self.product_group = self.get_product_groups(content)
         try:
             attachments = gplus_post["object"]["attachments"]
         except Exception as e:

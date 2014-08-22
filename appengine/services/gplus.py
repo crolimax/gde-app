@@ -68,20 +68,29 @@ class UpdateActivityPosts(webapp2.RequestHandler):
                 previous_activity = activity
 
             count += 1
-            #get the activity from gplus
+
+            # get the activity from gplus
+            fields = 'annotation,object(plusoners/totalItems,replies/totalItems,resharers/totalItems,content)'
             try:
                 plus_activity = service.activities().get(
                     activityId=activity.post_id,
-                    fields='object(plusoners/totalItems,replies/totalItems,resharers/totalItems,content)').execute()
+                    fields=fields).execute()
             except:
-                #try again
+                # try again
                 logging.info('trying to get gplus activities again')
                 try:
                     plus_activity = service.activities().get(
                         activityId=activity.post_id,
-                        fields='object(plusoners/totalItems,replies/totalItems,resharers/totalItems,content)').execute()
+                        fields=fields).execute()
                 except:
                     logging.info('failed again, giving up')
+                    continue
+
+            if not is_gde_post(plus_activity):
+                # #gde tag has been removed from post
+                # This post and associated AR should be deleted
+                # For now we just skip any further action on this post
+                continue
 
             # toogle one of the two lines below
 
@@ -91,7 +100,7 @@ class UpdateActivityPosts(webapp2.RequestHandler):
             # comment is you need to only update changed activity posts
             # plus_oners, resharers, replies ( comments )
             #updated_activity = activity
-            
+
             if not updated_activity is None:
                 logging.info('updated gplus post id %s' % updated_activity.post_id)
                 updated_activity.put()
@@ -104,8 +113,17 @@ class UpdateActivityPosts(webapp2.RequestHandler):
 
             # does the activity have the necessary hashtags? NOT -> bad_posts
             if len(activity.product_group) == 0 or len(activity.activity_type) is 0:
-                logging.info('bad post spotted')
-                bad_posts.append(activity.url)
+                # check associated AR as well
+                really_bad = False
+                activity_record = ar.find(activity)
+                if activity_record is None:
+                    really_bad = True
+                elif len(activity_record.activity_types) == 0 or len(activity_record.product_groups) == 0:
+                    really_bad = True
+
+                if really_bad:
+                    logging.info('bad post spotted')
+                    bad_posts.append(activity.url)
 
         if len(bad_posts) > 0:
             self.send_update_mail(bad_posts, previous_activity.gplus_id)
@@ -136,8 +154,12 @@ class UpdateActivityPosts(webapp2.RequestHandler):
             changed = True
             entity.comments = post['object']['replies']['totalItems']
 
-        prod_group = entity.get_product_groups(post['object']['content'])
-        act_type = entity.get_activity_types(post['object']['content'])
+        content = post['object']['content']
+        if 'annotation' in post:
+            content += ' ' + post['annotation']
+
+        prod_group = entity.get_product_groups(content)
+        act_type = entity.get_activity_types(content)
 
         if sorted(entity.product_group) != sorted(prod_group):
             changed = True
@@ -244,7 +266,7 @@ class NewActivityPosts(webapp2.RequestHandler):
             for gplus_activity in gplus_activities:
                 if gplus_activity["updated"] > last_activity_date:
                     # ensure this is a gde post
-                    if self.is_gde_post(gplus_activity):
+                    if is_gde_post(gplus_activity):
 
                         #create a new activity
                         new_activity = ActivityPost(id=gplus_activity["id"])
@@ -267,23 +289,6 @@ class NewActivityPosts(webapp2.RequestHandler):
         self.send_transcript_mail(metrics)
         logging.info('End NewActivityPosts')
 
-    def is_gde_post(self, activity):
-        """Identify gde post."""
-        # first find out wether the post contains #gde
-        result = re.search('(#(gde</a>))', activity["object"]["content"], flags=re.IGNORECASE)
-        if result is None:
-            return False
-        # find out wether the verb of the post is 'post'
-        # alternatively is the verb is 'share' then verify that
-        # actor.id of the share and the original post are the same
-        valid_post = False
-        if activity["verb"] == 'post':
-            return True
-        elif activity["object"]["actor"]["id"] == activity["actor"]["id"]:
-            return True
-        else:
-            return False
-
     def send_transcript_mail(self, metrics):
         """Send out a mail with some metrics about the process."""
         body_string = "Started at %s \n" % metrics["start"]
@@ -302,5 +307,24 @@ class NewActivityPosts(webapp2.RequestHandler):
               body="""%s""" % body_string)
 
 
-
-
+def is_gde_post(activity):
+    """Identify gde post."""
+    # first find out wether the post contains #gde
+    content = activity['object']['content']
+    if 'annotation' in activity:
+        content += ' ' + activity['annotation']
+    result = re.search('(#(gde</a>))', content, flags=re.IGNORECASE)
+    if result is None:
+        return False
+    # find out wether the verb of the post is 'post'
+    # alternatively is the verb is 'share' then verify that
+    # actor.id of the share and the original post are the same
+    if 'verb' in activity:
+        if activity["verb"] == 'post':
+            return True
+        elif activity["object"]["actor"]["id"] == activity["actor"]["id"]:
+            return True
+        else:
+            return False
+    else:
+        return True
