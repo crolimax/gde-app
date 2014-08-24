@@ -5,16 +5,8 @@ from endpoints_proto_datastore.ndb import EndpointsModel
 from endpoints_proto_datastore.ndb import EndpointsAliasProperty
 from endpoints_proto_datastore.ndb import EndpointsVariantIntegerProperty
 from protorpc import messages
-
-ACTIVITY_TYPES = ["#bugreport", "#article", "#blogpost", "#book", "#techdocs",
-                  "#translation", "#techtalk", "#opensourcecode",
-                  "#forumpost", "#community", "#video", "#tutorial", "#interview"];
-
-PRODUCT_GROUPS = ["#android", "#admob", "#adwords", "#angularjs", "#chrome",
-                  "#dart", "#dartlang", "#cloudplatform", "#googleanalytics",
-                  "#googleappsapi","#googleappsscript", "#googledrive",
-                  "#glass", "#googlemapsapi", "#googleplus", "#youtube",
-                  "#uxdesign"];
+from models import ActivityType
+from models import ProductGroup
 
 class ActivityPost(EndpointsModel):
 
@@ -87,7 +79,7 @@ class ActivityPost(EndpointsModel):
     def get_activity_types(self, content):
         """Extract activity type hashtags."""
         at = []
-        for activity_type in ACTIVITY_TYPES:
+        for activity_type in ActivityType.all_tags():
             result = re.search(activity_type, content, flags=re.IGNORECASE)
             if result is not None:
                 at.append(activity_type)
@@ -96,7 +88,7 @@ class ActivityPost(EndpointsModel):
     def get_product_groups(self, content):
         """Extract product group hashtags."""
         pg = []
-        for product_group in PRODUCT_GROUPS:
+        for product_group in ProductGroup.all_tags():
             result = re.search(product_group, content, flags=re.IGNORECASE)
             if result is not None:
                 pg.append(product_group)
@@ -111,6 +103,3 @@ class ActivityPost(EndpointsModel):
                     links += ", "
                 links += attachment["url"]
         return links
-
-
-

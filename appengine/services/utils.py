@@ -28,17 +28,6 @@ from models import activity_record as ar
 
 API_KEY = 'AIzaSyBVCJKggp_1VBIC2xisWCWrX-VR-Dih694'
 
-ACTIVITY_TYPES = ["#bugreport", "#article", "#blogpost", "#book", "#techdocs",
-                  "#translation", "#techtalk", "#opensourcecode",
-                  "#forumpost", "#community", "#video", "#tutorial", "#interview"]
-
-PRODUCT_GROUPS = ["#android", "#admob", "#adwords", "#angularjs", "#chrome",
-                  "#dart", "#dartlang", "#cloudplatform", "#googleanalytics",
-                  "#googleappsapi", "#googleappsscript", "#googledrive",
-                  "#glass", "#googlemapsapi", "#googleplus", "#youtube",
-                  "#uxdesign"]
-
-
 my_default_retry_params = gcs.RetryParams(initial_delay=0.2,
                                           max_delay=5.0,
                                           backoff_factor=2,
