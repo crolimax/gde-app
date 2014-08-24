@@ -4,11 +4,10 @@ from models import ActivityPost
 from models import ActivityRecord
 from models import activity_record as ar
 from models import Account
-from datetime import datetime
+from models import ActivityType
+from models import ProductGroup
 
 from .utils import check_auth
-
-import logging
 
 _CLIENT_IDs = [
     endpoints.API_EXPLORER_CLIENT_ID,
@@ -125,7 +124,7 @@ class AccountService(remote.Service):
                                      'pg_filename', 'deleted'))
     def AccountInsert(self, account):
         if not check_auth(None, account.api_key):
-            raise endpoints.UnauthorizedException('Only GDEs and admins may enter or change data.')
+            raise endpoints.UnauthorizedException('Only Admins may enter or change this data.')
 
         account.put()
         return account
@@ -140,4 +139,80 @@ class AccountService(remote.Service):
     @Account.query_method(query_fields=('limit', 'order', 'pageToken', 'type'),
                           path='account', name='list')
     def AccountList(self, query):
+        return query
+
+
+@api_root.api_class(resource_name='activity_type', path='activityType')
+class ActivityTypeService(remote.Service):
+
+    @ActivityType.method(path='/activityType/{id}', http_method='POST', name='insert',
+                         request_fields=('id', 'tag', 'description', 'group', 'api_key'))
+    def at_insert(self, activity_type):
+        if not check_auth(None, activity_type.api_key):
+            raise endpoints.UnauthorizedException('Only Admins may enter or change this data.')
+
+        activity_type.put()
+        return activity_type
+
+    @ActivityType.method(request_fields=('id',),  path='/activityType/{id}',
+                    http_method='GET', name='get')
+    def at_get(self, activity_type):
+        if not activity_type.from_datastore:
+            raise endpoints.NotFoundException('Activity type not found.')
+        return activity_type
+
+    @ActivityType.method(request_fields=('id', 'api_key'), response_fields=("id",),
+                         path='/activityType/{id}',
+                         http_method='DELETE', name='delete')
+    def at_delete(self, activity_type):
+        if not activity_type.from_datastore:
+            raise endpoints.NotFoundException('Activity type not found.')
+        if not check_auth(None, activity_type.api_key):
+            raise endpoints.UnauthorizedException('Only Admins may enter or change this data.')
+
+        activity_type.key.delete()
+
+        return activity_type
+
+    @ActivityType.query_method(query_fields=('limit', 'order', 'pageToken'),
+                               path='/activityType', name='list')
+    def at_list(self, query):
+        return query
+
+
+@api_root.api_class(resource_name='product_group', path='productGroup')
+class ProductGroupService(remote.Service):
+
+    @ProductGroup.method(path='/productGroup/{id}', http_method='POST', name='insert',
+                         request_fields=('id', 'tag', 'description', 'url', 'image', 'api_key'))
+    def pg_insert(self, product_group):
+        if not check_auth(None, product_group.api_key):
+            raise endpoints.UnauthorizedException('Only Admins may enter or change this data.')
+
+        product_group.put()
+        return product_group
+
+    @ProductGroup.method(request_fields=('id',),  path='/productGroup/{id}',
+                    http_method='GET', name='get')
+    def pg_get(self, product_group):
+        if not product_group.from_datastore:
+            raise endpoints.NotFoundException('Activity type not found.')
+        return product_group
+
+    @ProductGroup.method(request_fields=('id', 'api_key'), response_fields=("id",),
+                         path='/productGroup/{id}',
+                         http_method='DELETE', name='delete')
+    def pg_delete(self, product_group):
+        if not product_group.from_datastore:
+            raise endpoints.NotFoundException('Activity type not found.')
+        if not check_auth(None, product_group.api_key):
+            raise endpoints.UnauthorizedException('Only Admins may enter or change this data.')
+
+        product_group.key.delete()
+
+        return product_group
+
+    @ProductGroup.query_method(query_fields=('limit', 'order', 'pageToken'),
+                               path='/productGroup', name='list')
+    def pg_list(self, query):
         return query

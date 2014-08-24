@@ -76,20 +76,27 @@ def get_current_account():
 
 
 def check_auth(gplus_id, api_key):
-    # check authenticated user
-    user = get_current_account()
-    if user is not None:
-        # We could do further checks here, depending on user.type, e.g.
-        #  Admins/Managers always are allowed
-        #  "disabled" GDEs are not allowed
-        #  For active GDEs check if user.gplus_id == gplus_id so they can only edit their own data
-        #  Only allow active GDEs to enter data
-        return True
 
     # Check against API Key for maintainance script
     if api_key is not None:
         if api_key == get_admin_api_key():
             return True
+
+    # check authenticated user
+    user = get_current_account()
+    if user is not None:
+        # Users can change their own data
+        if user.gplus_id == gplus_id:
+            return True
+
+        # Administrators can change everything
+        if user.type == 'administrator':
+            return True
+
+        # We could do further checks here, depending on user.type, e.g.
+        #  "disabled" GDEs are not allowed
+        #  Only allow active GDEs to enter data
+        return False
 
     return False
 
