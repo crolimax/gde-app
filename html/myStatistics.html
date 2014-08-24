@@ -154,8 +154,68 @@
       </div>
       <br/>
 
-      <!--<h4>Activity Metadata</h4>-->
-      <!--TODO:  Dynamically Change the Detail by activity Type -->
+      <h4>Activity Metadata</h4>
+      <div style="height:300px">
+        <!--Dynamically Change the metadata fileds by activity_type group -->
+        <paper-tabs id="AGTabs">
+          <paper-tab ng-repeat="ag in currActivityGroups" ng-click="selectAG(ag.id)">
+              {{ag.id}}
+          </paper-tab>
+        </paper-tabs>
+        <core-animated-pages id="core_animated_pages" notap transitions="slide-from-right">
+          <div vertical layout ng-repeat="currentMetadata in metadataArray" style="height:200px">
+            <input type="hidden" value="{{currentMetadata.activity_group}}"></input>
+            <div horizontal layout>
+              <paper-input floatingLabel type='text' style ="min-width: 300px;"
+                label='{{getAGFieldTitle(currentMetadata.activity_group,"title")}}'
+                ng-model='currentMetadata.title'
+                ></paper-input>
+              <paper-input floatingLabel type='text' style ="min-width: 300px;"
+                label='{{getAGFieldTitle(currentMetadata.activity_group,"description")}}'
+                ng-model='currentMetadata.description'
+                ></paper-input>
+              <select ng-model="currentMetadata.type"		ng-options="actType for actType in selectedAG.types" required>
+                <option value="">
+                  Select type of Activity
+                </option>
+              </select>
+            </div>
+            <div horizontal layout>
+              <paper-input floatingLabel type='url' style ="min-width: 300px;"
+                label='{{getAGFieldTitle(currentMetadata.activity_group,"link")}}'
+                ng-model='currentMetadata.link'
+                ></paper-input>
+              <paper-input floatingLabel type='number' style ="min-width: 300px;"
+                label='{{getAGFieldTitle(currentMetadata.activity_group,"impact")}}'
+                ng-model='currentMetadata.impact'
+                ng-if='isUsedInMetadata(currentMetadata.activity_group,"impact")'
+                ></paper-input>
+
+              <!--TODO: div with currentMetadata.other_links-->
+            </div>
+            <div horizontal layout>
+              <paper-input floatingLabel type='text' style ="min-width: 300px;"
+                label='{{getAGFieldTitle(currentMetadata.activity_group,"location")}}'
+                ng-model='currentMetadata.location'
+                ng-if='isUsedInMetadata(currentMetadata.activity_group,"location")'
+                ></paper-input>
+              <!--TODO: Fix with the proper usage of ng-model, but it seems to be not working properly with boolean values-->
+              <div ng-if='isUsedInMetadata(currentMetadata.activity_group,"google_expensed")' style ="min-width: 300px;">
+                {{getAGFieldTitle(currentMetadata.activity_group,"google_expensed")}}
+                <paper-radio-group layout vertical>
+                  <paper-radio-button id="google_expensed_true" label="Yes" ng-click="setGoogleExpensed(currentMetadata.activity_group,true)"></paper-radio-button>
+                  <paper-radio-button id="google_expensed_false" label="No" ng-click="setGoogleExpensed(currentMetadata.activity_group,false)"></paper-radio-button>
+                </paper-radio-group>
+              </div>
+              <paper-input floatingLabel type='number' style ="min-width: 300px;"
+                label='{{getAGFieldTitle(currentMetadata.activity_group,"us_approx_amount")}}'
+                ng-model='currentMetadata.us_approx_amount'
+                ng-if='isUsedInMetadata(currentMetadata.activity_group,"us_approx_amount")'
+                ></paper-input>
+            </div>
+          </div>
+        </core-animated-pages>
+      </div>
 
       <div vertical layout end>
         <div>
@@ -163,8 +223,6 @@
           <paper-button raisedButton class ="colored blue" label="Save" ng-click="saveGDEActivity()"></paper-button>
         </div>
       </div>
-
-
 
     </div>
 
