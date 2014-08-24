@@ -484,6 +484,9 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
   	  if ($scope.currentActivity.comments==null || $scope.currentActivity.comments==""){
   	    $scope.currentActivity.comments=0;
   	  }
+  	  //Clear data_created and updated that are calculated on the backend
+      $scope.currentActivity.date_updated =null;
+      $scope.currentActivity.date_created = null;
 
       $scope.gdeTrackingAPI.activity_record.insert($scope.currentActivity).execute(
         function(response)
