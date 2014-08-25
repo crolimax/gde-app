@@ -185,13 +185,21 @@
                 label='{{getAGFieldTitle(currentMetadata.activity_group,"link")}}'
                 ng-model='currentMetadata.link'
                 ></paper-input>
+              <paper-input floatingLabel type='url' style ="min-width: 300px;"
+                label='{{getAGFieldTitle(currentMetadata.activity_group,"other_link1")}}'
+                ng-model='currentMetadata.other_link1'
+                ></paper-input>
+              <paper-input floatingLabel type='url' style ="min-width: 300px;"
+                label='{{getAGFieldTitle(currentMetadata.activity_group,"other_link2")}}'
+                ng-model='currentMetadata.other_link2'
+                ></paper-input>
+            </div>
+            <div horizontal layout>
               <paper-input floatingLabel type='number' style ="min-width: 300px;"
                 label='{{getAGFieldTitle(currentMetadata.activity_group,"impact")}}'
                 ng-model='currentMetadata.impact'
                 ng-if='isUsedInMetadata(currentMetadata.activity_group,"impact")'
                 ></paper-input>
-
-              <!--TODO: div with currentMetadata.other_links-->
             </div>
             <div horizontal layout>
               <paper-input floatingLabel type='text' style ="min-width: 300px;"

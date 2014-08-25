@@ -279,7 +279,8 @@ GdeTrackingApp.factory("activityGroups",		[function()
       ["description","Description"],
       ["link","Main Link"],
       ["impact","N° of views"],
-      ["other_links","Other links"]
+      ["other_link1","Other links (Additional resources)"],
+      ["other_link2","Other links (Other Additional Resources)"]
 	  ]
 
 	});
@@ -297,7 +298,8 @@ GdeTrackingApp.factory("activityGroups",		[function()
       ["description","Description"],
       ["link","Link to Event Page"],
       ["impact","N° of attendees"],
-      ["other_links","Other links (Link to Event Pictures/Videos)"],
+      ["other_link1","Other links (Link to Event Pictures/Videos)"],
+      ["other_link2","Other links (Other Additional Content)"],
       ["location","Location"],
       ["google_expensed","Google Covered Expenses?"],
       ["us_approx_amount","Approx Google Covered Expenses (USD)"]
@@ -317,7 +319,8 @@ GdeTrackingApp.factory("activityGroups",		[function()
       ["description","Title of your Talk"],
       ["link","Link to Event Page"],
       ["impact","N° of attendees"],
-      ["other_links","Other links (slides,video, documents,etc...)"],
+      ["other_link1","Other links (slides,video, documents,etc...)"],
+      ["other_link2","Other links (Other Additional Content)"],
       ["location","Location"],
       ["google_expensed","Google Covered Expenses?"],
       ["us_approx_amount","Approx Google Covered Expenses (USD)"]
@@ -337,7 +340,8 @@ GdeTrackingApp.factory("activityGroups",		[function()
       ["description","Description"],
       ["link","Main Link"],
       ["impact","N° of users affected"],
-      ["other_links","Other links"]
+      ["other_link1","Other links (Additional Content)"],
+      ["other_link2","Other links (Other Additional Content)"]
 	  ]
   });
   activityGroups.push({
@@ -354,7 +358,8 @@ GdeTrackingApp.factory("activityGroups",		[function()
       ["description","Description"],
       ["link","Main Link"],
       ["impact","N° Of Views"],
-      ["other_links","Other links"]
+      ["other_link1","Other links (Additional Content)"],
+      ["other_link2","Other links (Other Additional Content)"]
 	  ]
   });
   activityGroups.push({
@@ -371,7 +376,8 @@ GdeTrackingApp.factory("activityGroups",		[function()
       ["description","Description"],
       ["link","Main Link"],
       ["impact","N° Star/Downloads"],
-      ["other_links","Other links"]
+      ["other_link1","Other links (Additional Content)"],
+      ["other_link2","Other links (Other Additional Content)"]
 	  ]
   });
   activityGroups.push({
@@ -387,7 +393,8 @@ GdeTrackingApp.factory("activityGroups",		[function()
 	    ["title","Title (#development)/Candidate Name"],
       ["description","Description(#development)/Candidate Email"],
       ["link","Main Link (#development ONLY)"],
-      ["other_links","Other links"]
+      ["other_link1","Other links (Additional Content)"],
+      ["other_link2","Other links (Other Additional Content)"]
 	  ]
   });
 
