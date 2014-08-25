@@ -4,6 +4,9 @@ import endpoints
 from .web_endpoints import ActivityPostService
 from .web_endpoints import ActivityRecordService
 from .web_endpoints import AccountService
+from .web_endpoints import ProductGroupService
+from .web_endpoints import ActivityTypeService
 
 application = endpoints.api_server([ActivityRecordService, ActivityPostService,
-                                    AccountService], restricted=False)
+                                    AccountService, ProductGroupService,
+                                    ActivityTypeService], restricted=False)
