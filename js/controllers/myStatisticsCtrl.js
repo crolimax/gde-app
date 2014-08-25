@@ -273,8 +273,10 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
 	//Edit/new an Activity
 	$scope.currentActivity			= null;
-	$scope.editMode			= "";
+	$scope.selectedAG			      = null;
+	$scope.editMode			        = "";
 	$scope.currentActivityPosts = [];
+	$scope.usedInMetadata       = {};
 	var getActivityPosts = function (activityRecord){
     $scope.currentActivityPosts = []; //Clean the array
     if (activityRecord.gplus_posts){
@@ -322,7 +324,88 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 			$scope.currProductGroupList.push(pgSelector); // Push it as a new object in a JSON array.
 		});
 
+  };
 
+  var populateAGs = function(){
+    $scope.currActivityGroups =[];
+    $.each($rootScope.activityGroups, function(k,v)
+		{
+		  var ag = $rootScope.activityGroups[k];
+
+      if ($scope.currentActivity.activity_types){
+
+        //for #content, Add only the Activity Groups for the activity Types of the activity
+        if (ag.id=='#content'){
+          ag.types.some(function(entry) {
+              if ($scope.currentActivity.activity_types.indexOf(entry)>=0)
+              {
+                $scope.currActivityGroups.push(ag);
+                $scope.updateAG(ag.id); //Update the Medatada AGs
+
+                return true;//found the item , stop the loop
+              }
+              return false;
+          });
+        }else{
+          //activity is the ID of the activity_group itself
+          if ($scope.currentActivity.activity_types.indexOf(ag.id)>=0)
+          {
+            $scope.currActivityGroups.push(ag);
+            $scope.updateAG(ag.id); //Update the Medatada AGs
+          }
+        }
+      }
+		});
+		if ($scope.currActivityGroups.length>1){
+  		$scope.currActivityGroups =
+  		  $scope.currActivityGroups.sort(function(a,b){
+              var A = a.id.toLowerCase();
+              var B = b.id.toLowerCase();
+              if (A < B){
+                return -1;
+              }else if (A > B){
+                return  1;
+              }else{
+                return 0;
+              }
+  	      });
+		}
+		if ($scope.currActivityGroups.length>0){
+  		//Set the selected tab the first
+  		$("#AGTabs").prop('selected',0);
+  		$("#core_animated_pages").prop('selected',0);
+  		$scope.selectAGIdx=0;
+      $scope.selectedAG=$scope.currActivityGroups[0];
+      var tmpMetaArray = [];
+      //Remove the unused activity_categories
+      $scope.currActivityGroups.forEach(function(item){
+        //search in the categoty list
+        $scope.metadataArray.some(function(meta){
+          if (meta.activity_group == item.id){
+            tmpMetaArray.push(meta);
+            return true;
+          }
+          return false;
+        });
+      });
+      $scope.metadataArray = tmpMetaArray;
+
+
+      //Set the value of the google_expensed if used by the AG
+      var agId = $scope.selectedAG.activity_group;
+	    if ($scope.isUsedInMetadata(agId,"google_expensed")){
+	      $scope.metadataArray.some(function(item){
+          if (item.activity_group == agId){
+            $scope.setGoogleExpensed(agId,item.google_expensed);
+            return true;
+          }
+          return false;
+        });
+	    }
+		}else{
+		  //Clean the metadataObject
+		  $scope.metadataArray=[];
+		}
   };
 
   var populateATs = function(){
@@ -343,6 +426,71 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 		});
   };
 
+  var setCurrActivityDefaults = function(){
+    //Activity Defaults
+    $scope.currentActivity.gplus_id = $rootScope.usrId;
+    if ($scope.currentActivity.activity_title==null){
+      $scope.currentActivity.activity_title='';
+    }
+
+    if($scope.currentActivity.activity_link == null){
+      $scope.currentActivity.activity_link = '';
+    }
+    if ($scope.currentActivity.post_date == null){
+      $scope.currentActivity.post_date = $rootScope.utils.dateToCommonString(new Date());
+    }
+    if ($scope.currentActivity.date_updated==null){
+      $scope.currentActivity.date_updated = $rootScope.utils.dateToCommonString(new Date());
+    }
+    if ($scope.currentActivity.date_created ==null){
+      $scope.currentActivity.date_created = $rootScope.utils.dateToCommonString(new Date());
+    }
+    if ($scope.currentActivity.activity_types==null){
+      $scope.currentActivity.activity_types = [];
+    }
+    if ($scope.currentActivity.product_groups==null){
+      $scope.currentActivity.product_groups = [];
+    }
+    if ($scope.currentActivity.gplus_posts==null){
+      $scope.currentActivity.gplus_posts = [];
+    }
+
+    if ($scope.currentActivity.plus_oners==null || $scope.currentActivity.plus_oners==""){
+	    $scope.currentActivity.plus_oners=0;
+
+	  }
+	  if ($scope.currentActivity.resharers==null || $scope.currentActivity.resharers==""){
+	    $scope.currentActivity.resharers=0;
+
+	  }
+	  if ($scope.currentActivity.comments==null || $scope.currentActivity.comments==""){
+	    $scope.currentActivity.comments=0;
+	  }
+
+	  //Metadata defaults
+	  if($scope.currentActivity.metadata==null){
+	    $scope.metadataArray = [];
+	  }else{
+	    $scope.metadataArray = $scope.currentActivity.metadata;
+	    if($scope.currentActivity.length>1){
+  	    //Set the local array ordered by activity_group
+  	    $scope.metadataArray =
+  	      $scope.metadataArray.sort(function(a,b){
+              var A = a.activity_group.toLowerCase();
+              var B = b.activity_group.toLowerCase();
+              if (A < B){
+                return -1;
+              }else if (A > B){
+                return  1;
+              }else{
+                return 0;
+              }
+  	      });
+	    }
+	  }
+
+  };
+
   $scope.showActivityTypes= function(){
     toggleDialog('selectActivityTypes');
   };
@@ -358,27 +506,20 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	    return item.id== activityId;
 	  })[0];
 
-	  //Populate Product Groups and Activities for the selection table
+    //Set the defaults
+    setCurrActivityDefaults();
+
+    //Populate Product Groups and Activities for the selection table
 	  populatePGs();
 	  populateATs();
+	  populateAGs();//Populate the ActivityGroups
 
+	  //Formatted Dates
 	  $scope.currDate_updatedLocale = $rootScope.utils.dateToCommonString(new Date($scope.currentActivity.date_updated));
     $scope.currDate_createdLocale = $rootScope.utils.dateToCommonString(new Date($scope.currentActivity.date_created));
     $scope.currPost_dateLocale = $rootScope.utils.dateToCommonString(new Date($scope.currentActivity.post_date));
+
     $scope.currActLink= $scope.currentActivity.activity_link;
-
-    if ($scope.currentActivity.plus_oners==null || $scope.currentActivity.plus_oners==""){
-	    $scope.currentActivity.plus_oners=0;
-
-	  }
-	  if ($scope.currentActivity.resharers==null || $scope.currentActivity.resharers==""){
-	    $scope.currentActivity.resharers=0;
-
-	  }
-	  if ($scope.currentActivity.comments==null || $scope.currentActivity.comments==""){
-	    $scope.currentActivity.comments=0;
-	  }
-
 
 	  //console.log(JSON.stringify($scope.currentActivity));
 
@@ -396,31 +537,21 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	  //Initialize the new Activity
 	  $scope.currentActivity ={};
 
+    //Set the defaults
+    setCurrActivityDefaults();
+
+	  //Populate Product Groups and Activities for the selection table
+	  populatePGs();
+	  populateATs();
+    populateAGs();//Populate the ActivityGroups
+
     //Cleanups and defaults
     $scope.currentActivityPosts = [];
-
-    //Init
-    $scope.currentActivity.gplus_id = $rootScope.usrId;
-    $scope.currentActivity.activity_title='';
-    $scope.currentActivity.activity_link = '';
-    $scope.currentActivity.post_date = $rootScope.utils.dateToCommonString(new Date());
-    $scope.currentActivity.date_updated = $rootScope.utils.dateToCommonString(new Date());
-    $scope.currentActivity.date_created = $rootScope.utils.dateToCommonString(new Date());
-    $scope.currentActivity.activity_types = [];
-    $scope.currentActivity.product_groups = [];
-    $scope.currentActivity.gplus_posts = [];
-    $scope.currentActivity.resharers=0;
-    $scope.currentActivity.plus_oners=0;
-    $scope.currentActivity.comments=0;
-
 
     $scope.currDate_updatedLocale = $rootScope.utils.dateToCommonString(new Date($scope.currentActivity.date_updated));
     $scope.currDate_createdLocale = $rootScope.utils.dateToCommonString(new Date($scope.currentActivity.date_created));
     $scope.currPost_dateLocale = $rootScope.utils.dateToCommonString(new Date($scope.currentActivity.post_date));
     $scope.currActLink= '';
-
-    populatePGs();
-	  populateATs();
 
 	  $scope.editMode = "Create New";
 
@@ -440,6 +571,9 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
   		  }
   		});
   		//console.log(JSON.stringify($scope.currentActivity.activity_types));
+
+  		//Update the ActivityGroups
+  		populateAGs();
 	  }else{
 	    $scope.currentActivity.product_groups = [];
   	  $.each($scope.currProductGroupList, function(k,v)
@@ -471,6 +605,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     }else{
 
   	  $scope.currentActivity.gde_name = $scope.name;
+  	  $scope.currentActivity.metadata = $scope.metadataArray;
 
   	  //Sanity Checks on Number
   	  if ($scope.currentActivity.plus_oners==null || $scope.currentActivity.plus_oners==""){
@@ -557,5 +692,118 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     	);
     }
 	};
+
+  //Metadata functions
+  $scope.selectAG = function(agId){
+    $.each($scope.currActivityGroups, function(k,v)
+		{
+		  var ag = $scope.currActivityGroups[k];
+		  if(agId==ag.id){
+		    $scope.selectAGIdx=k;
+		    $scope.selectedAG=ag;
+		    $("#core_animated_pages").prop('selected',k);
+		    //Set the value of the google_expensed if used by the AG
+		    if ($scope.isUsedInMetadata(agId,"google_expensed")){
+		      $scope.metadataArray.some(function(item){
+            if (item.activity_group == agId){
+              $scope.setGoogleExpensed(agId,item.google_expensed);
+              return true;
+            }
+            return false;
+          });
+		    }
+		  }
+		});
+  };
+
+  $scope.updateAG = function(agId){
+    var createNew=true;
+    //Check if in the metadataArray is present the
+    $scope.metadataArray.some(function(item){
+      if(item.activity_group==agId){
+        //Activity Group found
+        createNew=false;
+
+        //Exit the loop
+        return true;
+      }
+      return false;
+    });
+
+    if (createNew) {
+      //Create a new metadata object for the current activity_group
+      var meta = {};
+      meta.activity_group=agId;
+      $scope.metadataArray.push(meta);
+      if($scope.metadataArray.length>1){
+        //Reorder the array
+        $scope.metadataArray =
+  	      $scope.metadataArray.sort(function(a,b){
+              var A = a.activity_group.toLowerCase();
+              var B = b.activity_group.toLowerCase();
+              if (A < B){
+                return -1;
+              }else if (A > B){
+                return  1;
+              }else{
+                return 0;
+              }
+  	      });
+      }
+    }
+  };
+
+  $scope.isUsedInMetadata = function(category,field){
+    var toRet=false;
+
+    $scope.currActivityGroups.some(function(item){
+      if(item.id==category){
+        if(item.usedInMetadata[field]){
+          toRet=item.usedInMetadata[field];
+        }
+        return true;
+      }else{
+        return false;
+      }
+    });
+
+    return toRet;
+  };
+
+  $scope.getAGFieldTitle = function(category,field){
+    var toRet=field;
+
+    $scope.currActivityGroups.some(function(item){
+      if(item.id==category){
+        item.labels.some(function(label){
+          if(label[0]==field){
+            toRet=label[1];
+            return true;
+          }
+          return false;
+        });
+        return true;
+      }else{
+        return false;
+      }
+    });
+
+    return toRet;
+  };
+
+  $scope.setGoogleExpensed = function(agId,val){
+    $scope.metadataArray.some(function(item){
+      if (item.activity_group == agId){
+        item.google_expensed = val;
+        return true;
+      }
+      return false;
+    });
+
+    //Check or uncheck the paper-radio-button
+    $('#google_expensed_true').attr('checked',(val==true));
+    $('#google_expensed_false').attr('checked',(val==false));
+
+  }
 
 });

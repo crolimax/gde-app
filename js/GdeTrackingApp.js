@@ -232,6 +232,8 @@ GdeTrackingApp.factory("activityTypes",		[function()
   activityTypes.push({tag:'#community',description:'Communty: Engage with the community live'});
   activityTypes.push({tag:'#video',description:'Videos: Presentations and tutorials presented with a video are more engaging and help convey the passion we feel about the technology'});
   activityTypes.push({tag:'#tutorial',description:'Tutorials: Lead the developer step by step during his journey for a better knowledge of the technology'});
+  activityTypes.push({tag:'#gdeprogram',description:'Activities that helps the GDE Program internally: Referrals, interviews and development of tools/apps'});
+
 
 	return activityTypes;
 }]);
@@ -260,10 +262,141 @@ GdeTrackingApp.factory("productGroups",		[function()
 	return productGroups;
 }]);
 
+GdeTrackingApp.factory("activityGroups",		[function()
+{
+	var activityGroups		= [];
+	activityGroups.push({
+	  id:'#content',
+	  types:['#article','#book', '#blogpost','#translation','#techdocs'],
+	  usedInMetadata:{
+	    impact:true,
+      location:false,
+      google_expensed:false,
+      us_approx_amount:false
+	  },
+	  labels:[
+	    ["title","Title"],
+      ["description","Description"],
+      ["link","Main Link"],
+      ["impact","N° of views"],
+      ["other_links","Other links"]
+	  ]
+
+	});
+  activityGroups.push({
+    id:'#community',
+    types:['#meetup','#codelab','#hackaton','#other'],
+	  usedInMetadata:{
+	    impact:true,
+      location:true,
+      google_expensed:true,
+      us_approx_amount:true
+	  },
+	  labels:[
+	    ["title","Name of the Event"],
+      ["description","Description"],
+      ["link","Link to Event Page"],
+      ["impact","N° of attendees"],
+      ["other_links","Other links (Link to Event Pictures/Videos)"],
+      ["location","Location"],
+      ["google_expensed","Google Covered Expenses?"],
+      ["us_approx_amount","Approx Google Covered Expenses (USD)"]
+	  ]
+  });
+  activityGroups.push({
+    id:'#techtalk',
+    types:['#conference','#symposium','#seminar','#workshop'],
+	  usedInMetadata:{
+	    impact:true,
+      location:true,
+      google_expensed:true,
+      us_approx_amount:true
+	  },
+	  labels:[
+	    ["title","Name of the Event"],
+      ["description","Title of your Talk"],
+      ["link","Link to Event Page"],
+      ["impact","N° of attendees"],
+      ["other_links","Other links (slides,video, documents,etc...)"],
+      ["location","Location"],
+      ["google_expensed","Google Covered Expenses?"],
+      ["us_approx_amount","Approx Google Covered Expenses (USD)"]
+	  ]
+  });
+  activityGroups.push({
+    id:'#bugreport',
+    types:['#crash','#security','#enhancement','#documentation'],
+	  usedInMetadata:{
+	    impact:true,
+      location:false,
+      google_expensed:false,
+      us_approx_amount:false
+	  },
+	  labels:[
+	    ["title","Title"],
+      ["description","Description"],
+      ["link","Main Link"],
+      ["impact","N° of users affected"],
+      ["other_links","Other links"]
+	  ]
+  });
+  activityGroups.push({
+    id:'#forumpost',
+    types:['#stack','#gcommunity','#googlegroups','#others'],
+	  usedInMetadata:{
+	    impact:true,
+      location:false,
+      google_expensed:false,
+      us_approx_amount:false
+	  },
+	  labels:[
+	    ["title","Title"],
+      ["description","Description"],
+      ["link","Main Link"],
+      ["impact","N° Of Views"],
+      ["other_links","Other links"]
+	  ]
+  });
+  activityGroups.push({
+    id:'#opensourcecode',
+    types:['#google','#samples','#project'],
+	  usedInMetadata:{
+	    impact:true,
+      location:false,
+      google_expensed:false,
+      us_approx_amount:false
+	  },
+	  labels:[
+	    ["title","Title"],
+      ["description","Description"],
+      ["link","Main Link"],
+      ["impact","N° Star/Downloads"],
+      ["other_links","Other links"]
+	  ]
+  });
+  activityGroups.push({
+    id:'#gdeprogram',
+    types:['#interview','#referral','#development'],
+	  usedInMetadata:{
+	    impact:false,
+      location:false,
+      google_expensed:false,
+      us_approx_amount:false
+	  },
+	  labels:[
+	    ["title","Title (#development)/Candidate Name"],
+      ["description","Description(#development)/Candidate Email"],
+      ["link","Main Link (#development ONLY)"],
+      ["other_links","Other links"]
+	  ]
+  });
+
+	return activityGroups;
+}]);
 // *****************************************************************************************************
 //						Utility functions for accumulating and displaying stats
 // *****************************************************************************************************
-GdeTrackingApp.run(function ($rootScope,activityTypes,productGroups)
+GdeTrackingApp.run(function ($rootScope,activityTypes,productGroups,activityGroups)
 {
   $rootScope.is_backend_ready=false;
 
@@ -359,5 +492,6 @@ GdeTrackingApp.run(function ($rootScope,activityTypes,productGroups)
 
 	$rootScope.activityTypes = activityTypes;
 	$rootScope.productGroups = productGroups;
+	$rootScope.activityGroups = activityGroups;
 });
 
