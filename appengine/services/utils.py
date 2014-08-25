@@ -68,6 +68,8 @@ def get_current_account():
     if user is None:
         return None
 
+    logging.debug('Authenticated user: %s' % user.email())
+
     accounts = Account.query(Account.email == user.email()).fetch(1)
     if len(accounts) == 0:
         return None
