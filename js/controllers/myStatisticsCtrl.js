@@ -634,43 +634,51 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
           }else{
             //Delete the activity from the local arrays if in edit
             if ($scope.editMode=='Edit'){
-              //Find the activity index
-              var itmId=null;
-              for (var i=0;i<$scope.data.items.length;i++){
-                if ($scope.data.items[i].id== response.id){
-                  itmId=i;
-                  break;
-                }
+              if ($scope.data.items.length==1){
+                  //only one item, re init all the arrays
+                  $scope.data.items=[];
+                  $scope.activitiesByGdeNameTemp[$scope.name]['activities']=[];
+                  $scope.userActivities=[];
 
-              }
-              if(itmId){
-                //Remove the Old Item
-                $scope.data.items.splice(itmId,1);
-              }
-              itmId=null;
-              //activitiesByGdeNameTemp[$scope.name]
-              for (var i=0;i<$scope.activitiesByGdeNameTemp[$scope.name]['activities'].length;i++){
-                if ($scope.activitiesByGdeNameTemp[$scope.name]['activities'][i].id== response.id){
-                  itmId=i;
-                  break;
-                }
+              }else{
+                //Find the activity index
+                var itmId=null;
+                for (var i=0;i<$scope.data.items.length;i++){
+                  if ($scope.data.items[i].id== response.id){
+                    itmId=i;
+                    break;
+                  }
 
-              }
-              if(itmId){
-                //Remove the Old Item
-                $scope.activitiesByGdeNameTemp[$scope.name]['activities'].splice(itmId,1);
-              }
-              itmId=null;
-              for (var i=0;i<$scope.userActivities.length;i++){
-                if ($scope.userActivities[i].id== response.id){
-                  itmId=i;
-                  break;
                 }
+                if(itmId){
+                  //Remove the Old Item
+                  $scope.data.items.splice(itmId,1);
+                }
+                itmId=null;
+                //activitiesByGdeNameTemp[$scope.name]
+                for (var i=0;i<$scope.activitiesByGdeNameTemp[$scope.name]['activities'].length;i++){
+                  if ($scope.activitiesByGdeNameTemp[$scope.name]['activities'][i].id== response.id){
+                    itmId=i;
+                    break;
+                  }
 
-              }
-              if(itmId){
-                //Remove the Old Item
-                $scope.userActivities.splice(itmId,1);
+                }
+                if(itmId){
+                  //Remove the Old Item
+                  $scope.activitiesByGdeNameTemp[$scope.name]['activities'].splice(itmId,1);
+                }
+                itmId=null;
+                for (var i=0;i<$scope.userActivities.length;i++){
+                  if ($scope.userActivities[i].id== response.id){
+                    itmId=i;
+                    break;
+                  }
+
+                }
+                if(itmId){
+                  //Remove the Old Item
+                  $scope.userActivities.splice(itmId,1);
+                }
               }
             }
             //Update the local Arrays

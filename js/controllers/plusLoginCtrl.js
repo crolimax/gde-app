@@ -107,6 +107,10 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 	{																					// User has not authorized the G+ App!
 		$('.signinButton')	.css('display','block');
 //		$('.signout')		.css('display','none');
+    if ($('.userName').text!= '')
+    {
+      alert("There was an Error with Oauth");
+		};
 		$('#userImg')		.html = '';
 		$('.userName')		.text= '';
 		$rootScope.usrId = null;//UnAuthorize the user
