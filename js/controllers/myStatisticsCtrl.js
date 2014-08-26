@@ -320,6 +320,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 		  }
 		  pgSelector.tag = pg.tag;
 		  pgSelector.description = pg.description;
+		  pgSelector.url = pg.url;
 
 			$scope.currProductGroupList.push(pgSelector); // Push it as a new object in a JSON array.
 		});
