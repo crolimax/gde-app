@@ -2,7 +2,7 @@ cron:
 - description: daily activity post update
   url: /tasks/uapost
   # schedule: 13 of july 04:10
-  schedule: every mon,thu 00:30
+  schedule: every mon 00:30
 
 - description: daily new activity post
   url: /tasks/napost
