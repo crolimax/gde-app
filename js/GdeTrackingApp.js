@@ -220,19 +220,19 @@ GdeTrackingApp.factory("months",		[function()
 GdeTrackingApp.factory("activityTypes",		[function()
 {
 	var activityTypes		= [];
-	activityTypes.push({tag:'#bugreport',description:'BugReports: Report Bug on Google APIs'});
-  activityTypes.push({tag:'#article',description:'Article: Write technical article about use cases, tips & tricks, particulare use and experience using an API'});
-  activityTypes.push({tag:'#blogpost',description:'BlogPost: Maybe less technical than Articles, less formal, but still informative and helpful informations for Developers'});
-  activityTypes.push({tag:'#book',description:'Book: A full book about a technology, best practices, examples, guides, etc... all printed on Paper (or digital)'});
-  activityTypes.push({tag:'#techdocs',description:'Technical Documentation: Help Improve the documentation on Google Open Source Projects'});
-  activityTypes.push({tag:'#translation',description:'Translation: Many articles are in English, but Developers are all around the world and it\'s helpful if content is translated in their native language'});
-  activityTypes.push({tag:'#techtalk',description:'Tech Talks: Not Scared of the stage? Talk at conventions, GDGs and MeetUps and present technologies to Developers in front of you'});
-  activityTypes.push({tag:'#opensourcecode',description:'Open Source Code: Got a cool library/application and want to share it because can help other developer? Open source it and share with the World'});
-  activityTypes.push({tag:'#forumpost',description:'Forum Posts: Help answering question directly in Forums and StackOverflow'});
-  activityTypes.push({tag:'#community',description:'Communty: Engage with the community live'});
-  activityTypes.push({tag:'#video',description:'Videos: Presentations and tutorials presented with a video are more engaging and help convey the passion we feel about the technology'});
-  activityTypes.push({tag:'#tutorial',description:'Tutorials: Lead the developer step by step during his journey for a better knowledge of the technology'});
-  activityTypes.push({tag:'#gdeprogram',description:'Activities that helps the GDE Program internally: Referrals, interviews and development of tools/apps'});
+	activityTypes.push({tag:'#bugreport',description:'Bug reports: Report a bug on Google APIs'});
+  activityTypes.push({tag:'#article',description:'Article: Write a technical article about use cases, tips & tricks, or particular use and experience using an API'});
+  activityTypes.push({tag:'#blogpost',description:'Blog post: Write something less technical or less formal but still informative and helpful informations for developers'});
+  activityTypes.push({tag:'#book',description:'Book: Publish a complete book about a technology, best practices, examples, guides, etc... must appear in print or digital format'});
+  activityTypes.push({tag:'#techdocs',description:'Technical documentation: Help improve the documentation on Google open source projects'});
+  activityTypes.push({tag:'#translation',description:'Translation: Translate documentation or useful articles from English into the native language of developers all around the world'});
+  activityTypes.push({tag:'#techtalk',description:'Tech talks: Talk at conventions, GDGs and MeetUps and present technologies to developers in person'});
+  activityTypes.push({tag:'#opensourcecode',description:'Open source code: Open source your cool library/application for the benefit of other developers'});
+  activityTypes.push({tag:'#forumpost',description:'Forum posts: Help answer questions directly in Stack Overflow or other forums'});
+  activityTypes.push({tag:'#community',description:'Community: Engage with the community in other meaningful ways (organize conferences, offer code labs, etc.)'});
+  activityTypes.push({tag:'#video',description:'Videos: Engage other developers with presentations and demos via video'});
+  activityTypes.push({tag:'#tutorial',description:'Tutorials: Lead developers step by step through a particular concept or technology'});
+  activityTypes.push({tag:'#gdeprogram',description:'GDE program: Participate in activities that help the GDE Program internally (such as referrals, interviews, and development of tools/apps)'});
 
 
 	return activityTypes;
