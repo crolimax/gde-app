@@ -59,7 +59,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 			$scope.yearSince				= $scope.yearSelected.value;
 
     	if ($rootScope.is_backend_ready){
-    	  var minDate             = $scope.yearSince +'/'+ ($scope.monthSince<10?"0":"")+$scope.monthSince; //Format date into YYYY/MM
+    	  var minDate             = $scope.yearSince +'-'+ ($scope.monthSince<10?"0":"")+$scope.monthSince; //Format date into YYYY/MM
     	  $scope.getactivitiesFromGAE(null,null,minDate,null,null);	// Get the activities
     	}
 		};
@@ -744,7 +744,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 	$scope.yearSince				= today.getFullYear();
 
 	if ($rootScope.is_backend_ready){
-	  var minDate             = $scope.yearSince +'/'+ ($scope.monthSince<10?"0":"")+$scope.monthSince; //Format date into YYYY/MM
+	  var minDate             = $scope.yearSince +'-'+ ($scope.monthSince<10?"0":"")+$scope.monthSince; //Format date into YYYY/MM
 	  $scope.getactivitiesFromGAE(null,null,minDate,null,null);	// Get the activities
 	}
 
@@ -759,7 +759,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 		//Get data from the backend only if activities are not already loaded
 		if($scope.data.items.length==0){
 		  //run the function to get data from the backend
-		  var minDate             = $scope.yearSince +'/'+ ($scope.monthSince<10?"0":"")+$scope.monthSince; //Format date into YYYY/MM
+		  var minDate             = $scope.yearSince +'-'+ ($scope.monthSince<10?"0":"")+$scope.monthSince; //Format date into YYYY/MM
 		  $scope.getactivitiesFromGAE(null,null,minDate,null,null);	// Get the activities
 		}
 
