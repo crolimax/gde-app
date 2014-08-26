@@ -341,34 +341,30 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
   var populateAGs = function(){
     $scope.currActivityGroups =[];
-    $.each($rootScope.activityGroups, function(k,v)
-		{
-		  var ag = $rootScope.activityGroups[k];
 
-      if ($scope.currentActivity.activity_types){
+    //Loop over the activity and get the activity group of the selected
+    $scope.currActivityTypesList.forEach(function(item){
 
-        //for #content, Add only the Activity Groups for the activity Types of the activity
-        if (ag.id=='#content'){
-          ag.types.some(function(entry) {
-              if ($scope.currentActivity.activity_types.indexOf(entry)>=0)
-              {
-                $scope.currActivityGroups.push(ag);
-                $scope.updateAG(ag.id); //Update the Medatada AGs
+      if (item.selected){
+        //search the currActivityGroups to see if the current group is already in the content list
+        var result = $.grep($scope.currActivityGroups, function(e){ return e.id == item.group; });
+        if (result.length==0){
+          //Get the ActivityGroup
+          $rootScope.activityGroups.some(function(ag){
+            if(ag.id==item.group){
+              $scope.currActivityGroups.push(ag);
+              $scope.updateAG(ag.id); //Update the Medatada AGs
 
-                return true;//found the item , stop the loop
-              }
-              return false;
+              return true;
+            }
+            return false;
           });
-        }else{
-          //activity is the ID of the activity_group itself
-          if ($scope.currentActivity.activity_types.indexOf(ag.id)>=0)
-          {
-            $scope.currActivityGroups.push(ag);
-            $scope.updateAG(ag.id); //Update the Medatada AGs
-          }
         }
       }
-		});
+
+    });
+
+    //Reorder the AGs
 		if ($scope.currActivityGroups.length>1){
   		$scope.currActivityGroups =
   		  $scope.currActivityGroups.sort(function(a,b){
