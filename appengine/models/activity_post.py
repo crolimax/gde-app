@@ -5,8 +5,8 @@ from endpoints_proto_datastore.ndb import EndpointsModel
 from endpoints_proto_datastore.ndb import EndpointsAliasProperty
 from endpoints_proto_datastore.ndb import EndpointsVariantIntegerProperty
 from protorpc import messages
-from models import ActivityType
-from models import ProductGroup
+from models.activity_type import ActivityType
+from models.product_group import ProductGroup
 
 class ActivityPost(EndpointsModel):
 
