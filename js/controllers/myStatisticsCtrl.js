@@ -311,20 +311,32 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     $scope.currProductGroupList=[];
 	  $.each($rootScope.productGroups, function(k,v)
 		{
-		  var pg = $rootScope.productGroups[k];
-		  var pgSelector = {};
+		  var pgSelector = $rootScope.productGroups[k];
 		  if ($scope.currentActivity.product_groups){
-		    pgSelector.selected = ($scope.currentActivity.product_groups.indexOf(pg.tag)>=0);
+		    pgSelector.selected = ($scope.currentActivity.product_groups.indexOf(pgSelector.tag)>=0);
 		  }else{
 		    pgSelector.selected = false;
 		  }
-		  pgSelector.tag = pg.tag;
-		  pgSelector.description = pg.description;
-		  pgSelector.url = pg.url;
 
 			$scope.currProductGroupList.push(pgSelector); // Push it as a new object in a JSON array.
 		});
 
+  };
+
+  var populateATs = function(){
+    $scope.currActivityTypesList=[];
+	  $.each($rootScope.activityTypes, function(k,v)
+		{
+		  var actSelector = $rootScope.activityTypes[k];
+
+		  if ($scope.currentActivity.activity_types){
+		    actSelector.selected = ($scope.currentActivity.activity_types.indexOf(actSelector.tag)>=0);
+		  }else{
+		    actSelector.selected = false;
+		  }
+
+			$scope.currActivityTypesList.push(actSelector); // Push it as a new object in a JSON array.
+		});
   };
 
   var populateAGs = function(){
@@ -409,23 +421,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 		}
   };
 
-  var populateATs = function(){
-    $scope.currActivityTypesList=[];
-	  $.each($rootScope.activityTypes, function(k,v)
-		{
-		  var pg = $rootScope.activityTypes[k];
-		  var actSelector = {};
-		  if ($scope.currentActivity.activity_types){
-		    actSelector.selected = ($scope.currentActivity.activity_types.indexOf(pg.tag)>=0);
-		  }else{
-		    actSelector.selected = false;
-		  }
-		  actSelector.tag = pg.tag;
-		  actSelector.description = pg.description;
 
-			$scope.currActivityTypesList.push(actSelector); // Push it as a new object in a JSON array.
-		});
-  };
 
   var setCurrActivityDefaults = function(){
     //Activity Defaults
