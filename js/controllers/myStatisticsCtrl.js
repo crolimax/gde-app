@@ -311,51 +311,60 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     $scope.currProductGroupList=[];
 	  $.each($rootScope.productGroups, function(k,v)
 		{
-		  var pg = $rootScope.productGroups[k];
-		  var pgSelector = {};
+		  var pgSelector = $rootScope.productGroups[k];
 		  if ($scope.currentActivity.product_groups){
-		    pgSelector.selected = ($scope.currentActivity.product_groups.indexOf(pg.tag)>=0);
+		    pgSelector.selected = ($scope.currentActivity.product_groups.indexOf(pgSelector.tag)>=0);
 		  }else{
 		    pgSelector.selected = false;
 		  }
-		  pgSelector.tag = pg.tag;
-		  pgSelector.description = pg.description;
 
 			$scope.currProductGroupList.push(pgSelector); // Push it as a new object in a JSON array.
 		});
 
   };
 
+  var populateATs = function(){
+    $scope.currActivityTypesList=[];
+	  $.each($rootScope.activityTypes, function(k,v)
+		{
+		  var actSelector = $rootScope.activityTypes[k];
+
+		  if ($scope.currentActivity.activity_types){
+		    actSelector.selected = ($scope.currentActivity.activity_types.indexOf(actSelector.tag)>=0);
+		  }else{
+		    actSelector.selected = false;
+		  }
+
+			$scope.currActivityTypesList.push(actSelector); // Push it as a new object in a JSON array.
+		});
+  };
+
   var populateAGs = function(){
     $scope.currActivityGroups =[];
-    $.each($rootScope.activityGroups, function(k,v)
-		{
-		  var ag = $rootScope.activityGroups[k];
 
-      if ($scope.currentActivity.activity_types){
+    //Loop over the activity and get the activity group of the selected
+    $scope.currActivityTypesList.forEach(function(item){
 
-        //for #content, Add only the Activity Groups for the activity Types of the activity
-        if (ag.id=='#content'){
-          ag.types.some(function(entry) {
-              if ($scope.currentActivity.activity_types.indexOf(entry)>=0)
-              {
-                $scope.currActivityGroups.push(ag);
-                $scope.updateAG(ag.id); //Update the Medatada AGs
+      if (item.selected){
+        //search the currActivityGroups to see if the current group is already in the content list
+        var result = $.grep($scope.currActivityGroups, function(e){ return e.id == item.group; });
+        if (result.length==0){
+          //Get the ActivityGroup
+          $rootScope.activityGroups.some(function(ag){
+            if(ag.id==item.group){
+              $scope.currActivityGroups.push(ag);
+              $scope.updateAG(ag.id); //Update the Medatada AGs
 
-                return true;//found the item , stop the loop
-              }
-              return false;
+              return true;
+            }
+            return false;
           });
-        }else{
-          //activity is the ID of the activity_group itself
-          if ($scope.currentActivity.activity_types.indexOf(ag.id)>=0)
-          {
-            $scope.currActivityGroups.push(ag);
-            $scope.updateAG(ag.id); //Update the Medatada AGs
-          }
         }
       }
-		});
+
+    });
+
+    //Reorder the AGs
 		if ($scope.currActivityGroups.length>1){
   		$scope.currActivityGroups =
   		  $scope.currActivityGroups.sort(function(a,b){
@@ -408,23 +417,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 		}
   };
 
-  var populateATs = function(){
-    $scope.currActivityTypesList=[];
-	  $.each($rootScope.activityTypes, function(k,v)
-		{
-		  var pg = $rootScope.activityTypes[k];
-		  var actSelector = {};
-		  if ($scope.currentActivity.activity_types){
-		    actSelector.selected = ($scope.currentActivity.activity_types.indexOf(pg.tag)>=0);
-		  }else{
-		    actSelector.selected = false;
-		  }
-		  actSelector.tag = pg.tag;
-		  actSelector.description = pg.description;
 
-			$scope.currActivityTypesList.push(actSelector); // Push it as a new object in a JSON array.
-		});
-  };
 
   var setCurrActivityDefaults = function(){
     //Activity Defaults
