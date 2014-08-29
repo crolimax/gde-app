@@ -5,7 +5,8 @@ from endpoints_proto_datastore.ndb import EndpointsVariantIntegerProperty
 from datetime import datetime
 from protorpc import messages
 
-from models import ActivityPost
+from models.activity_post import ActivityPost
+from models.account import Account
 
 
 class ActivityMetaData(EndpointsModel):
@@ -20,7 +21,7 @@ class ActivityMetaData(EndpointsModel):
     # applies to all, provides more detail / abstract about the activity
     description = ndb.StringProperty()
 
-    # sub activity type 
+    # sub activity type
     type = ndb.StringProperty()
 
     # for all types, can be event link/blog link/github link/...
@@ -30,10 +31,9 @@ class ActivityMetaData(EndpointsModel):
     # views for #blogpost, attendess for #techtalks ...
     impact = EndpointsVariantIntegerProperty(variant=messages.Variant.INT32)
 
-    # for some acivities, links to slides, video's etc 
+    # for some acivities, links to slides, video's etc
     other_link1 = ndb.StringProperty()
     other_link2 = ndb.StringProperty()
-
 
     # community, techtalk
     location = ndb.StringProperty()
@@ -47,13 +47,13 @@ class ActivityRecord(EndpointsModel):
                               'date_updated', 'post_date', 'activity_types',
                               'product_groups', 'activity_link', 'gplus_posts',
                               'activity_title', 'plus_oners', 'resharers',
-                              'comments', 'metadata', 'api_key')
+                              'comments', 'metadata', 'total_impact', 'api_key')
 
     _api_key = None
 
     # we identify GDE's uniquely using this
     gplus_id = ndb.StringProperty()
-    gde_name = ndb.StringProperty()
+
     # dates: are they really useful????
     date_created = ndb.DateTimeProperty(auto_now_add=True)
     date_updated = ndb.DateTimeProperty(auto_now=True)
@@ -83,6 +83,31 @@ class ActivityRecord(EndpointsModel):
     def api_key(self):
         return self._api_key
 
+    def DummySetter(self, value):
+        # do nothing since property will not be updated from API methods
+        return
+
+    @EndpointsAliasProperty(setter=DummySetter, property_type=messages.StringField)
+    def gde_name(self):
+        if self.gplus_id is None:
+            return None
+        gde = ndb.Key(Account, self.gplus_id).get()
+        if gde is None:
+            return None
+        return gde.display_name
+
+    @EndpointsAliasProperty(setter=DummySetter, property_type=messages.IntegerField, variant=messages.Variant.INT32)
+    def total_impact(self):
+        if self.metadata is None:
+            return 0
+
+        impact = 0
+        for meta in self.metadata:
+            if meta.impact is not None:
+                impact += meta.impact
+
+        return impact
+
     def MinDateSet(self, value):
         if value is not None:
             self._endpoints_query_info._filters.add(ActivityRecord.post_date >= value)
@@ -107,7 +132,6 @@ class ActivityRecord(EndpointsModel):
         """
         return None
 
-
     def calculate_impact(self):
         self.plus_oners = 0
         self.resharers = 0
@@ -129,7 +153,6 @@ class ActivityRecord(EndpointsModel):
                     for act_type in activity_post.activity_type:
                         if act_type not in self.activity_types:
                             self.activity_types.append(act_type)
-
 
     def add_post(self, activity_post):
         if (self.gplus_posts.count(activity_post.post_id) == 0):
