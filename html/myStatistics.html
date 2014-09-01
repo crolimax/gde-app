@@ -210,15 +210,13 @@
               <!--TODO: Fix with the proper usage of ng-model, but it seems to be not working properly with boolean values-->
               <div ng-if='isUsedInMetadata(currentMetadata.activity_group,"google_expensed")' style ="min-width: 300px;">
                 {{getAGFieldTitle(currentMetadata.activity_group,"google_expensed")}}
-                <paper-radio-group layout vertical>
-                  <paper-radio-button id="google_expensed_true" label="Yes" ng-click="setGoogleExpensed(currentMetadata.activity_group,true)"></paper-radio-button>
-                  <paper-radio-button id="google_expensed_false" label="No" ng-click="setGoogleExpensed(currentMetadata.activity_group,false)"></paper-radio-button>
-                </paper-radio-group>
+                <paper-checkbox ng-model="currentMetadata.google_expensed"></paper-checkbox>
               </div>
               <paper-input floatingLabel type='number' style ="min-width: 300px;"
                 label='{{getAGFieldTitle(currentMetadata.activity_group,"us_approx_amount")}}'
                 ng-model='currentMetadata.us_approx_amount'
                 ng-if='isUsedInMetadata(currentMetadata.activity_group,"us_approx_amount")'
+                ng-disabled="!currentMetadata.google_expensed"
                 ></paper-input>
             </div>
           </div>

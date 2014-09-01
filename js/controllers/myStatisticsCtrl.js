@@ -399,25 +399,11 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
       });
       $scope.metadataArray = tmpMetaArray;
 
-
-      //Set the value of the google_expensed if used by the AG
-      var agId = $scope.selectedAG.activity_group;
-	    if ($scope.isUsedInMetadata(agId,"google_expensed")){
-	      $scope.metadataArray.some(function(item){
-          if (item.activity_group == agId){
-            $scope.setGoogleExpensed(agId,item.google_expensed);
-            return true;
-          }
-          return false;
-        });
-	    }
 		}else{
 		  //Clean the metadataObject
 		  $scope.metadataArray=[];
 		}
   };
-
-
 
   var setCurrActivityDefaults = function(){
     //Activity Defaults
@@ -600,7 +586,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
   	  $scope.currentActivity.gde_name = $scope.name;
   	  $scope.currentActivity.metadata = $scope.metadataArray;
 
-  	  //Sanity Checks on Number
+  	  //Sanity Checks on Numbers
   	  if ($scope.currentActivity.plus_oners==null || $scope.currentActivity.plus_oners==""){
   	    $scope.currentActivity.plus_oners=0;
 
@@ -703,16 +689,6 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 		    $scope.selectAGIdx=k;
 		    $scope.selectedAG=ag;
 		    $("#core_animated_pages").prop('selected',k);
-		    //Set the value of the google_expensed if used by the AG
-		    if ($scope.isUsedInMetadata(agId,"google_expensed")){
-		      $scope.metadataArray.some(function(item){
-            if (item.activity_group == agId){
-              $scope.setGoogleExpensed(agId,item.google_expensed);
-              return true;
-            }
-            return false;
-          });
-		    }
 		  }
 		});
   };
@@ -791,20 +767,5 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
     return toRet;
   };
-
-  $scope.setGoogleExpensed = function(agId,val){
-    $scope.metadataArray.some(function(item){
-      if (item.activity_group == agId){
-        item.google_expensed = val;
-        return true;
-      }
-      return false;
-    });
-
-    //Check or uncheck the paper-radio-button
-    $('#google_expensed_true').attr('checked',(val==true));
-    $('#google_expensed_false').attr('checked',(val==false));
-
-  }
 
 });
