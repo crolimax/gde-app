@@ -679,6 +679,31 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     }
 	};
 
+	$scope.checkMergeEnable = function(currVal){
+	  var tmp = $.grep($scope.userActivities,function(item){
+	    return (item.selectedForMerge != null && item.selectedForMerge==true)
+	  });
+
+	  $("#mergeButton").attr("disabled",true); //Disable the button
+	  if (currVal==null || currVal == false){
+	    if (tmp.length>0)//The event is rised before the data is changed so we have to check that
+	    {//Enable the merge button
+	      $("#mergeButton").attr("disabled",false);
+	    }
+	  }else{
+	    if(tmp.length>2){//3 or more selected, one less selecting, still more (or equal) then 2
+	      //Enable the merge button
+	      $("#mergeButton").attr("disabled",false);
+	    }
+	  }
+
+	};
+
+	//
+	$scope.mergeSelectedAR = function(){
+	  //TODO: Merge the records into a new Activity and delete the others
+	};
+
   //Metadata functions
   $scope.selectAG = function(agId){
     $.each($scope.currActivityGroups, function(k,v)

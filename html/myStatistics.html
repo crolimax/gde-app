@@ -33,9 +33,13 @@
 <br/>
 <!--<paper-fab	class="paper-fab"	icon="add"	id="fabNewActivity" ng-click="newActivity()"></paper-fab>-->
 <paper-button class="colored green" label="Create New Activity" raisedButton ng-click="newActivity()"></paper-button>
+<paper-button class="colored blue" label="Merge Selected" disabled raisedButton id="mergeButton" ng-click=""></paper-button>
+<br/>
 <div class="stats">
 	<table class="prettyTable">
 		<tr>
+		  <th>
+		  </th>
 		  <th>
 		  </th>
 			<th>
@@ -55,6 +59,9 @@
 			</th>
 		</tr>
 		<tr ng-repeat="activity in userActivities | orderBy : 'plus_oners' : true">
+		  <td>
+		    <paper-checkbox ng-model="activity.selectedForMerge" ng-click="checkMergeEnable(activity.selectedForMerge)"></paper-checkbox>
+		  </td>
 		  <td>
 		    <paper-icon-button icon="create" ng-click="editGDEActivity(activity.id)"></paper-icon-button>
 		  </td>
