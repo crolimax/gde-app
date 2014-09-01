@@ -6,6 +6,7 @@ from models import activity_record as ar
 from models import Account
 from models import ActivityType
 from models import ProductGroup
+from models import ActivityGroup
 
 from .utils import check_auth
 
@@ -155,7 +156,7 @@ class ActivityTypeService(remote.Service):
         return activity_type
 
     @ActivityType.method(request_fields=('id',),  path='/activityType/{id}',
-                    http_method='GET', name='get')
+                         http_method='GET', name='get')
     def at_get(self, activity_type):
         if not activity_type.from_datastore:
             raise endpoints.NotFoundException('Activity type not found.')
@@ -180,6 +181,46 @@ class ActivityTypeService(remote.Service):
         return query
 
 
+@api_root.api_class(resource_name='activity_group', path='activityGroup')
+class ActivityGroupService(remote.Service):
+
+    @ActivityGroup.method(path='/activityGroup/{id}', http_method='POST', name='insert',
+                          request_fields=('id', 'tag', 'types', 'title', 'description', 'link',
+                                          'impact', 'other_link1', 'other_link2', 'location',
+                                          'google_expensed', 'us_approx_amount', 'api_key'))
+    def ag_insert(self, activity_group):
+        if not check_auth(None, activity_group.api_key):
+            raise endpoints.UnauthorizedException('Only Admins may enter or change this data.')
+
+        activity_group.put()
+        return activity_group
+
+    @ActivityGroup.method(request_fields=('id',),  path='/activityGroup/{id}',
+                          http_method='GET', name='get')
+    def ag_get(self, activity_group):
+        if not activity_group.from_datastore:
+            raise endpoints.NotFoundException('Activity type not found.')
+        return activity_group
+
+    @ActivityGroup.method(request_fields=('id', 'api_key'), response_fields=("id",),
+                          path='/activityGroup/{id}',
+                          http_method='DELETE', name='delete')
+    def ag_delete(self, activity_group):
+        if not activity_group.from_datastore:
+            raise endpoints.NotFoundException('Activity type not found.')
+        if not check_auth(None, activity_group.api_key):
+            raise endpoints.UnauthorizedException('Only Admins may enter or change this data.')
+
+        activity_group.key.delete()
+
+        return activity_group
+
+    @ActivityGroup.query_method(query_fields=('limit', 'order', 'pageToken'),
+                                path='/activityGroup', name='list')
+    def ag_list(self, query):
+        return query
+
+
 @api_root.api_class(resource_name='product_group', path='productGroup')
 class ProductGroupService(remote.Service):
 
@@ -193,7 +234,7 @@ class ProductGroupService(remote.Service):
         return product_group
 
     @ProductGroup.method(request_fields=('id',),  path='/productGroup/{id}',
-                    http_method='GET', name='get')
+                         http_method='GET', name='get')
     def pg_get(self, product_group):
         if not product_group.from_datastore:
             raise endpoints.NotFoundException('Activity type not found.')
