@@ -171,7 +171,6 @@ def create_activity_record(activity_post):
     date = datetime.strptime(activity_post.date[0:19], '%Y-%m-%dT%H:%M:%S')
     date_format = date.strftime("%Y-%m-%d")
     activity_record = ActivityRecord(gplus_id=activity_post.gplus_id,
-                                     gde_name=activity_post.name,
                                      post_date=date_format,
                                      activity_link=activity_link,
                                      activity_title=activity_post.title)
