@@ -583,7 +583,6 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
       alert('Invalid Activity Date format, please use YYYY-MM-DD');
     }else{
 
-  	  $scope.currentActivity.gde_name = $scope.name;
   	  $scope.currentActivity.metadata = $scope.metadataArray;
 
   	  //Sanity Checks on Numbers
