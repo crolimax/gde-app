@@ -33,7 +33,20 @@
 <br/>
 <!--<paper-fab	class="paper-fab"	icon="add"	id="fabNewActivity" ng-click="newActivity()"></paper-fab>-->
 <paper-button class="colored green" label="Create New Activity" raisedButton ng-click="newActivity()"></paper-button>
-<paper-button class="colored blue" label="Merge Selected" disabled raisedButton id="mergeButton" ng-click=""></paper-button>
+<paper-button class="colored blue" label="Merge Selected" disabled raisedButton id="mergeButton" ng-click="askMergeConfirmation()"></paper-button>
+<paper-dialog id="mergeDialog" >
+
+    <div class="content" vertical layout center>
+      <div horizontal layout center-justified>
+        Are you sure to merge the selected records into a new one?
+      </div>
+      <div horizontal layout center-justified>
+        <paper-button raisedButton class ="colored red"label="No" ng-click="askMergeConfirmation()"></paper-button>
+        <paper-button raisedButton class ="colored green" label="Yes" ng-click="mergeSelectedAR()"></paper-button>
+      </div>
+    </div>
+
+</paper-dialog>
 <br/>
 <div class="stats">
 	<table class="prettyTable">
@@ -124,6 +137,7 @@
       </div>
       <h4>Links</h4>
       <a href={{currentActivity.activity_link}} style="text-align:left" target="_blank" ng-if="currActLink">Activity Link</a>
+      <paper-icon-button id="editLink" icon="create" ng-click="enableLinkEdit()" ng-if="currActLink"></paper-icon-button>
       <paper-input floatingLabel label="Activity Link" ng-model="currentActivity.activity_link" ng-if="!currActLink" style="width:100%;"></paper-input>
       <br/>
       <a ng-repeat="post in currentActivityPosts" style="float:left;width:10em"

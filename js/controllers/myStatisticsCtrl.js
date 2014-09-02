@@ -451,7 +451,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	    $scope.metadataArray = [];
 	  }else{
 	    $scope.metadataArray = $scope.currentActivity.metadata;
-	    if($scope.currentActivity.length>1){
+	    if($scope.metadataArray.length>1){
   	    //Set the local array ordered by activity_group
   	    $scope.metadataArray =
   	      $scope.metadataArray.sort(function(a,b){
@@ -500,8 +500,6 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
     $scope.currActLink= $scope.currentActivity.activity_link;
 
-	  //console.log(JSON.stringify($scope.currentActivity));
-
     $scope.editMode ="Edit";
 	  //Load ActivityPost Items for the current ActivityRecord
 	  getActivityPosts($scope.currentActivity);
@@ -511,7 +509,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
 	};
 
-	$scope.newActivity = function(){
+	$scope.newActivity = function(showDialog){
 
 	  //Initialize the new Activity
 	  $scope.currentActivity ={};
@@ -534,8 +532,10 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
 	  $scope.editMode = "Create New";
 
-	  //Display the Edit Activity Dialog
-	  toggleDialog('singleActivity');
+    if(showDialog==null || showDialog==true){
+  	  //Display the Edit Activity Dialog
+  	  toggleDialog('singleActivity');
+    }
 	}
 
 	$scope.updCurrActivity = function(type){
@@ -611,54 +611,59 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
             alert(response.message);
           }else{
             //Delete the activity from the local arrays if in edit
-            if ($scope.editMode=='Edit'){
-              if ($scope.data.items.length==1){
-                  //only one item, re init all the arrays
-                  $scope.data.items=[];
-                  $scope.activitiesByGdeNameTemp[$scope.name]['activities']=[];
-                  $scope.userActivities=[];
+            switch($scope.editMode){
+              case 'Edit':
+                if ($scope.data.items.length==1){
+                    //only one item, re init all the arrays
+                    $scope.data.items=[];
+                    $scope.activitiesByGdeNameTemp[$scope.name]['activities']=[];
+                    $scope.userActivities=[];
+                }else{
+                  //Find the activity index
+                  var itmId=null;
+                  for (var i=0;i<$scope.data.items.length;i++){
+                    if ($scope.data.items[i].id== response.id){
+                      itmId=i;
+                      break;
+                    }
 
-              }else{
-                //Find the activity index
-                var itmId=null;
-                for (var i=0;i<$scope.data.items.length;i++){
-                  if ($scope.data.items[i].id== response.id){
-                    itmId=i;
-                    break;
                   }
-
-                }
-                if(itmId){
-                  //Remove the Old Item
-                  $scope.data.items.splice(itmId,1);
-                }
-                itmId=null;
-                //activitiesByGdeNameTemp[$scope.name]
-                for (var i=0;i<$scope.activitiesByGdeNameTemp[$scope.name]['activities'].length;i++){
-                  if ($scope.activitiesByGdeNameTemp[$scope.name]['activities'][i].id== response.id){
-                    itmId=i;
-                    break;
+                  if(itmId){
+                    //Remove the Old Item
+                    $scope.data.items.splice(itmId,1);
                   }
+                  itmId=null;
+                  //activitiesByGdeNameTemp[$scope.name]
+                  for (var i=0;i<$scope.activitiesByGdeNameTemp[$scope.name]['activities'].length;i++){
+                    if ($scope.activitiesByGdeNameTemp[$scope.name]['activities'][i].id== response.id){
+                      itmId=i;
+                      break;
+                    }
 
-                }
-                if(itmId){
-                  //Remove the Old Item
-                  $scope.activitiesByGdeNameTemp[$scope.name]['activities'].splice(itmId,1);
-                }
-                itmId=null;
-                for (var i=0;i<$scope.userActivities.length;i++){
-                  if ($scope.userActivities[i].id== response.id){
-                    itmId=i;
-                    break;
                   }
+                  if(itmId){
+                    //Remove the Old Item
+                    $scope.activitiesByGdeNameTemp[$scope.name]['activities'].splice(itmId,1);
+                  }
+                  itmId=null;
+                  for (var i=0;i<$scope.userActivities.length;i++){
+                    if ($scope.userActivities[i].id== response.id){
+                      itmId=i;
+                      break;
+                    }
 
+                  }
+                  if(itmId){
+                    //Remove the Old Item
+                    $scope.userActivities.splice(itmId,1);
+                  }
                 }
-                if(itmId){
-                  //Remove the Old Item
-                  $scope.userActivities.splice(itmId,1);
-                }
-              }
+                break;
+              case 'Merge':
+                //TODO: Delete the "original" activities before saving
+                break;
             }
+
             //Update the local Arrays
             $scope.data.items.push(response);
             $scope.utils.updateStats($scope.activitiesByGdeNameTemp[$scope.name], response);
@@ -699,9 +704,156 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
 	};
 
-	//
+  $scope.askMergeConfirmation = function(){
+    toggleDialog("mergeDialog");
+  };
+
 	$scope.mergeSelectedAR = function(){
-	  //TODO: Merge the records into a new Activity and delete the others
+	  //Hide the dialog
+	  toggleDialog("mergeDialog");
+
+	  //Create a new Empty AR
+	  $scope.newActivity(false);
+
+	  //Loop over the selected ARs
+	  var tmp = $.grep($scope.userActivities,function(item){
+	    return (item.selectedForMerge != null && item.selectedForMerge==true)
+	  });
+
+	  var mergedActivity = $scope.currentActivity;
+	  mergedActivity.metadata = [];
+	  tmp.forEach(function(tmpItem){
+	    var item = $.grep($scope.data.items, function(arItem){
+  	    return arItem.id== tmpItem.activity_id;
+  	  })[0];
+	    //Create the merged "default" activity
+	    //Concatenate the Activity Title to the current
+	    if (mergedActivity.activity_title==null){
+	      mergedActivity.activity_title= '';
+	    }
+	    mergedActivity.activity_title += item.activity_title;
+	    //Set activity date IF mergedActivity.post_date == null || mergedActivity.post_date>item.post_date
+	    if(mergedActivity.post_date==null || mergedActivity.post_date>item.post_date){
+	      mergedActivity.post_date=item.post_date;
+	    }
+	    //Sum +1s,reshares,comments
+	    mergedActivity.plus_oners += item.plus_oners;
+	    mergedActivity.resharers += item.resharers;
+	    mergedActivity.comments += item.comments;
+
+	    //Overwrite the activity Link
+	    mergedActivity.activity_link = item.activity_link;
+	    //TODO: Merge the gplus_posts
+
+	    //Update the activity Types of the merged record
+	    if(item.activity_types!=null){
+  	    item.activity_types.forEach(function(at){
+  	      if(mergedActivity.activity_types.indexOf(at)<0){
+  	        mergedActivity.activity_types.push(at);
+  	      }
+  	    });
+	    }
+	    //Update the product groups of the merged record
+	    if(item.product_groups!=null){
+  	    item.product_groups.forEach(function(pg){
+  	      if(mergedActivity.product_groups.indexOf(pg)<0){
+  	        mergedActivity.product_groups.push(pg);
+  	      }
+  	    });
+	    }
+
+	    //Loop over the activity metadata objects
+	    if(item.metadata!=null){
+  	    item.metadata.forEach(function(metaObj){
+  	      var addNewMeta = true;
+  	      //Search if the activity group is already in the mergedObject
+  	      mergedActivity.metadata.some(function(mergedMeta){
+
+  	        if(metaObj.activity_group==mergedMeta.activity_group){
+  	          addNewMeta = false;
+  	          //Meta group found, merge the values that makes sense and replace the other if the current metadata is not empty (or null)
+  	          if (metaObj.title!=null && metaObj.title!='')
+  	          {
+  	            mergedMeta.title= metaObj.title;
+  	          }
+  	          if (metaObj.description!=null && metaObj.description!='')
+  	          {
+  	            mergedMeta.description= metaObj.description;
+  	          }
+  	          //TODO: Merge the meta.type
+  	          //Store max 3 links
+  	          if (metaObj.link!=null && metaObj.link!='')
+  	          {
+  	            if (mergedMeta.link != null && mergedMeta.link!=metaObj.link){
+  	              if (mergedMeta.other_link1 != null && mergedMeta.other_link1!=metaObj.link){
+  	                if (mergedMeta.other_link2 == null){
+  	                  mergedMeta.other_link2+= metaObj.link;
+  	                }
+  	              }else{
+  	                mergedMeta.other_link1+= metaObj.link;
+  	              }
+  	            }else{
+  	              mergedMeta.link= metaObj.link;
+  	            }
+  	          }
+  	          if (metaObj.other_link1!=null && metaObj.other_link1!='')
+  	          {
+                if (mergedMeta.other_link1 != null && mergedMeta.other_link1!=metaObj.link){
+                  if (mergedMeta.other_link2 == null){
+                    mergedMeta.other_link2+= metaObj.link;
+                  }
+                }else{
+                  mergedMeta.other_link1+= metaObj.link;
+                }
+  	          }
+  	          mergedMeta.other_link2+= metaObj.other_link2;
+  	          if (metaObj.other_link2!=null && metaObj.other_link2!='')
+  	          {
+  	            mergedMeta.other_link2= metaObj.other_link2;
+  	          }
+  	          mergedMeta.impact+= metaObj.impact;
+  	          if (metaObj.location!=null && metaObj.location!='')
+  	          {
+  	            mergedMeta.location= metaObj.location;
+  	          }
+  	          mergedMeta.google_expensed+= metaObj.google_expensed;
+  	          if (metaObj.google_expensed!=null && metaObj.google_expensed==true)
+  	          {
+  	            mergedMeta.google_expensed= true;
+  	          }
+
+  	          if (mergedMeta.google_expensed==true)
+  	          {
+  	            mergedMeta.us_approx_amount= metaObj.us_approx_amount;
+  	          }
+
+  	          //Exit the loop
+  	          return true;
+  	        }else{
+  	          return false;
+  	        }
+  	      });
+  	      if (addNewMeta){
+  	        //New AG, push the metadata
+  	        mergedActivity.metadata.push(metaObj);
+  	      }
+  	    });
+	    }
+	  });
+	  $scope.metadataArray= mergedActivity.metadata;
+	  //merging complete
+	  //Populate Product Groups and Activities for the selection table
+	  populatePGs();
+	  populateATs();
+	  populateAGs();//Populate the ActivityGroups
+
+	  $scope.editMode ="Merge";
+	  //Load ActivityPost Items for the current ActivityRecord
+	  getActivityPosts($scope.currentActivity);
+
+	  //Display the single Activity Dialog
+	  toggleDialog('singleActivity');
+
 	};
 
   //Metadata functions
@@ -790,6 +942,10 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     });
 
     return toRet;
+  };
+
+  $scope.enableLinkEdit = function(){
+    $scope.currActLink = null;
   };
 
 });
