@@ -347,13 +347,13 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
       if (item.selected){
         //search the currActivityGroups to see if the current group is already in the content list
-        var result = $.grep($scope.currActivityGroups, function(e){ return e.id == item.group; });
+        var result = $.grep($scope.currActivityGroups, function(e){ return e.tag == item.group; });
         if (result.length==0){
           //Get the ActivityGroup
           $rootScope.activityGroups.some(function(ag){
-            if(ag.id==item.group){
+            if(ag.tag==item.group){
               $scope.currActivityGroups.push(ag);
-              $scope.updateAG(ag.id); //Update the Medatada AGs
+              $scope.updateAG(ag.tag); //Update the Medatada AGs
 
               return true;
             }
@@ -390,7 +390,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
       $scope.currActivityGroups.forEach(function(item){
         //search in the categoty list
         $scope.metadataArray.some(function(meta){
-          if (meta.activity_group == item.id){
+          if (meta.activity_group == item.tag){
             tmpMetaArray.push(meta);
             return true;
           }
@@ -684,7 +684,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     $.each($scope.currActivityGroups, function(k,v)
 		{
 		  var ag = $scope.currActivityGroups[k];
-		  if(agId==ag.id){
+		  if(agId==ag.tag){
 		    $scope.selectAGIdx=k;
 		    $scope.selectedAG=ag;
 		    $("#core_animated_pages").prop('selected',k);
@@ -733,9 +733,12 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     var toRet=false;
 
     $scope.currActivityGroups.some(function(item){
-      if(item.id==category){
-        if(item.usedInMetadata[field]){
-          toRet=item.usedInMetadata[field];
+      if(item.tag==category){
+        //Label of the field is null or empty
+        if(item[field]==null ||item[field]==''){
+          toRet=false;
+        }else{
+          toRet=true;
         }
         return true;
       }else{
@@ -750,14 +753,8 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     var toRet=field;
 
     $scope.currActivityGroups.some(function(item){
-      if(item.id==category){
-        item.labels.some(function(label){
-          if(label[0]==field){
-            toRet=label[1];
-            return true;
-          }
-          return false;
-        });
+      if(item.tag==category){
+        toRet = item[field];
         return true;
       }else{
         return false;
