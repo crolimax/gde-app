@@ -361,6 +361,3 @@ GdeTrackingApp.run(function ($rootScope)
 
 	});
 });
-
-
-
