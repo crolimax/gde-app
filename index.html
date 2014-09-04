@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta	charset="UTF-8" />
+	<meta	name="viewport"				content="width=device-width">
+	<meta 	name="Robots"				content="index,follow">
+	<meta	name="mobile-web-app-capable"		content="yes">
+	<meta	name="apple-mobile-web-app-capable"	content="yes">
+
+	<link	rel="shortcut icon"	href="img/gdeLogo256x256.png"	sizes="256x256">
+	<link	rel="icon"		href="img/favicon.png"		type="image/x-icon"/>
+	<title>
+		GDE Tracking App
+	</title>
+	<!-- **********************************************************************	-->
+	<!--				Javascript Libraries									-->
+	<!-- **********************************************************************	-->
+	<script	src="js/resources/jquery-2.1.0.min.js">						</script>
+	<script src="js/resources/angular.min.js">							</script>
+	<script src="js/resources/angular-route.min.js">					</script>
+	<script src="//www.google.com/jsapi" >							   	</script>
+	<script src='//maps.googleapis.com/maps/api/js?sensor=false'>		</script>
+	<!-- **********************************************************************	-->
+	<!--				Polymer													-->
+	<!-- **********************************************************************	-->
+	<!-- ---------------------------- Platform --------------------------------	-->
+	<script src="components/platform/platform.js">						</script>
+	<script src="components/web-animations-js/web-animations.js">		</script>
+	<!-- ---------------------------- Core Elements ---------------------------	-->
+	<link	rel="import"
+		href="components/core-toolbar/core-toolbar.html">
+	<link	rel="import"
+		href="components/core-menu/core-menu.html">
+	<link	rel="import"
+		href="components/core-item/core-item.html">
+	<link	rel="import"
+		href="components/core-header-panel/core-header-panel.html">
+	<link	rel="import"
+		href="components/core-drawer-panel/core-drawer-panel.html">
+	<link	rel="import"
+		href="components/core-scaffold/core-scaffold.html">
+	<link	rel="import"
+		href="components/core-icons/core-icons.html">
+	<link	rel="import"
+		href="components/core-scroll-header-panel/core-scroll-header-panel.html">
+
+	<!-- ----------------------------------------------------------------------	-->
+	<!-- --------------------------- Paper Elements ---------------------------	-->
+	<link	rel="import"
+		href="components/paper-button/paper-button.html" >
+	<link	rel="import"
+		href="components/paper-icon-button/paper-icon-button.html">
+	<link	rel="import"
+		href="components/paper-fab/paper-fab.html" >
+	<link	rel="import"
+		href="components/paper-item/paper-item.html" >
+	<link	rel="import"
+		href="components/paper-shadow/paper-shadow.html" >
+	<link	rel="import"
+		href="components/paper-dialog/paper-dialog.html" >
+	<link	rel="import"
+		href="components/paper-dialog/paper-dialog-transition.html" >
+	<link	rel="import"
+		href="components/paper-toast/paper-toast.html">
+	<link	rel="import"
+		href="components/paper-input/paper-input.html">
+	<link	rel="import"
+		href="components/paper-checkbox/paper-checkbox.html">
+	<link	rel="import"
+		href="components/paper-tabs/paper-tabs.html">
+	<link rel="import" href="components/core-animated-pages/core-animated-pages.html">
+  <link rel="import" href="components/core-animated-pages/transitions/hero-transition.html">
+  <link rel="import" href="components/core-animated-pages/transitions/cross-fade.html">
+  <link rel="import" href="components/core-animated-pages/transitions/slide-down.html">
+  <link rel="import" href="components/core-animated-pages/transitions/slide-up.html">
+  <link rel="import" href="components/core-animated-pages/transitions/tile-cascade.html">
+	<link rel="import"
+		href="components/gde-badge/gde-badge.html">
+	<!-- ----------------------------------------------------------------------	-->
+	<!-- **********************************************************************	-->
+	<!--				Custom CSS					-->
+	<!-- **********************************************************************	-->
+	<link	rel="stylesheet"
+		href="css/polymerDetails.css"
+		shim-shadowdom>
+	</link>
+	<!-- **********************************************************************	-->
+</head>
+<body unresolved>
+	<core-drawer-panel	id="drawerPanel"	responsiveWidth="1300px">
+		<core-header-panel	 aside	drawer>
+			<core-toolbar	header	id="mainheader"	class="medium-tall">
+				<div>
+					<img	class="googleDevelopersLogo" src="img/logo_google_developers.svg"/>
+				</div>
+			</core-toolbar	header>
+			<core-menu	nav	ng-controller="menuCtrl">
+				<core-item>
+					<paper-button	raisedButton	label="Googlers access"		class="colored red"			ng-click="showGeneralStatisticsForGooglers()"	id="generalStatisticsForGooglers">
+					</paper-button>
+				</core-item>
+				<core-item>
+					<paper-button	raisedButton	label="GDE Avatar Builder"	class="colored red"			onclick="toggleDialog('GDEAvatarBuilder')"		id="gdeAvatarBuilder">
+					</paper-button>
+				</core-item>
+				<core-item>
+					<paper-button	raisedButton	label="GDE access"		class="colored blue"		ng-click="showGdeStatistics()"					id="gdeStatistics">
+					</paper-button>
+				</core-item>
+				<core-item>
+					<paper-button	raisedButton	label="How is it used?"		class="colored green"		onclick="toggleDialog('HowItsUsed')">
+					</paper-button>
+				</core-item>
+				<core-item>
+					<paper-button	raisedButton	label="How does it works?"		class="colored yellow"		onclick="toggleDialog('HowItWorks')">
+					</paper-button>
+				</core-item>
+				<core-item>
+					<paper-button	raisedButton	label="Who are the GDEs?"	class="colored deepPurple"	onclick="toggleDialog('WhoAreTheGDEs')">
+					</paper-button>
+				</core-item>
+				<div	class="gplus">
+					<div 	class="g-plusone"	data-href="http://gdetracking.gweb.io/#/"	data-annotation="inline"	data-width="300"></div>
+				</div>
+			</core-menu>
+		</core-header-panel>
+
+		<core-header-panel	main>
+			<core-toolbar	header 	id="mainheader"  class="medium-tall">
+				<paper-icon-button	id="navicon"	icon="menu"></paper-icon-button>
+				<span	class="bottom"	flex>
+				</span>
+				<div	ng-controller="plusLoginCtrl"	class="plusLogin bottom">
+					<p		class=	"userName"></p>
+					<span	id=		"userImg"></span>
+					<div	class=	"signinButton">
+						<google-plus-signin clientid="47242318878-dik3r14d8jc528h1ao35f8ehqa7tmpe1" language="en"></google-plus-signin>
+					</div>
+				</div>
+			</core-toolbar	header>
+			<article	class="scrollBar"	ng-view>
+	<!--	---------------------------------------------------------------------	-->
+	<!--					AngularJS templated HTML5 area							-->
+	<!--	---------------------------------------------------------------------	-->
+	<!--	< ...................................................................	-->
+	<!--	---------------------------------------------------------------------	-->
+			</article>
+	<!--	---------------------------------------------------------------------	-->
+	<!--						paper-fab & AngularJS Bind							-->
+	<!--	---------------------------------------------------------------------	-->
+			<div ng-controller="fabCtrl" >
+				<paper-fab	class="paper-fab"	icon="chevron-right"	id="fabLeft"></paper-fab>
+			</div>
+	<!--	---------------------------------------------------------------------	-->
+	<!--						Polymer Paper Dialogs								-->
+	<!--	---------------------------------------------------------------------	-->
+			<paper-toast id="loading" text="Loading...">
+			</paper-toast>
+			<paper-dialog	id="Googler"			transition="paper-dialog-transition-center"	ng-controller="menuCtrl">
+				<p>
+					<paper-button	raisedButton	affirmative	label="General Statistics"	ng-click="showGeneralStatisticsForGooglers()"></paper-button>
+				</p>
+				<paper-button	label="close"	icon="close" dismissive ></paper-button>
+			</paper-dialog>
+			<paper-dialog	id="GDE"				transition="paper-dialog-transition-center"	ng-controller="menuCtrl">
+				<p>
+					<paper-button	raisedButton	affirmative	label="My Statistics"		ng-click="showGdeStatistics()"></paper-button>
+				</p>
+				<paper-button	label="close"	icon="close" dismissive ></paper-button>
+			</paper-dialog>
+			<paper-dialog	id="HowItsUsed"			transition="paper-dialog-transition-center">
+				<div>
+					<h1>How to use</h1>
+					<p>
+						The application checks all the <a href='https://developers.google.com/experts/members/' target="_blank">GDE's</a> <a href='https://plus.google.com/' target='_blank'>Google+</a> <strong>public stream</strong> (posts shared Public or with public Communities) searching for posts that contain the hashtag <a href="https://plus.google.com/explore/gde" target="_blank">#gde</a>.
+					</p>
+					<p>
+						To be processed by the application, other information are required, so GDE's need to add additional tags to the Google+ post they are sharing to specify the kind of content they are sharing.
+					</p>
+					<br/>
+					<p>
+						The special <strong>#</strong> tags are divided in 2 categories:
+					</p>
+					<ul>
+						<li><p>Product Tags</p></li>
+						<li><p>Activity Type Tags</p></li>
+					</ul>
+
+					<p>Following a <i>cheat sheet</i> of the Tags:</p>
+					<br/>
+					<table style="float:left;margin-right: 10px;padding-right: 10px;border-style: solid;height: 600px;" class='prettyTable' >
+						<tr>
+							<th colspan="2">
+								Product Tags
+							</th>
+						</tr>
+						<tr ng-repeat="pg in productGroups">
+					    <td>{{pg.tag}}</td>
+					    <td><a href='{{pg.url}}'target='_blank'>{{pg.description}}</a></td>
+					  </tr>
+					</table>
+					<table style="margin-left: 100px;padding-left: 10px;border-style: solid;height: 600px;"	class='prettyTable' >
+						<tr>
+							<th colspan="2">
+								Activity Type Tags
+							</th>
+						</tr>
+					  <tr ng-repeat="activityType in activityTypes">
+					    <td>{{activityType.tag}}</td>
+					    <td>{{activityType.description}}</td>
+					  </tr>
+					</table>
+				</div>
+				<paper-button	label="close"	icon="close" dismissive ></paper-button>
+			</paper-dialog>
+			<paper-dialog	id="HowItWorks"			transition="paper-dialog-transition-center">
+				<h1> Soon!</h1>
+				<paper-button	label="close"	icon="close" dismissive ></paper-button>
+			</paper-dialog>
+			<paper-dialog	id="WhoAreTheGDEs"		transition="paper-dialog-transition-center">
+					<div>
+						<h1>Who are the Google Developer Experts?</h1>
+						<p>The Google Developer Experts (GDE) title recognizes the <strong>outstanding developers who exhibit great expertise in one or more Google technologies and share it with the developer community</strong>.</p>
+						<p>GDEs are gurus, mentors and evangelists; they create tutorials, code samples, and write books and blogs; they publish videos, drive community projects, and present at events large and small. These independent developers bring their real-world experience and knowledge working with Google technologies to developer communities worldwide.</p>
+						<p><a href="https://developers.google.com/experts/" target="_blank">More infos ...</a></p>
+					</div>
+				<paper-button	label="close"	icon="close" dismissive ></paper-button>
+			</paper-dialog>
+
+			<paper-dialog	id="GDEAvatarBuilder"		transition="paper-dialog-transition-center">
+				<div>
+					<h1>GDE Avatar Builder</h1>
+					<p>Fill the form below with your G+ id (eg: +SandroPaganotti) to get your GDE Avatar:</p>
+
+			    <form id="avatarForm">
+			        <input type="text" id="userid" value="">
+			        <input type="submit">
+			    </form>
+
+			    <gde-badge  userid="" apikey="AIzaSyA00Bh_4YQx34Zc5z_JIlqYQJjNCr2ihV4" text="GDE"></gde-badge>
+
+					<paper-button	label="close"	icon="close" dismissive ></paper-button>
+				</div>
+			</paper-dialog>
+	<!--	---------------------------------------------------------------------	-->
+		</core-header-panel>
+	</core-drawer-panel>
+	<!-- **********************************************************************	-->
+	<!--                     	  Aditional Scripts                              	-->
+	<!-- **********************************************************************	-->
+	<script src="js/google-plus-signin.js">				</script>
+	<script src='js/resources/underscore-min.js'>			</script>
+	<script src='js/resources/angular-google-maps.js'>		</script>
+	<script src="js/resources/ng-polymer-elements.min.js">					</script>
+	<!-- **********************************************************************	-->
+	<!--                     	  GDE App Scripts                           	    -->
+	<!-- **********************************************************************	-->
+	<script src="js/GdeTrackingApp.js">				</script>
+	<script src="js/controllers/plusLoginCtrl.js">				</script>
+	<script src="js/controllers/fabCtrl.js">				</script>
+	<script src="js/controllers/menuCtrl.js">				</script>
+	<script src="js/controllers/startCtrl.js">				</script>
+	<script src="js/controllers/generalStatisticsForGooglersCtrl.js">				</script>
+	<script src="js/controllers/myStatisticsCtrl.js">				</script>
+	<!-- ********************************************************************** -->
+</body>
+</html>

@@ -1,0 +1,60 @@
+<core-item	class="mapArea">
+	<google-map	center="map.center"	zoom="map.zoom"	draggable="true"	options='{"mapTypeId":"terrain"}'>
+		<markers>
+			<marker ng-repeat="marker in markers"	coords="marker" icon="marker.icon"	click="markerClick(marker.id)">
+				<window isIconVisibleOnClick="false">
+					<div style="width:300px" class="center">
+						<h2>{{marker.name}}</h2>
+						<img src="{{marker.pic}}" class="gdePic"/>
+						<br/>
+						<h3 ng-repeat="product in marker.pgObjects">
+    					{{product.description}}&nbsp;
+    				</h3>
+    				<img class="badge" ng-repeat="pg_filename in marker.pgObjects"  src="img/badges/{{pg_filename.image}}"></img>
+						<br/>
+					</div>
+				</window>
+			</marker>
+		</markers>
+	</google-map>
+	<div	class="appLogo">
+		<img	class="gdeLogo"	src="img/gdeLogo_transparent.png"	alt="Google Developer Expert"></img>
+		<div	class="gdeTrackingApp_text"><strong><i>Tracking App</i></strong></div>
+	</div>
+	<div class="countryButtons">
+		<paper-icon-button	raisedButton	icon="keep"	label="World"			ng-click="focusMap('World')">
+		</paper-icon-button>
+		<paper-icon-button	raisedButton	icon="keep"	label="Asia"			ng-click="focusMap('Asia')">
+		</paper-icon-button>
+		<paper-icon-button	raisedButton	icon="keep"	label="Africa"			ng-click="focusMap('Africa')">
+		</paper-icon-button>
+		<paper-icon-button	raisedButton	icon="keep"	label="Europe"			ng-click="focusMap('Europe')">
+		</paper-icon-button>
+		<paper-icon-button	raisedButton	icon="keep"	label="North America"	ng-click="focusMap('North America')">
+		</paper-icon-button>
+		<paper-icon-button	raisedButton	icon="keep"	label="South America"	ng-click="focusMap('South America')">
+		</paper-icon-button>
+		<paper-icon-button	raisedButton	icon="keep"	label="Oceania"			ng-click="focusMap('Oceania')">
+		</paper-icon-button>
+		</br>
+		<h1>{{gdeNumber}} Google Developer Experts around the world!</h1>
+	</div>
+</core-item>
+<core-item>
+	<div class="gdeList wrap">
+		<div class="gdeCard" ng-repeat="gde in gdeList | orderBy : +'display_name'"  id="{{gde.id}}">
+			<a href={{gde.gplus_page}} target="_blank" title="Open {{gde.real_name}} g+ in another page.">
+				<h2>{{gde.real_name}}</h2>
+				<br/>
+				<img src="{{gde.pic_url}}" class="gdePic"/>
+				<br/>
+				<h3 ng-repeat="product in gde.products">
+					{{product.description}}
+				</h3>
+				<p><small>{{gde.country}}</small> <img class="flag" src="img/flags/{{gde.ctry_filename}}.svg"></img></p>
+				<img class="badge" ng-repeat="pg_filename in gde.products"  src="img/badges/{{pg_filename.image}}"></img>
+			</a>
+		</div>
+	</div>
+</core-item>
+<script src="js/googleUniversalAnalytics.js"></script>
