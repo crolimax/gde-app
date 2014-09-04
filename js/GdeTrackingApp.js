@@ -35,12 +35,6 @@ function onGapiClientLoad(){
         //Broadcast that the API is ready
         rootScope.$broadcast('event:gde-app-back-end-ready',gapi.client.gdetracking);
         console.log('event emitted');
-
-        //get activity_type and product_group
-        /*$rootScope.gdeTrackingAPI = gdeTrackingAPI;
-        $rootScope.activityTypes = activityTypes;
-        $rootScope.productGroups = productGroups;*/
-
       }, ROOT);
 }
 
@@ -222,148 +216,10 @@ GdeTrackingApp.factory("months",		[function()
 	return months;
 }]);
 
-GdeTrackingApp.factory("activityGroups",function()
-{
-	var activityGroups		= [];
-	activityGroups.push({
-	  id:'#content',
-	  types:['#article','#book', '#blogpost','#translation','#techdocs'],
-	  usedInMetadata:{
-	    impact:true,
-      location:false,
-      google_expensed:false,
-      us_approx_amount:false
-	  },
-	  labels:[
-	    ["title","Title"],
-      ["description","Description"],
-      ["link","Main Link"],
-      ["impact","N° of views"],
-      ["other_link1","Other links (Additional resources)"],
-      ["other_link2","Other links (Other Additional Resources)"]
-	  ]
-
-	});
-  activityGroups.push({
-    id:'#community',
-    types:['#meetup','#codelab','#hackaton','#other'],
-	  usedInMetadata:{
-	    impact:true,
-      location:true,
-      google_expensed:true,
-      us_approx_amount:true
-	  },
-	  labels:[
-	    ["title","Name of the Event"],
-      ["description","Description"],
-      ["link","Link to Event Page"],
-      ["impact","N° of attendees"],
-      ["other_link1","Other links (Link to Event Pictures/Videos)"],
-      ["other_link2","Other links (Other Additional Content)"],
-      ["location","Location"],
-      ["google_expensed","Google Covered Expenses?"],
-      ["us_approx_amount","Approx Google Covered Expenses (USD)"]
-	  ]
-  });
-  activityGroups.push({
-    id:'#techtalk',
-    types:['#conference','#symposium','#seminar','#workshop'],
-	  usedInMetadata:{
-	    impact:true,
-      location:true,
-      google_expensed:true,
-      us_approx_amount:true
-	  },
-	  labels:[
-	    ["title","Name of the Event"],
-      ["description","Title of your Talk"],
-      ["link","Link to Event Page"],
-      ["impact","N° of attendees"],
-      ["other_link1","Other links (slides,video, documents,etc...)"],
-      ["other_link2","Other links (Other Additional Content)"],
-      ["location","Location"],
-      ["google_expensed","Google Covered Expenses?"],
-      ["us_approx_amount","Approx Google Covered Expenses (USD)"]
-	  ]
-  });
-  activityGroups.push({
-    id:'#bugreport',
-    types:['#crash','#security','#enhancement','#documentation'],
-	  usedInMetadata:{
-	    impact:true,
-      location:false,
-      google_expensed:false,
-      us_approx_amount:false
-	  },
-	  labels:[
-	    ["title","Title"],
-      ["description","Description"],
-      ["link","Main Link"],
-      ["impact","N° of users affected"],
-      ["other_link1","Other links (Additional Content)"],
-      ["other_link2","Other links (Other Additional Content)"]
-	  ]
-  });
-  activityGroups.push({
-    id:'#forumpost',
-    types:['#stack','#gcommunity','#googlegroups','#others'],
-	  usedInMetadata:{
-	    impact:true,
-      location:false,
-      google_expensed:false,
-      us_approx_amount:false
-	  },
-	  labels:[
-	    ["title","Title"],
-      ["description","Description"],
-      ["link","Main Link"],
-      ["impact","N° Of Views"],
-      ["other_link1","Other links (Additional Content)"],
-      ["other_link2","Other links (Other Additional Content)"]
-	  ]
-  });
-  activityGroups.push({
-    id:'#opensourcecode',
-    types:['#google','#samples','#project'],
-	  usedInMetadata:{
-	    impact:true,
-      location:false,
-      google_expensed:false,
-      us_approx_amount:false
-	  },
-	  labels:[
-	    ["title","Title"],
-      ["description","Description"],
-      ["link","Main Link"],
-      ["impact","N° Star/Downloads"],
-      ["other_link1","Other links (Additional Content)"],
-      ["other_link2","Other links (Other Additional Content)"]
-	  ]
-  });
-  activityGroups.push({
-    id:'#gdeprogram',
-    types:['#interview','#referral','#development'],
-	  usedInMetadata:{
-	    impact:false,
-      location:false,
-      google_expensed:false,
-      us_approx_amount:false
-	  },
-	  labels:[
-	    ["title","Title (#development)/Candidate Name"],
-      ["description","Description(#development)/Candidate Email"],
-      ["link","Main Link (#development ONLY)"],
-      ["other_link1","Other links (Additional Content)"],
-      ["other_link2","Other links (Other Additional Content)"]
-	  ]
-  });
-
-	return activityGroups;
-});
 // *****************************************************************************************************
 //						Utility functions for accumulating and displaying stats
 // *****************************************************************************************************
-GdeTrackingApp.run(function ($rootScope,activityGroups)
+GdeTrackingApp.run(function ($rootScope)
 {
   $rootScope.is_backend_ready=false;
 
@@ -479,10 +335,21 @@ GdeTrackingApp.run(function ($rootScope,activityGroups)
     		}
     	);
 
+		},
+		'activityGroupsFromApi':function(gdeTrackingAPI){
+  	  //Create request data object
+      var requestData = {};
+      requestData.limit=100;
+
+      gdeTrackingAPI.activity_group.list(requestData).execute(
+        function(response)
+    		{
+          $rootScope.activityGroups= response.items;
+    		}
+    	);
+
 		}
 	};
-
-	$rootScope.activityGroups = activityGroups;
 
 	$rootScope.$on('event:gde-app-back-end-ready', function (event, gdeTrackingAPI)
 	{
@@ -490,6 +357,7 @@ GdeTrackingApp.run(function ($rootScope,activityGroups)
 		//Load Metadata from the API
 		$rootScope.utils.activityTypesFromApi(gdeTrackingAPI);
 	  $rootScope.utils.productGroupsFromApi(gdeTrackingAPI);
+	  $rootScope.utils.activityGroupsFromApi(gdeTrackingAPI);
 
 	});
 });
