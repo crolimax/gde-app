@@ -29,6 +29,31 @@ GdeTrackingApp.controller("startCtrl",							function($rootScope, $scope,	$http,
     $scope.gdeTrackingAPI = gapi.client.gdetracking;
   }
 
+  var getPGs = function(gdeObject){
+    var gdeProducts = gdeObject.product_group;
+    var toRet = [];
+    //Obtain the Product Group object for each user PG
+    if (gdeProducts){
+      gdeProducts.forEach(function(pg){
+        $rootScope.productGroups.some(function(apiPG){
+          if(pg==apiPG.id){
+            //Pg found, add the image name to the current array
+            toRet.push(apiPG);
+            return true;
+          }
+          return false;
+        })
+      });
+    }else{
+      console.log("GDE "+gdeObject.display_name+ " has no Product Group");
+    }
+
+    if(toRet.length==0){
+      toRet.push({id:'',description:'',image:''});
+    }
+    return toRet;
+  }
+
 	$scope.getGdeList			= function (nextPageToken)
 	{
 		//console.log($scope.gdeList.length);
@@ -68,34 +93,30 @@ GdeTrackingApp.controller("startCtrl",							function($rootScope, $scope,	$http,
 						$scope.gdeList[i].pic_url		= ($scope.gdeList[i].pic_url).replace("=50", "=100");
 
 						var coords						= $scope.gdeList[i].geocode;
-						var badge						= $scope.gdeList[i].pg_filename;
-						var icon						= 'img/badges/'+badge+'.png';
-
+						$scope.gdeList[i].pgObjects = getPGs($scope.gdeList[i]);
+						var badge             = $scope.gdeList[i].pgObjects[0].image;
+						var icon						  = 'img/badges/'+badge.replace('.svg','.png');
 						var gdeName						= $scope.gdeList[i].display_name;
 						var gdePic						= $scope.gdeList[i].pic_url;
-						var gdeBadge					= badge;
-						var gdeProducts					= $scope.gdeList[i].product_group;
-						var gdeCountry					= $scope.gdeList[i].country;
-						var ctry_filename				= $scope.gdeList[i].ctry_filename;
+						var gdeProducts				= $scope.gdeList[i].product_group;
+						var gdeCountry				= $scope.gdeList[i].country;
+						var ctry_filename			= $scope.gdeList[i].ctry_filename;
 
 						mapMarkers[i]					= {};
 
-						mapMarkers[i]["latitude"]		= coords.lat;
-						mapMarkers[i]["longitude"]		= coords.lng;
-						mapMarkers[i]["icon"]			= icon;
-
-						mapMarkers[i]["id"]				= "gde" + i;;
-						mapMarkers[i]["name"]			= gdeName;
-						mapMarkers[i]["badge"]			= gdeBadge;
-						mapMarkers[i]["pic"]			= gdePic;
-						mapMarkers[i]["products"]		= gdeProducts;
-						mapMarkers[i]["country"]		= gdeCountry;
+						mapMarkers[i]["latitude"]		    = coords.lat;
+						mapMarkers[i]["longitude"]		  = coords.lng;
+						mapMarkers[i]["icon"]			      = icon;
+						mapMarkers[i]["id"]				      = "gde" + i;;
+						mapMarkers[i]["name"]			      = gdeName;
+						mapMarkers[i]["pic"]			      = gdePic;
+						mapMarkers[i]["pgObjects"]		    = $scope.gdeList[i].pgObjects;
+						mapMarkers[i]["country"]		    = gdeCountry;
 						mapMarkers[i]["ctry_filename"]	= ctry_filename;
 					};
 					$scope.markers		= mapMarkers;
 					$scope.markerClick	= function(id)
 					{
-	//					window.alert(name+' - ' + badge + ' GDE');
 						var gdeId	= '#'+id;
 						$('window').attr("show",true);
 						console.log(gdeId);
