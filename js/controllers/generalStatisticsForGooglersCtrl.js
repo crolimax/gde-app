@@ -131,7 +131,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 			cols:
 			[
 				{
-					id		: 'activity',
+					id		: 'activity_type',
 					label	: 'Activity',
 					type	: 'string'
 				}
@@ -143,7 +143,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 		for (var i=0;i<$scope.activityByActivity.length;i++)
 		{
 			activityByActivity.rows.push(
-				$scope.utils.chartDataRow($scope.activityByActivity[i].activity, $scope.activityByActivity[i])
+				$scope.utils.chartDataRow($scope.activityByActivity[i].activity_type, $scope.activityByActivity[i])
 			);
 		};
 //		console.log(activityByActivity);
@@ -284,7 +284,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 //					console.log(slices);
 					gdePieChart.setOptions(
 					{
-						'width'				: 650,
+						'width'				: 570,
 						'pieHole'			: 0.5,
 						'reverseCategories'	: true,
 						'pieStartAngle'		: 30,
@@ -376,7 +376,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 					platformsBarChart.setContainerId('platformsBarChart');
 					platformsBarChart.setOptions(
 					{
-						'width'				:650,
+						'width'				:570,
 						'isStacked'			: true,
 						'reverseCategories'	: true,
 						'legend':
@@ -480,7 +480,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 					activityBarChart.setContainerId('activityBarChart');
 					activityBarChart.setOptions(
 					{
-						'width'			:650,
+						'width'			:570,
 						'isStacked'		: true,
 						'reverseCategories': true,
 						'legend':
@@ -572,7 +572,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 					regionBarChart.setContainerId('regionBarChart');
 					regionBarChart.setOptions(
 					{
-						'width'				:650,
+						'width'				:570,
 						'isStacked'			: true,
 						'reverseCategories'	: true,
 						'legend':
@@ -663,12 +663,22 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
     					$scope.activityByGdeNameTemp[name]['activities'].push(activity);
     					//===============================================//
     					// activities by Product
+    					//===============================================//
     					if ($scope.data.items[i].product_groups)
     					{
     						for (var j=0;j<$scope.data.items[i].product_groups.length;j++)
     						{
     							var product = $scope.data.items[i].product_groups[j];
-    							product = product.slice(1,product.length); // Remove the Hash Tag
+    							//Get the Product Description
+    							$rootScope.productGroups.some(function(pg){
+    							  if (pg.tag==product){
+    							    product = pg.description;
+    							    return true;
+    							  }else{
+    							    return false;
+    							  }
+    							});
+
     							if (!$scope.activityByProductTemp[product])
     							{
     								$scope.activityByProductTemp[product]						= {};	// Initialize a new JSON unordered array
@@ -688,12 +698,22 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
     					};
     					//===============================================//
     					// activities by Activity Type
+    					//===============================================//
     					if ($scope.data.items[i].activity_types)
     					{
     						for (j=0;j<$scope.data.items[i].activity_types.length;j++)
     						{
     							var activity_type = $scope.data.items[i].activity_types[j];
-    							activity_type = activity_type.slice(1,activity_type.length); // Remove the Hash Tag
+    							//Get Activity Type Description
+    							$rootScope.activityTypes.some(function(at){
+    							  if(activity_type==at.tag){
+    							    activity_type= at.id;
+    							    return true;
+    							  }else{
+    							    return false;
+    							  }
+
+    							});
     							if (!$scope.activityByActivityTemp[activity_type])
     							{
     								$scope.activityByActivityTemp[activity_type]						= {}; // Initialize a new JSON unordered array
@@ -711,6 +731,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
     					};
     					//===============================================//
     					// activities by GDE Region
+    					//===============================================//
     					var region = $scope.data.items[i].gde_region;
 
     					if (!$scope.activityByRegionTemp[region])
