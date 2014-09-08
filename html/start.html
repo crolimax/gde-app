@@ -48,11 +48,11 @@
 				<br/>
 				<img src="{{gde.pic_url}}" class="gdePic"/>
 				<br/>
-				<h3 ng-repeat="product in gde.products">
+				<h3 ng-repeat="product in gde.pgObjects">
 					{{product.description}}
 				</h3>
 				<p><small>{{gde.country}}</small> <img class="flag" src="img/flags/{{gde.ctry_filename}}.svg"></img></p>
-				<img class="badge" ng-repeat="pg_filename in gde.products"  src="img/badges/{{pg_filename.image}}"></img>
+				<img class="badge" ng-repeat="pg_filename in gde.pgObjects"  src="img/badges/{{pg_filename.image}}"></img>
 			</a>
 		</div>
 	</div>
