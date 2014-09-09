@@ -91,9 +91,13 @@
   <core-scroll-header-panel>
 
     <core-toolbar class="medium-tall">
-
-      <div class="bottom indent title">{{editMode}} Activity : {{currentActivity.activity_title}}</div>
-
+      <div flex>{{editMode}} Activity : {{currentActivity.activity_title}}</div>
+      <div class ='bottom' style='width:95%' vertical layout end>
+        <div>
+          <paper-fab icon="close" class ="mini" dismissive></paper-fab>
+          <paper-fab icon="done" class ="mini" style='background: #5677fc;' ng-click="saveGDEActivity()"></paper-fab>
+        </div>
+      </div>
     </core-toolbar>
 
     <div class="content" >
@@ -222,14 +226,6 @@
           </div>
         </core-animated-pages>
       </div>
-
-      <div vertical layout end>
-        <div>
-          <paper-button raisedButton class ="colored red"label="Cancel" dismissive></paper-button>
-          <paper-button raisedButton class ="colored blue" label="Save" ng-click="saveGDEActivity()"></paper-button>
-        </div>
-      </div>
-
     </div>
 
   </core-scroll-header-panel>
