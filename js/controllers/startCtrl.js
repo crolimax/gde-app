@@ -122,8 +122,8 @@ GdeTrackingApp.controller("startCtrl",							function($rootScope, $scope,	$http,
 						console.log(gdeId);
 					};
 					//	Trigger CSS3 animation after map loads
-					$('paper-fab')	.css('-webkit-animation'	, 'fabAppears	2s	linear	1	both');	//	-webkit- CSS
-					$('paper-fab')	.css('animation'			, 'fabAppears	2s	linear	1	both');	//	W3C	CSS
+					$('.nav-fab')	.css('-webkit-animation'	, 'fabAppears	2s	linear	1	both');	//	-webkit- CSS
+					$('.nav-fab')	.css('animation'			, 'fabAppears	2s	linear	1	both');	//	W3C	CSS
 					$('.mapArea')	.css('-webkit-animation'	, 'mapAppears	2s	linear	1	both');	//	-webkit- CSS
 					$('.mapArea')	.css('animation'			, 'mapAppears	2s	linear	1	both');	//	W3C	CSS
 					$scope.$apply();

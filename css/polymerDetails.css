@@ -91,7 +91,7 @@ paper-toast {
 	right				: 0;
 	width				: 20%;
 }
-paper-fab	{
+.nav-fab	{
 	position			: fixed;
 	right				: -20%;
 	bottom				: 5em;
