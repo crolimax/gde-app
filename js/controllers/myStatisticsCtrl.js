@@ -37,6 +37,23 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	$scope.activitiesByGdeNameTemp	= {};
 	$scope.name					= '';
 	$scope.userActivities			= [];
+
+	$scope.sort = {
+      column: 'date',
+      descending: true
+  };
+  $scope.changeSorting = function(column) {
+
+      var sort = $scope.sort;
+
+      if (sort.column == column) {
+          sort.descending = !sort.descending;
+      } else {
+          sort.column = column;
+          sort.descending = false;
+      }
+  };
+
 	var drawGeneralStatistics	= function ()
 	{	// For every GDE in activitiesByGdeNameTemp
 //		console.log('drawGeneralStatistics initiated');
