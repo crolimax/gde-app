@@ -38,23 +38,23 @@
 		<tr>
 		  <th>
 		  </th>
-			<th>
+			<th ng-click="changeSorting('title')">
 				Activity Title
 			</th>
-			<th>
+			<th ng-click="changeSorting('plus_oners')">
 				+1's
 			</th>
-			<th>
+			<th ng-click="changeSorting('resharers')">
 				Resharers
 			</th>
-			<th>
+			<th ng-click="changeSorting('comments')">
 				Comments
 			</th>
-			<th style="width:3em">
+			<th style="width:3em" ng-click="changeSorting('date')">
 				Date
 			</th>
 		</tr>
-		<tr ng-repeat="activity in userActivities | orderBy : 'plus_oners' : true">
+		<tr ng-repeat="activity in userActivities |orderBy:sort.column:sort.descending">
 		  <td>
 		    <paper-icon-button icon="create" ng-click="editGDEActivity(activity.id)"></paper-icon-button>
 		  </td>
