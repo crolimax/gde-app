@@ -225,7 +225,7 @@ GdeTrackingApp.run(function ($rootScope)
 
 	$rootScope.utils =
 	{
-		'activityFromApi': function (apiData)
+		'activityFromApi'			: function(apiData)
 		{
 			var activity = {};
 			activity.gde_name		= apiData.gde_name;
@@ -234,21 +234,25 @@ GdeTrackingApp.run(function ($rootScope)
 			activity.gplus_id		= apiData.gplus_id;
 			activity.resharers		= parseInt(apiData.resharers	|| 0, 10);
 			activity.comments		= parseInt(apiData.comments		|| 0, 10);
-			activity.activity_id		= apiData.id;
+			activity.activity_id	= apiData.id;
 			activity.plus_oners		= parseInt(apiData.plus_oners	|| 0, 10);
 			activity.date			= $rootScope.utils.dateToCommonString(new Date(apiData.post_date));
 			activity.id				= apiData.id;
 			activity.product_group	= apiData.product_groups;
 			activity.activity_type	= apiData.activity_types;
+			activity.total_impact	= apiData.total_impact;
+			
+			console.log(activity);
 			return activity;
 		},
-		'updateStats': function (dataset, apiData)
+		'updateStats'				: function(dataset,	apiData)
 		{
 			dataset.totalPlus1s		= (dataset.totalPlus1s		|| 0) + parseInt(apiData.plus_oners	|| 0, 10);
 			dataset.totalResharers	= (dataset.totalResharers	|| 0) + parseInt(apiData.resharers	|| 0, 10);
 			dataset.totalComments	= (dataset.totalComments	|| 0) + parseInt(apiData.comments	|| 0, 10);
+			dataset.total_impact	= (dataset.total_impact		|| 0) + parseInt(apiData.total_impact	|| 0, 10);
 		},
-		'addMetricColumns': function (chartData)
+		'addMetricColumns'			: function(chartData)
 		{
 			chartData.cols.push(
 			{
@@ -268,13 +272,20 @@ GdeTrackingApp.run(function ($rootScope)
 				label	: 'Total +1s',
 				type	: 'number'
 			});
-			chartData.cols.push({
+			chartData.cols.push(
+			{
 				id		: 'totalComments',
 				label	: 'Total Comments',
 				type	: 'number'
 			});
+			chartData.cols.push(
+			{
+				id		: 'total_impact',
+				label	: 'Aditional Impact',
+				type	: 'number'
+			});
 		},
-		'chartDataRow'	: function (label, activityRecord)
+		'chartDataRow'				: function(label,	activityRecord)
 		{
 			var row					= {c:[]};
 
@@ -282,82 +293,79 @@ GdeTrackingApp.run(function ($rootScope)
 			var totalResharers		= activityRecord.totalResharers;
 			var totalPlus1s			= activityRecord.totalPlus1s;
 			var totalComments		= activityRecord.totalComments;
+			var total_impact		= activityRecord.total_impact;
 
 			row.c.push({v:label});
 			row.c.push({v:activitiesLogged});
 			row.c.push({v:totalResharers});
 			row.c.push({v:totalPlus1s});
 			row.c.push({v:totalComments});
+			row.c.push({v:total_impact});
 
 			return row;
 		},
-		'dateToCommonString'	: function (origDate)
+		'dateToCommonString'		: function(origDate)
 		{
-			var yyyy = origDate.getFullYear().toString();
-      var mm = (origDate.getMonth()+1).toString(); // getMonth() is zero-based
-      var dd  = origDate.getDate().toString();
-      return '' + yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]); // padding
-
+			var yyyy	= origDate.getFullYear().toString();
+			var mm		= (origDate.getMonth()+1).toString();	// getMonth() is zero-based
+			var dd		= origDate.getDate().toString();
+			
+			return '' + yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);	// padding
 		},
-		'verifyDateStringFormat'	: function (origStringDate)
+		'verifyDateStringFormat'	: function(origStringDate)
 		{
-			var dateParts = origStringDate.split('-');
-			if (dateParts.length!=3){
-			  return 'Invalid Date';
-			}else{
-			  return origStringDate;
+			var dateParts	= origStringDate.split('-');
+			if (dateParts.length != 3)
+			{
+				return 'Invalid Date';
+			}else
+			{
+				return origStringDate;
 			}
-
 		},
-		'activityTypesFromApi':function(gdeTrackingAPI){
-  	  //Create request data object
-      var requestData = {};
-      requestData.limit=100;
+		'activityTypesFromApi'		: function(gdeTrackingAPI)
+		{
+			//Create request data object
+			var requestData		= {};
+			requestData.limit	= 100;
 
-      gdeTrackingAPI.activity_type.list(requestData).execute(
-        function(response)
-    		{
-          $rootScope.activityTypes= response.items;
-    		}
-    	);
-
+			gdeTrackingAPI.activity_type.list(requestData).execute(
+				function(response)
+				{
+					$rootScope.activityTypes	= response.items;
+				}
+			);
 		},
-		'productGroupsFromApi':function(gdeTrackingAPI){
+		'productGroupsFromApi'		: function(gdeTrackingAPI)
+		{	//Create request data object
+			var requestData		= {};
+			requestData.limit	= 100;
 
-		  //Create request data object
-      var requestData = {};
-      requestData.limit=100;
-
-      gdeTrackingAPI.product_group.list(requestData).execute(
-        function(response)
-    		{
-          $rootScope.productGroups= response.items;
-    		}
-    	);
-
+			gdeTrackingAPI.product_group.list(requestData).execute(
+				function(response)
+				{
+					$rootScope.productGroups	= response.items;
+				}
+			);
 		},
-		'activityGroupsFromApi':function(gdeTrackingAPI){
-  	  //Create request data object
-      var requestData = {};
-      requestData.limit=100;
+		'activityGroupsFromApi':function(gdeTrackingAPI)
+		{	//Create request data object
+			var requestData		= {};
+			requestData.limit	= 100;
 
-      gdeTrackingAPI.activity_group.list(requestData).execute(
-        function(response)
-    		{
-          $rootScope.activityGroups= response.items;
-    		}
-    	);
-
+			gdeTrackingAPI.activity_group.list(requestData).execute(
+				function(response)
+				{
+					$rootScope.activityGroups	= response.items;
+				}
+			);
 		}
 	};
 
-	$rootScope.$on('event:gde-app-back-end-ready', function (event, gdeTrackingAPI)
-	{
-
-		//Load Metadata from the API
+	$rootScope.$on('event:gde-app-back-end-ready', function(event, gdeTrackingAPI)
+	{	//Load Metadata from the API
 		$rootScope.utils.activityTypesFromApi(gdeTrackingAPI);
-	  $rootScope.utils.productGroupsFromApi(gdeTrackingAPI);
-	  $rootScope.utils.activityGroupsFromApi(gdeTrackingAPI);
-
+		$rootScope.utils.productGroupsFromApi(gdeTrackingAPI);
+		$rootScope.utils.activityGroupsFromApi(gdeTrackingAPI);
 	});
 });
