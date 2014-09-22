@@ -9,7 +9,7 @@
 }
 html,body {
 	height				: 95%;
-	font-family			: 'roboto';
+	font-family			: 'roboto' !important;
 	overflow			: hidden;
 }
 /*	*********************************************************************************	*/
