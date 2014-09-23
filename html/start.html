@@ -7,8 +7,10 @@
 						<h2>{{marker.name}}</h2>
 						<img src="{{marker.pic}}" class="gdePic"/>
 						<br/>
-						<h3>{{marker.badge}}</h3>
-						<img class="badge" src="img/badges/{{marker.badge}}.svg"></img>
+						<h3 ng-repeat="product in marker.pgObjects">
+    					{{product.description}}&nbsp;
+    				</h3>
+    				<img class="badge" ng-repeat="pg_filename in marker.pgObjects"  src="img/badges/{{pg_filename.image}}"></img>
 						<br/>
 					</div>
 				</window>
@@ -46,11 +48,11 @@
 				<br/>
 				<img src="{{gde.pic_url}}" class="gdePic"/>
 				<br/>
-				<h3 ng-repeat="product in gde.product_group">
-					{{product}}
+				<h3 ng-repeat="product in gde.pgObjects">
+					{{product.description}}
 				</h3>
 				<p><small>{{gde.country}}</small> <img class="flag" src="img/flags/{{gde.ctry_filename}}.svg"></img></p>
-				<img class="badge" src="img/badges/{{gde.pg_filename}}.svg"></img>
+				<img class="badge" ng-repeat="pg_filename in gde.pgObjects"  src="img/badges/{{pg_filename.image}}"></img>
 			</a>
 		</div>
 	</div>
