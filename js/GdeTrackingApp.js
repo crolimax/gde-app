@@ -242,7 +242,7 @@ GdeTrackingApp.run(function ($rootScope)
 			activity.activity_type	= apiData.activity_types;
 			activity.total_impact	= apiData.total_impact;
 			
-			console.log(activity);
+			//console.log(activity);
 			return activity;
 		},
 		'updateStats'				: function(dataset,	apiData)

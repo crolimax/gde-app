@@ -280,6 +280,18 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 							'labelStacking': 'vertical'
 						}
 					});
+					
+					var impactSlider		= new google.visualization.ControlWrapper();
+					impactSlider.setControlType('NumberRangeFilter');
+					impactSlider.setContainerId('impactSlider');
+					impactSlider.setOptions(
+					{
+						'filterColumnLabel': 'Total Impact',
+						'ui':
+						{
+							'labelStacking': 'vertical'
+						}
+					});
 
 					var gdeTableChart			= new google.visualization.ChartWrapper();
 					gdeTableChart				.setChartType('Table');
@@ -383,6 +395,18 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 					platformsCommentsSlider.setOptions(
 					{
 						'filterColumnLabel': 'Total Comments',
+						'ui':
+						{
+							'labelStacking': 'vertical'
+						}
+					});
+					
+					var platformsImpactSlider		= new google.visualization.ControlWrapper();
+					platformsImpactSlider.setControlType('NumberRangeFilter');
+					platformsImpactSlider.setContainerId('platformsImpactSlider');
+					platformsImpactSlider.setOptions(
+					{
+						'filterColumnLabel': 'Total Impact',
 						'ui':
 						{
 							'labelStacking': 'vertical'
@@ -505,6 +529,18 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 							'labelStacking': 'vertical'
 						}
 					});
+					
+					var activities_ImpactSlider		= new google.visualization.ControlWrapper();
+					activities_ImpactSlider.setControlType('NumberRangeFilter');
+					activities_ImpactSlider.setContainerId('activities_ImpactSlider');
+					activities_ImpactSlider.setOptions(
+					{
+						'filterColumnLabel': 'Total Impact',
+						'ui':
+						{
+							'labelStacking': 'vertical'
+						}
+					});
 
 					var activityBarChart			= new google.visualization.ChartWrapper();
 					activityBarChart.setChartType('BarChart');
@@ -619,15 +655,15 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 		// Draw Charts
 		//===============================================//
 		new google.visualization.Dashboard(document.getElementById('generalStatisticsByPlatform'))
-		.bind([platformsSelector,platformsActivitiesSlider,platformsResharesSlider,platformsPlus1sSlider,platformsCommentsSlider], [platformsTableChart,platformsBarChart])
+		.bind([platformsSelector,platformsActivitiesSlider,platformsResharesSlider,platformsPlus1sSlider,platformsCommentsSlider,platformsImpactSlider], [platformsTableChart,platformsBarChart])
 		.draw(activityByProduct_data);
 
 		new google.visualization.Dashboard(document.getElementById('generalStatisticsByGDE'))
-		.bind([gdeSelector,activitiesSlider,resharesSlider,plus1sSlider,commentsSlider], [gdeTableChart,gdePieChart])
+		.bind([gdeSelector,activitiesSlider,resharesSlider,plus1sSlider,commentsSlider,impactSlider], [gdeTableChart,gdePieChart])
 		.draw(activitiesByGde_data);
 
 		new google.visualization.Dashboard(document.getElementById('generalStatisticsByActivity'))
-		.bind([activities_Selector,activities_ActivitiesSlider,activities_ResharesSlider,activities_Plus1sSlider,activities_CommentsSlider], [activityTableChart,activityBarChart])
+		.bind([activities_Selector,activities_ActivitiesSlider,activities_ResharesSlider,activities_Plus1sSlider,activities_CommentsSlider,activities_ImpactSlider], [activityTableChart,activityBarChart])
 		.draw(activityByType_data);
 
 		new google.visualization.Dashboard(document.getElementById('generalStatisticsByRegion'))
