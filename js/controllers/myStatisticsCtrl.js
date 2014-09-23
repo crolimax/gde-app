@@ -137,6 +137,18 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 							'labelStacking': 'vertical'
 						}
 					});
+					
+					var impactSlider		= new google.visualization.ControlWrapper();
+					impactSlider.setControlType('NumberRangeFilter');
+					impactSlider.setContainerId('impactSlider');
+					impactSlider.setOptions(
+					{
+						'filterColumnLabel': 'Total Impact',
+						'ui':
+						{
+							'labelStacking': 'vertical'
+						}
+					});
 
 					var gdeTableChart 		= new google.visualization.ChartWrapper();
 					gdeTableChart.setChartType('Table');
@@ -163,7 +175,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 						}
 					});
 		new google.visualization.Dashboard(document.getElementById('generalStatisticsByGDE'))// Draw Charts
-		.bind([activitiesSlider,resharesSlider,plus1sSlider,commentsSlider], [gdeTableChart,gdeColumnChart])
+		.bind([activitiesSlider,resharesSlider,plus1sSlider,commentsSlider,impactSlider], [gdeTableChart,gdeColumnChart])
 		.draw(activitiesByGde_data);
 	}
 

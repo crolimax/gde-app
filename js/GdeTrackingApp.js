@@ -281,7 +281,7 @@ GdeTrackingApp.run(function ($rootScope)
 			chartData.cols.push(
 			{
 				id		: 'total_impact',
-				label	: 'Aditional Impact',
+				label	: 'Total Impact',
 				type	: 'number'
 			});
 		},
