@@ -13,9 +13,17 @@
 	<paper-shadow z="1"></paper-shadow>
 </form>
 <div class="stats forGooglers">
+	<h1>Most popular activities</h1>
+	<h5><i>since {{monthSince}}/{{yearSince}}</i></h5>
+	<div class="top100activities" id="top100activities" horizontal layout wrap center-justified>
+		<h1>Very soon!</h1>
+	</div>
+	<paper-shadow z="1"></paper-shadow>
+</div>
+<div class="stats forGooglers">
 	<h1>General Statistics by GDE</h1>
 	<h5><i>since {{monthSince}}/{{yearSince}}</i></h5>
-	<div class="gdesGeneralStats" id="generalStatisticsByGDE">
+	<div class="gdesGeneralStats" id="generalStatisticsByGDE" horizontal layout wrap center-justified>
 		<div vertical layout>
 			<div id="gdeSelector" class="gdeSelector"></div>
 			<div id="activitiesSlider"	class="activitiesSlider"></div>
@@ -29,18 +37,11 @@
 	</div>
 	<paper-shadow z="1"></paper-shadow>
 </div>
-<div class="stats forGooglers">
-	<h1>Most popular activities</h1>
-	<h5><i>since {{monthSince}}/{{yearSince}}</i></h5>
-	<div class="top100activities" id="top100activities">
-		<h1>Very soon!</h1>
-	</div>
-	<paper-shadow z="1"></paper-shadow>
-</div>
+
 <div class="stats forGooglers">
 	<h1>General Statistics by Product</h1>
 	<h5><i>since {{monthSince}}/{{yearSince}}</i></h5>
-	<div class="gdesGeneralStats" id="generalStatisticsByPlatform">
+	<div class="gdesGeneralStats" id="generalStatisticsByPlatform" horizontal layout wrap center-justified>
 		<div vertical layout>
 			<div id="platformsSelector" class="platformsSelector"></div>
 			<div id="platformsActivitiesSlider" class="platformsActivitiesSlider"></div>
@@ -57,7 +58,7 @@
 <div class="stats forGooglers">
 	<h1>General Statistics by Activity</h1>
 	<h5><i>since {{monthSince}}/{{yearSince}}</i></h5>
-	<div class="gdesGeneralStats" id="generalStatisticsByActivity">
+	<div class="gdesGeneralStats" id="generalStatisticsByActivity" horizontal layout wrap center-justified>
 		<div vertical layout>
 			<div id="activities_Selector" class="activities_Selector"></div>
 			<div id="activities_ActivitiesSlider" class="activities_ActivitiesSlider"></div>
