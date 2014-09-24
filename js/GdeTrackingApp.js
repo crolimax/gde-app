@@ -240,6 +240,9 @@ GdeTrackingApp.run(function ($rootScope)
 			activity.id				= apiData.id;
 			activity.product_group	= apiData.product_groups;
 			activity.activity_type	= apiData.activity_types;
+			activity.total_impact	= apiData.total_impact;
+			
+			//console.log(activity);
 			return activity;
 		},
 		'updateStats'				: function(dataset,	apiData)
@@ -278,7 +281,7 @@ GdeTrackingApp.run(function ($rootScope)
 			chartData.cols.push(
 			{
 				id		: 'total_impact',
-				label	: 'Aditional Impact',
+				label	: 'Total Impact',
 				type	: 'number'
 			});
 		},
