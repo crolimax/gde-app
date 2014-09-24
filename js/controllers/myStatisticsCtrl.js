@@ -89,94 +89,34 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 		var activitiesByGde_data		= new google.visualization.DataTable(activitiesByGde);
 		activitiesByGde_data.sort(1);
 
-		// Activities by GDE Name
-					var activitiesSlider	= new google.visualization.ControlWrapper();
-					activitiesSlider.setControlType('NumberRangeFilter');
-					activitiesSlider.setContainerId('activitiesSlider');
-					activitiesSlider.setOptions(
-					{
-						'filterColumnLabel': 'Activities Logged',
-						'ui':
-						{
-							'labelStacking': 'vertical'
-						}
-					});
+		var gdeTableChart 		= new google.visualization.ChartWrapper();
+		gdeTableChart.setChartType('Table');
+		gdeTableChart.setContainerId('gdeTableChart');
+		gdeTableChart.setOptions(
+		{
+			'sortColumn'	: 1,
+			'sortAscending'	: false,
+			'page'			: 'enable',
+			'pageSize'		: 30
+		});
+		gdeTableChart.setDataTable(activitiesByGde_data);
 
-					var resharesSlider		= new google.visualization.ControlWrapper();
-					resharesSlider.setControlType('NumberRangeFilter');
-					resharesSlider.setContainerId('resharesSlider');
-					resharesSlider.setOptions(
-					{
-						'filterColumnLabel': 'Total Resharers',
-						'ui':
-						{
-							'labelStacking': 'vertical'
-						}
-					});
-
-					var plus1sSlider		= new google.visualization.ControlWrapper();
-					plus1sSlider.setControlType('NumberRangeFilter');
-					plus1sSlider.setContainerId('plus1sSlider');
-					plus1sSlider.setOptions(
-					{
-						'filterColumnLabel': 'Total +1s',
-						'ui':
-						{
-							'labelStacking': 'vertical'
-						}
-					});
-
-					var commentsSlider		= new google.visualization.ControlWrapper();
-					commentsSlider.setControlType('NumberRangeFilter');
-					commentsSlider.setContainerId('commentsSlider');
-					commentsSlider.setOptions(
-					{
-						'filterColumnLabel': 'Total Comments',
-						'ui':
-						{
-							'labelStacking': 'vertical'
-						}
-					});
-					
-					var impactSlider		= new google.visualization.ControlWrapper();
-					impactSlider.setControlType('NumberRangeFilter');
-					impactSlider.setContainerId('impactSlider');
-					impactSlider.setOptions(
-					{
-						'filterColumnLabel': 'Total Impact',
-						'ui':
-						{
-							'labelStacking': 'vertical'
-						}
-					});
-
-					var gdeTableChart 		= new google.visualization.ChartWrapper();
-					gdeTableChart.setChartType('Table');
-					gdeTableChart.setContainerId('gdeTableChart');
-					gdeTableChart.setOptions(
-					{
-						'sortColumn'	: 1,
-						'sortAscending'	: false,
-						'page'			: 'enable',
-						'pageSize'		: 30
-					});
-
-					var gdeColumnChart 		= new google.visualization.ChartWrapper();
-					gdeColumnChart.setChartType('ColumnChart');
-					gdeColumnChart.setContainerId('gdeColumnChart');
-					gdeColumnChart.setOptions(
-					{
-						'width'				:700,
-						'reverseCategories'	: true,
-						'legend':
-						{
-							'position'	:'top',
-							'alignment'	:'center',
-						}
-					});
-		new google.visualization.Dashboard(document.getElementById('generalStatisticsByGDE'))// Draw Charts
-		.bind([activitiesSlider,resharesSlider,plus1sSlider,commentsSlider,impactSlider], [gdeTableChart,gdeColumnChart])
-		.draw(activitiesByGde_data);
+		var gdeColumnChart 		= new google.visualization.ChartWrapper();
+		gdeColumnChart.setChartType('ColumnChart');
+		gdeColumnChart.setContainerId('gdeColumnChart');
+		gdeColumnChart.setOptions(
+		{
+			'width'				:700,
+			'reverseCategories'	: true,
+			'legend':
+			{
+				'position'	:'top',
+				'alignment'	:'center',
+			}
+		});
+		gdeColumnChart.setDataTable(activitiesByGde_data);
+		gdeColumnChart.draw();
+		gdeTableChart.draw();
 	}
 
 	$scope.loadVisualizationLibraries	= google.load('visualization', '1.1', null);
