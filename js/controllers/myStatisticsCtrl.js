@@ -611,6 +611,8 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     if(itmId){
       //Remove the Old Item
       $scope.data.items.splice(itmId,1);
+    }else{
+      console.log('arId:'+ arId + ' not found in data.items');
     }
     itmId=null;
     //activitiesByGdeNameTemp[$scope.name]
@@ -624,6 +626,8 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     if(itmId){
       //Remove the Old Item
       $scope.activitiesByGdeNameTemp[$scope.name]['activities'].splice(itmId,1);
+    }else{
+      console.log('arId:'+ arId + ' not found in activitiesByGdeNameTemp');
     }
     itmId=null;
     for (var i=0;i<$scope.userActivities.length;i++){
@@ -636,6 +640,8 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     if(itmId){
       //Remove the Old Item
       $scope.userActivities.splice(itmId,1);
+    }else{
+      console.log('arId:'+ arId + ' not found in userActivities');
     }
 	};
 
@@ -784,6 +790,8 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
 	  var mergedActivity = $scope.currentActivity;
 	  mergedActivity.metadata = [];
+	  mergedActivity.gplus_posts = [];
+	  
 	  tmp.forEach(function(tmpItem){
 	    var item = $.grep($scope.data.items, function(arItem){
   	    return arItem.id== tmpItem.activity_id;
@@ -807,7 +815,10 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
 	    //Overwrite the activity Link
 	    mergedActivity.activity_link = item.activity_link;
-	    //TODO: Merge the gplus_posts
+	    //Merge the gplus_posts
+	    if (item.gplus_posts != null && item.gplus_posts.length>0){
+	      mergedActivity.gplus_posts=mergedActivity.gplus_posts.concat(item.gplus_posts);
+	    }
 
 	    //Update the activity Types of the merged record
 	    if(item.activity_types!=null){
@@ -844,7 +855,10 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
   	          {
   	            mergedMeta.description= metaObj.description;
   	          }
-  	          //TODO: Merge the meta.type
+  	          //Set the meta.type to the first available
+  	          if(mergedMeta.type == null || mergedMeta.type==''){
+  	            mergedMeta.type = metaObj.type
+  	          }
   	          //Store max 3 links
   	          if (metaObj.link!=null && metaObj.link!='')
   	          {
@@ -905,6 +919,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	    }
 	  });
 	  $scope.metadataArray= mergedActivity.metadata;
+	  $scope.currentActivity = mergedActivity;
 	  //merging complete
 	  //Populate Product Groups and Activities for the selection table
 	  populatePGs();
