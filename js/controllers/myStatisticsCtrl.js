@@ -601,13 +601,13 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	var removeARfromList = function(arId){
 	  //Find the activity index
     var itmId=null;
-    for (var i=0;i<$scope.data.items.length;i++){
-      if ($scope.data.items[i].id== arId){
-        itmId=i;
-        break;
+    $scope.data.items.some(function(item,index){
+      if (item.id==arId){
+        itmId=index;
+        return true;
       }
-
-    }
+      return false;
+    });
     if(itmId){
       //Remove the Old Item
       $scope.data.items.splice(itmId,1);
@@ -616,13 +616,13 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     }
     itmId=null;
     //activitiesByGdeNameTemp[$scope.name]
-    for (var i=0;i<$scope.activitiesByGdeNameTemp[$scope.name]['activities'].length;i++){
-      if ($scope.activitiesByGdeNameTemp[$scope.name]['activities'][i].id== arId){
-        itmId=i;
-        break;
+    $scope.activitiesByGdeNameTemp[$scope.name]['activities'].some(function(item,index){
+      if (item.id==arId){
+        itmId=index;
+        return true;
       }
-
-    }
+      return false;
+    });
     if(itmId){
       //Remove the Old Item
       $scope.activitiesByGdeNameTemp[$scope.name]['activities'].splice(itmId,1);
@@ -630,13 +630,13 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
       console.log('arId:'+ arId + ' not found in activitiesByGdeNameTemp');
     }
     itmId=null;
-    for (var i=0;i<$scope.userActivities.length;i++){
-      if ($scope.userActivities[i].id== arId){
-        itmId=i;
-        break;
+    $scope.userActivities.some(function(item,index){
+      if (item.id==arId){
+        itmId=index;
+        return true;
       }
-
-    }
+      return false;
+    });
     if(itmId){
       //Remove the Old Item
       $scope.userActivities.splice(itmId,1);
