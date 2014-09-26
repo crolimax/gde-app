@@ -306,6 +306,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	$scope.editMode			        = "";
 	$scope.currentActivityPosts = [];
 	$scope.usedInMetadata       = {};
+	
 	var getActivityPosts = function (activityRecord){
     $scope.currentActivityPosts = []; //Clean the array
     if (activityRecord.gplus_posts){
@@ -596,6 +597,47 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	  }
 
 	};
+	
+	var removeARfromList = function(arId){
+	  //Find the activity index
+    var itmId=null;
+    for (var i=0;i<$scope.data.items.length;i++){
+      if ($scope.data.items[i].id== arId){
+        itmId=i;
+        break;
+      }
+
+    }
+    if(itmId){
+      //Remove the Old Item
+      $scope.data.items.splice(itmId,1);
+    }
+    itmId=null;
+    //activitiesByGdeNameTemp[$scope.name]
+    for (var i=0;i<$scope.activitiesByGdeNameTemp[$scope.name]['activities'].length;i++){
+      if ($scope.activitiesByGdeNameTemp[$scope.name]['activities'][i].id== arId){
+        itmId=i;
+        break;
+      }
+
+    }
+    if(itmId){
+      //Remove the Old Item
+      $scope.activitiesByGdeNameTemp[$scope.name]['activities'].splice(itmId,1);
+    }
+    itmId=null;
+    for (var i=0;i<$scope.userActivities.length;i++){
+      if ($scope.userActivities[i].id== arId){
+        itmId=i;
+        break;
+      }
+
+    }
+    if(itmId){
+      //Remove the Old Item
+      $scope.userActivities.splice(itmId,1);
+    }
+	};
 
 	$scope.saveGDEActivity = function(){
 
@@ -611,6 +653,11 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     if (!readyToSave){
       alert('Invalid Activity Date format, please use YYYY-MM-DD');
     }else{
+      if ($scope.editMode=='Merge'){
+        //ask confirmation to delete the original activities
+        toggleDialog("mergeSaveDialog");
+        return;
+      }
 
   	  $scope.currentActivity.metadata = $scope.metadataArray;
 
@@ -648,48 +695,29 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
                     $scope.activitiesByGdeNameTemp[$scope.name]['activities']=[];
                     $scope.userActivities=[];
                 }else{
-                  //Find the activity index
-                  var itmId=null;
-                  for (var i=0;i<$scope.data.items.length;i++){
-                    if ($scope.data.items[i].id== response.id){
-                      itmId=i;
-                      break;
-                    }
-
-                  }
-                  if(itmId){
-                    //Remove the Old Item
-                    $scope.data.items.splice(itmId,1);
-                  }
-                  itmId=null;
-                  //activitiesByGdeNameTemp[$scope.name]
-                  for (var i=0;i<$scope.activitiesByGdeNameTemp[$scope.name]['activities'].length;i++){
-                    if ($scope.activitiesByGdeNameTemp[$scope.name]['activities'][i].id== response.id){
-                      itmId=i;
-                      break;
-                    }
-
-                  }
-                  if(itmId){
-                    //Remove the Old Item
-                    $scope.activitiesByGdeNameTemp[$scope.name]['activities'].splice(itmId,1);
-                  }
-                  itmId=null;
-                  for (var i=0;i<$scope.userActivities.length;i++){
-                    if ($scope.userActivities[i].id== response.id){
-                      itmId=i;
-                      break;
-                    }
-
-                  }
-                  if(itmId){
-                    //Remove the Old Item
-                    $scope.userActivities.splice(itmId,1);
-                  }
+                  removeARfromList(response.id);
                 }
                 break;
-              case 'Merge':
-                //TODO: Delete the "original" activities before saving
+              case 'Merged':
+                //User confirmed deletion of the original activities
+                //Delete the "original" activities
+                $scope.originalARToMerge.forEach(function(arItem){
+                  //Remove the AR from the backend
+                  $scope.gdeTrackingAPI.activity_record.delete({id:arItem.id}).execute(
+                    function(resp){
+                      if (resp.code){
+                        console.log('gdeTrackingAPI.activity_record.delete({id:'+arItem.id+'}) responded with Response Code: '+resp.code + ' - '+ resp.message);
+                        console.log(JSON.stringify(arItem));
+                        alert(resp.message);
+                      }else{
+                        //AR Deleted, remove from the table
+                        removeARfromList(resp.id);
+                        //Apply and refresh
+                        $scope.$apply();
+                      }
+                  });
+                });
+                $scope.originalARToMerge = [];
                 break;
             }
 
@@ -733,7 +761,12 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
 	};
 
+  $scope.originalARToMerge = [];
+
   $scope.askMergeConfirmation = function(){
+    //Clean the array of AR that will be merged
+    $scope.originalARToMerge = [];
+    //Show the dialog to confirm merging
     toggleDialog("mergeDialog");
   };
 
@@ -755,6 +788,8 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	    var item = $.grep($scope.data.items, function(arItem){
   	    return arItem.id== tmpItem.activity_id;
   	  })[0];
+  	  //Keep track of the original activities that will be merged for future use 
+  	  $scope.originalARToMerge.push(item);
 	    //Create the merged "default" activity
 	    //Concatenate the Activity Title to the current
 	    if (mergedActivity.activity_title==null){
@@ -876,6 +911,10 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	  populateATs();
 	  populateAGs();//Populate the ActivityGroups
 
+    $scope.currDate_updatedLocale = $rootScope.utils.dateToCommonString(new Date($scope.currentActivity.date_updated));
+    $scope.currDate_createdLocale = $rootScope.utils.dateToCommonString(new Date($scope.currentActivity.date_created));
+    $scope.currPost_dateLocale = $rootScope.utils.dateToCommonString(new Date($scope.currentActivity.post_date));
+  
 	  $scope.editMode ="Merge";
 	  //Load ActivityPost Items for the current ActivityRecord
 	  getActivityPosts($scope.currentActivity);
@@ -885,6 +924,14 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
 	};
 
+  $scope.saveMergedAR = function(){
+    toggleDialog("mergeSaveDialog");
+    //Set the EditMode to Merged
+    $scope.editMode='Merged';
+    //Save the activity
+    $scope.saveGDEActivity();
+    
+  };
   //Metadata functions
   $scope.selectAG = function(agId){
     $.each($scope.currActivityGroups, function(k,v)

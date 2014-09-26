@@ -44,6 +44,19 @@
     </div>
 
 </paper-dialog>
+<paper-dialog id="mergeSaveDialog" >
+
+    <div class="content" vertical layout center>
+      <div horizontal layout center-justified>
+        Saving will DELETE permanently the Original Activities and save the current, Are you sure you want to continue?
+      </div>
+      <div horizontal layout center-justified>
+        <paper-button raisedButton class ="colored red"label="No" dismissive></paper-button>
+        <paper-button raisedButton class ="colored green" label="Yes" ng-click="saveMergedAR()"></paper-button>
+      </div>
+    </div>
+
+</paper-dialog>
 <br/>
 <div class="stats">
 	<table class="prettyTable">
