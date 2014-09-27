@@ -309,7 +309,7 @@ GdeTrackingApp.run(function ($rootScope)
 			var yyyy	= origDate.getFullYear().toString();
 			var mm		= (origDate.getMonth()+1).toString();	// getMonth() is zero-based
 			var dd		= origDate.getDate().toString();
-			
+
 			return '' + yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);	// padding
 		},
 		'verifyDateStringFormat'	: function(origStringDate)
