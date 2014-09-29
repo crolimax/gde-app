@@ -548,7 +548,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
       }
       return false;
     });
-    if(itmId){
+    if(itmId!=null){
       //Remove the Old Item
       $scope.data.items.splice(itmId,1);
     }else{
@@ -563,7 +563,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
       }
       return false;
     });
-    if(itmId){
+    if(itmId!=null){
       //Remove the Old Item
       $scope.activitiesByGdeNameTemp[$scope.name]['activities'].splice(itmId,1);
     }else{
@@ -577,7 +577,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
       }
       return false;
     });
-    if(itmId){
+    if(itmId!=null){
       //Remove the Old Item
       $scope.userActivities.splice(itmId,1);
     }else{
