@@ -587,46 +587,96 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
 	$scope.saveGDEActivity = function(){
 
-    var readyToSave = false;
+    var readyToSave = true;
     //Update Date variales to avoid Insert/Update errors
     var post_date = $rootScope.utils.verifyDateStringFormat($scope.currPost_dateLocale);
     if (post_date!='Invalid Date'){
       //store the date
       $scope.currentActivity.post_date = post_date;
-      readyToSave=true;
-    }
-
-    if (!readyToSave){
-      alert('Invalid Activity Date format, please use YYYY-MM-DD');
     }else{
+      alert('Invalid Activity Date format, please use YYYY-MM-DD');
+      readyToSave=false;
+    }
+    
+    //Validate numeric Fields
+    if ($.isNumeric($scope.currentActivity.plus_oners)){
+      //Sanity Checks on Numbers
+      if ($scope.currentActivity.plus_oners==null || $scope.currentActivity.plus_oners==""){
+        $scope.currentActivity.plus_oners=0;
+      }
+      $scope.currentActivity.plus_oners=parseInt($scope.currentActivity.plus_oners);
+    }else{
+      alert('Invalid +1s, please use insert an integer number');
+      readyToSave=false;
+    }
+    
+    if ($.isNumeric($scope.currentActivity.resharers)){
+      //Sanity Checks on Numbers
+      if ($scope.currentActivity.resharers==null || $scope.currentActivity.resharers==""){
+        $scope.currentActivity.resharers=0;
+      }
+      $scope.currentActivity.resharers=parseInt($scope.currentActivity.resharers);
+    }else{
+      alert('Invalid Resharers, please use insert an integer number');
+      readyToSave=false;
+    }
+    
+    if ($.isNumeric($scope.currentActivity.comments)){
+      //Sanity Checks on Numbers
+      if ($scope.currentActivity.comments==null || $scope.currentActivity.comments==""){
+        $scope.currentActivity.comments=0;
+      }
+      $scope.currentActivity.comments=parseInt($scope.currentActivity.comments);
+    }else{
+      alert('Invalid Comments, please use insert an integer number');
+      readyToSave=false;
+    }
+    
+    $scope.metadataArray.forEach(function(currMeta){
+      if (currMeta.hasOwnProperty('impact')){
+        if ($.isNumeric(currMeta.impact)){
+          //Sanity Checks on Numbers
+          if (currMeta.impact==null || currMeta.impact==""){
+            currMeta.impact=0;
+          }
+          currMeta.impact=parseInt(currMeta.impact);
+        }else{
+          alert('Invalid impact, please use insert an integer number');
+          readyToSave=false;
+        }
+      }
+      
+      if(currMeta.hasOwnProperty('us_approx_amount')){
+        if ($.isNumeric(currMeta.us_approx_amount)){
+          //Sanity Checks on Numbers
+          if (currMeta.us_approx_amount==null || currMeta.us_approx_amount==""){
+            currMeta.us_approx_amount=0;
+          }
+          currMeta.us_approx_amount=parseFloat(currMeta.us_approx_amount);
+        }else{
+          alert('Invalid us_approx_amount, please use insert numeric characters');
+          readyToSave=false;
+        }
+      }
+    });
+    
+    //Continue only if everything is OK
+    if (readyToSave)
+    {
       if ($scope.editMode=='Merge'){
         //ask confirmation to delete the original activities
         toggleDialog("mergeSaveDialog");
         return;
       }
-
-  	  $scope.currentActivity.metadata = $scope.metadataArray;
-
-  	  //Sanity Checks on Numbers
-  	  if ($scope.currentActivity.plus_oners==null || $scope.currentActivity.plus_oners==""){
-  	    $scope.currentActivity.plus_oners=0;
-
-  	  }
-  	  if ($scope.currentActivity.resharers==null || $scope.currentActivity.resharers==""){
-  	    $scope.currentActivity.resharers=0;
-
-  	  }
-  	  if ($scope.currentActivity.comments==null || $scope.currentActivity.comments==""){
-  	    $scope.currentActivity.comments=0;
-  	  }
-  	  //Clear data_created and updated that are calculated on the backend
+      $scope.currentActivity.metadata = $scope.metadataArray;
+      
+      //Clear data_created and updated that are calculated on the backend
       $scope.currentActivity.date_updated =null;
       $scope.currentActivity.date_created = null;
-
+      
       $scope.gdeTrackingAPI.activity_record.insert($scope.currentActivity).execute(
         function(response)
-    		{
-
+        {
           if (response.code){
             console.log('gdeTrackingAPI.activity_record.insert(DATA) responded with Response Code: '+response.code + ' - '+ response.message);
             console.log(JSON.stringify($scope.currentActivity));
