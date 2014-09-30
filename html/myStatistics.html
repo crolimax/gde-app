@@ -134,9 +134,9 @@
       <paper-input floatingLabel label="Title of the activity" ng-model="currentActivity.activity_title"  style="width:100%;"></paper-input>
       <br/>
       <div style="text-align:center">
-        <paper-input floatingLabel label="Activity Date" type="datetime" ng-model="currPost_dateLocale" ></paper-input>
-        <paper-input floatingLabel label="Date Created" disabled type="datetime" ng-model="currDate_createdLocale"  ></paper-input>
-        <paper-input floatingLabel label="Date Updated" disabled type="datetime" ng-model="currDate_updatedLocale"  ></paper-input>
+        <paper-input floatingLabel label="Activity Date" type="date" ng-model="currPost_dateLocale" ></paper-input>
+        <paper-input floatingLabel label="Date Created" disabled type="date" ng-model="currDate_createdLocale"  ></paper-input>
+        <paper-input floatingLabel label="Date Updated" disabled type="date" ng-model="currDate_updatedLocale"  ></paper-input>
       </div>
       <div style="text-align:center" ng-if="currentActivityPosts.length!=0">
         <paper-input floatingLabel disabled label="+1's" ng-model="currentActivity.plus_oners"  type="number"></paper-input>
