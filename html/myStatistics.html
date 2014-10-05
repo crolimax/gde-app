@@ -61,6 +61,9 @@
 			<th ng-click="changeSorting('title')" style="cursor: pointer;">
 				Activity Title
 			</th>
+			<th ng-click="changeSorting('activity_types_str')" style="cursor: pointer;">
+				Type
+			</th>
 			<th ng-click="changeSorting('plus_oners')" style="cursor: pointer;">
 				+1's
 			</th>
@@ -86,6 +89,9 @@
 		  </td>
 			<td>
 				<a href={{activity.url}} target="_blank">{{activity.title}}</a>
+			</td>
+			<td>
+				{{activity.activity_types_str}}
 			</td>
 			<td>
 				{{activity.plus_oners}}

@@ -240,8 +240,17 @@ GdeTrackingApp.run(function ($rootScope)
 			activity.id				= apiData.id;
 			activity.product_group	= apiData.product_groups;
 			activity.activity_type	= apiData.activity_types;
+			//Activity Types as string for table ordering
+			var toRet = '';
+			activity.activity_type.forEach(function(item){
+		    if(toRet.length>0){
+		      toRet+=',';
+		    }
+		    toRet+=item;
+		  });
+			activity.activity_types_str = toRet;
 			activity.total_impact	= apiData.total_impact;
-			
+
 			//console.log(activity);
 			return activity;
 		},
