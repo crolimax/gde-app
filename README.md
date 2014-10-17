@@ -52,8 +52,8 @@ Use the Git issue tracker, please check if the feature already has a dedicated i
 
 ###Coding
 We have no rules set in stone on how to contribute with code, but we agree on a couple of things:
-- Track the changes: always have an issue in the issue tracker for the feature/bug before working on something, if you are working on it, assign yourself to it; this way other contributors knows someone is working on it and can work on something else
-- Fork it: 99% of the changes should be done on forks, only small bug fixes (ex. typos) can be done directly in the main branch and quickly deployed.
-- Merging back: When you are done implementing and testing on your fork, create a pull request with a reference to the issue/issues it's implementing; before merging the pull request, wait at least 24hrs if other collaborators want to take a look and comment; two sign of approval (Ex. Looks awesome, +1, etc..) from other active collaborators (people that have coded) means that the feature can be pulled instantly.
-- Publishing (web): Change the code of the file inside the [GDE Tracking App Prototype](https://drive.google.com/folderview?id=0B_RClkFMLkcpeDdNSHVmVXdTY0k&usp=sharing) Google Drive Folder, this can be acheived by using Google Drive Sync or by editing each file with one of the web text editor connected with Google Drive.
-- Publishing (GAE): *TODO:Add guidelines for publishing to GAE*
+- **Track the changes**: always have an issue in the issue tracker for the feature/bug before working on something, if you are working on it, assign yourself to it; this way other contributors knows someone is working on it and can work on something else
+- **Fork it**: 99% of the changes should be done on forks, only small bug fixes (ex. typos) can be done directly in the main branch and quickly deployed.
+- **Merging back**: When you are done implementing and testing on your fork, create a pull request with a reference to the issue/issues it's implementing; before merging the pull request, wait at least 24hrs if other collaborators want to take a look and comment; two sign of approval (Ex. Looks awesome, +1, etc..) from other active collaborators (people that have coded) means that the feature can be pulled instantly.
+- **Publishing (web)**: Change the code of the file inside the [GDE Tracking App Prototype](https://drive.google.com/folderview?id=0B_RClkFMLkcpeDdNSHVmVXdTY0k&usp=sharing) Google Drive Folder, this can be acheived by using Google Drive Sync or by editing each file with one of the web text editor connected with Google Drive.
+- **Publishing (GAE)**: *TODO:Add guidelines for publishing to GAE*
