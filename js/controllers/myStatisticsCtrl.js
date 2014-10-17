@@ -674,6 +674,9 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
       $scope.currentActivity.date_updated =null;
       $scope.currentActivity.date_created = null;
       
+      //FIXME: currently using API_key because problem with serverside validation of the current user
+      $scope.currentActivity.api_key= '8A483971F5A2CD2EF934561E3C858';
+      
       $scope.gdeTrackingAPI.activity_record.insert($scope.currentActivity).execute(
         function(response)
         {
