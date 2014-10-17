@@ -33,7 +33,7 @@ Download the code with Git, and use your most loved editor.
 After the implementation of #57 is done, we are going to use `bower` to keep components and libraries fresh
 
 ###Backend
-*TODO: Fill with instructions *
+*TODO: Fill with instructions*
 
 ###Web App
 As stated before the Code is all JS and HTML, the application use Angular and Polymer, but the scripts and components are inside the Git branch.
