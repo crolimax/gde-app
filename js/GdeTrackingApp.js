@@ -242,12 +242,14 @@ GdeTrackingApp.run(function ($rootScope)
 			activity.activity_type	= apiData.activity_types;
 			//Activity Types as string for table ordering
 			var toRet = '';
-			activity.activity_type.forEach(function(item){
-		    if(toRet.length>0){
-		      toRet+=',';
-		    }
-		    toRet+=item;
-		  });
+			if (activity.activity_type !=null && activity.activity_type.length>0){
+			    activity.activity_type.forEach(function(item){
+	  		    if(toRet.length>0){
+	  		      toRet+=',';
+	  		    }
+	  		    toRet+=item;
+	  		  });
+			}
 			activity.activity_types_str = toRet;
 			activity.total_impact	= apiData.total_impact;
 
