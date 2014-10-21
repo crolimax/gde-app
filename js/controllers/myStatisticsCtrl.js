@@ -246,7 +246,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	$scope.editMode			        = "";
 	$scope.currentActivityPosts = [];
 	$scope.usedInMetadata       = {};
-	
+
 	var getActivityPosts = function (activityRecord){
     $scope.currentActivityPosts = []; //Clean the array
     if (activityRecord.gplus_posts){
@@ -474,6 +474,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	  //Load ActivityPost Items for the current ActivityRecord
 	  getActivityPosts($scope.currentActivity);
 
+    $("#fabDone").attr("disabled",false);//Enable the save button
 	  //Display the Edit Activity Dialog
 	  toggleDialog('singleActivity');
 
@@ -503,6 +504,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	  $scope.editMode = "Create New";
 
     if(showDialog==null || showDialog==true){
+      $("#fabDone").attr("disabled",false);//Enable the save button
   	  //Display the Edit Activity Dialog
   	  toggleDialog('singleActivity');
     }
@@ -537,7 +539,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	  }
 
 	};
-	
+
 	var removeARfromList = function(arId){
 	  //Find the activity index
     var itmId=null;
@@ -588,7 +590,14 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	$scope.saveGDEActivity = function(){
 
     var readyToSave = true;
-    //Update Date variales to avoid Insert/Update errors
+
+    if ($("#fabDone").attr("disabled")){
+      return; //If the fab button is disabled, skip everything; the ng-click is fired even if the fab is disabled
+    }
+
+    $("#fabDone").attr("disabled",true);//Disable the Fab to Avoid multiple click and save
+
+    //Update Date variables to avoid Insert/Update errors
     var post_date = $rootScope.utils.verifyDateStringFormat($scope.currPost_dateLocale);
     if (post_date!='Invalid Date'){
       //store the date
@@ -597,7 +606,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
       alert('Invalid Activity Date format, please use YYYY-MM-DD');
       readyToSave=false;
     }
-    
+
     //Validate numeric Fields
     if ($.isNumeric($scope.currentActivity.plus_oners)){
       //Sanity Checks on Numbers
@@ -609,7 +618,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
       alert('Invalid +1s, please use insert an integer number');
       readyToSave=false;
     }
-    
+
     if ($.isNumeric($scope.currentActivity.resharers)){
       //Sanity Checks on Numbers
       if ($scope.currentActivity.resharers==null || $scope.currentActivity.resharers==""){
@@ -620,7 +629,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
       alert('Invalid Resharers, please use insert an integer number');
       readyToSave=false;
     }
-    
+
     if ($.isNumeric($scope.currentActivity.comments)){
       //Sanity Checks on Numbers
       if ($scope.currentActivity.comments==null || $scope.currentActivity.comments==""){
@@ -631,7 +640,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
       alert('Invalid Comments, please use insert an integer number');
       readyToSave=false;
     }
-    
+
     $scope.metadataArray.forEach(function(currMeta){
       if (currMeta.hasOwnProperty('impact')){
         if ($.isNumeric(currMeta.impact)){
@@ -645,7 +654,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
           readyToSave=false;
         }
       }
-      
+
       if(currMeta.hasOwnProperty('us_approx_amount')){
         if ($.isNumeric(currMeta.us_approx_amount)){
           //Sanity Checks on Numbers
@@ -659,24 +668,25 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
         }
       }
     });
-    
+
     //Continue only if everything is OK
     if (readyToSave)
     {
       if ($scope.editMode=='Merge'){
+        $("#fabDone").attr("disabled",false);//Enable the Fab again
         //ask confirmation to delete the original activities
         toggleDialog("mergeSaveDialog");
         return;
       }
       $scope.currentActivity.metadata = $scope.metadataArray;
-      
+
       //Clear data_created and updated that are calculated on the backend
       $scope.currentActivity.date_updated =null;
       $scope.currentActivity.date_created = null;
-      
+
       //FIXME: currently using API_key because problem with serverside validation of the current user
       $scope.currentActivity.api_key= '8A483971F5A2CD2EF934561E3C858';
-      
+
       $scope.gdeTrackingAPI.activity_record.insert($scope.currentActivity).execute(
         function(response)
         {
@@ -733,6 +743,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
             //Hide the dialog
             toggleDialog('singleActivity');
+
           }
 
     		}
@@ -784,12 +795,12 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	  var mergedActivity = $scope.currentActivity;
 	  mergedActivity.metadata = [];
 	  mergedActivity.gplus_posts = [];
-	  
+
 	  tmp.forEach(function(tmpItem){
 	    var item = $.grep($scope.data.items, function(arItem){
   	    return arItem.id== tmpItem.activity_id;
   	  })[0];
-  	  //Keep track of the original activities that will be merged for future use 
+  	  //Keep track of the original activities that will be merged for future use
   	  $scope.originalARToMerge.push(item);
 	    //Create the merged "default" activity
 	    //Concatenate the Activity Title to the current
@@ -922,11 +933,12 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     $scope.currDate_updatedLocale = $rootScope.utils.dateToCommonString(new Date($scope.currentActivity.date_updated));
     $scope.currDate_createdLocale = $rootScope.utils.dateToCommonString(new Date($scope.currentActivity.date_created));
     $scope.currPost_dateLocale = $rootScope.utils.dateToCommonString(new Date($scope.currentActivity.post_date));
-  
+
 	  $scope.editMode ="Merge";
 	  //Load ActivityPost Items for the current ActivityRecord
 	  getActivityPosts($scope.currentActivity);
 
+    $("#fabDone").attr("disabled",false);//Enable the save button
 	  //Display the single Activity Dialog
 	  toggleDialog('singleActivity');
 
@@ -938,7 +950,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     $scope.editMode='Merged';
     //Save the activity
     $scope.saveGDEActivity();
-    
+
   };
   //Metadata functions
   $scope.selectAG = function(agId){
