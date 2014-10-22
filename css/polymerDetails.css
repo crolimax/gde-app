@@ -53,7 +53,7 @@ paper-dialog {
 	min-height			: 30%
 }
 paper-dialog.tall{
-  height:90%;
+	height:90%;
 }
 paper-button {
 	margin				: 1em;
@@ -159,17 +159,6 @@ select:hover
     /* W3C */
     box-shadow			: 0px 3px 6px #555, inset 0px 0px 3px #999;
 }
-
-core-toolbar#mainheader {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: -ms-flexbox;
-	display: flex;
-	-webkit-box-pack: center;
-	-webkit-justify-content: center;
-	    -ms-flex-pack: center;
-	        justify-content: center;
-}
 .menuButtonZone
 {
 	justify-content		: center;
@@ -220,6 +209,17 @@ core-toolbar#mainheader {
 	display				: inline-block;
 	position			: relative;
 	top					: -15px;
+}
+.appLogo_box	{
+	display	: -webkit-box;
+	display	: -webkit-flex;
+	display	: -ms-flexbox;
+	display	: flex;
+	-webkit-box-pack		: center;
+	-webkit-justify-content	: center;
+	    -ms-flex-pack		: center;
+	        justify-content	: center;
+	width	: 100%;
 }
 .appLogo	{
 	position			: absolute;
