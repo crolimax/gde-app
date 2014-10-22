@@ -243,6 +243,10 @@ select:hover
 	color				: #616161;
 	text-shadow			: 0 0 0.5px #616161;
 }
+.gdesAround	{
+	color				: #616161;
+	text-shadow			: 0 0 0.5px #616161;
+}
 .googleDevelopersLogo	{
 	position			: relative;
 	top					: 80px;
