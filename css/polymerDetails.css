@@ -53,12 +53,7 @@ paper-dialog {
 	min-height			: 30%
 }
 paper-dialog.tall{
-  height:90%;
-}
-core-menu	{
-	position			: absolute;
-	top					: 70px;
-	height				: 85%;
+	height:90%;
 }
 paper-button {
 	margin				: 1em;
@@ -164,6 +159,10 @@ select:hover
     /* W3C */
     box-shadow			: 0px 3px 6px #555, inset 0px 0px 3px #999;
 }
+.menuButtonZone
+{
+	justify-content		: center;
+}
 .center
 {
     /* webkit */
@@ -211,6 +210,17 @@ select:hover
 	position			: relative;
 	top					: -15px;
 }
+.appLogo_box	{
+	display	: -webkit-box;
+	display	: -webkit-flex;
+	display	: -ms-flexbox;
+	display	: flex;
+	-webkit-box-pack		: center;
+	-webkit-justify-content	: center;
+	    -ms-flex-pack		: center;
+	        justify-content	: center;
+	width	: 100%;
+}
 .appLogo	{
 	position			: absolute;
 	left				: 0;
@@ -235,7 +245,6 @@ select:hover
 }
 .googleDevelopersLogo	{
 	position			: relative;
-	left				: 15px;
 	top					: 80px;
 	height				: 200px;
 }
@@ -267,28 +276,27 @@ select:hover
 	width				: 90%;
     transition			: all 0.4s ease-in-out;
 }
-.gdeCard
-{
-    /* webkit */
-    display				: -webkit-box;
-    -webkit-box-orient	: vertical;
-    -webkit-box-pack	: center;
-    -webkit-box-align	: center;
-    /* W3C */
-    display				: box;
-    box-orient			: vertical;
-    box-pack			: center;
-    box-align			: center;
-
-	background-color	: #f5f5f5;
-	width				: 300px;
-	height				: 475px;
-    margin				: 0.5em;
-    padding				: 1.5em;
-    text-align			: center;
-    border-radius		: 5px;
-    transition			: all 1s ease-in-out;
-    box-shadow			: 0px 1px 4px #777, inset 0px 0px 2px #aaa;
+.gdeCard {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-align-content: center;
+	    -ms-flex-line-pack: center;
+	        align-content: center;
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	    -ms-flex-pack: center;
+	        justify-content: center;
+	min-width: 15em;
+	background-color: #f5f5f5;
+	margin: 0.5em;
+	padding: 1.5em;
+	text-align: center;
+	border-radius: 5px;
+	-webkit-transition: all 1s ease-in-out;
+	        transition: all 1s ease-in-out;
+	box-shadow: 0px 1px 4px #777, inset 0px 0px 2px #aaa;
 }
 .gdeCard:hover {
     /* W3C */
