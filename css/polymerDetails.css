@@ -402,9 +402,23 @@ select:hover
 }
 .countryButtons
 {
-	position		: absolute;
-	bottom			: -170px;
-	left			: 0;
+	display		: -webkit-box;
+	display		: -webkit-flex;
+	display		: -ms-flexbox;
+	display		: flex;
+	-webkit-box-orient		: horizontal;
+	-webkit-box-direction	: normal;
+	-webkit-flex-direction	: row;
+		-ms-flex-direction	: row;
+			flex-direction	: row;
+	-webkit-flex-wrap		: wrap-reverse;
+		-ms-flex-wrap		: wrap-reverse;
+			flex-wrap		: wrap-reverse;
+	position	: absolute;
+	left		: 0;
+	bottom		: -45%;
+}
+.countryButtons{
 }
 .countryButtons	paper-icon-button
 {
