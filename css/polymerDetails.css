@@ -243,6 +243,10 @@ select:hover
 	color				: #616161;
 	text-shadow			: 0 0 0.5px #616161;
 }
+.gdesAround	{
+	color				: #616161;
+	text-shadow			: 0 0 0.5px #616161;
+}
 .googleDevelopersLogo	{
 	position			: relative;
 	top					: 80px;
@@ -398,9 +402,23 @@ select:hover
 }
 .countryButtons
 {
-	position		: absolute;
-	bottom			: -170px;
-	left			: 0;
+	display		: -webkit-box;
+	display		: -webkit-flex;
+	display		: -ms-flexbox;
+	display		: flex;
+	-webkit-box-orient		: horizontal;
+	-webkit-box-direction	: normal;
+	-webkit-flex-direction	: row;
+		-ms-flex-direction	: row;
+			flex-direction	: row;
+	-webkit-flex-wrap		: wrap-reverse;
+		-ms-flex-wrap		: wrap-reverse;
+			flex-wrap		: wrap-reverse;
+	position	: absolute;
+	left		: 0;
+	bottom		: -45%;
+}
+.countryButtons{
 }
 .countryButtons	paper-icon-button
 {
