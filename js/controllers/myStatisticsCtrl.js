@@ -35,7 +35,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	$scope.data					= {};
 	$scope.data.items			= [];
 	$scope.activitiesByGdeNameTemp	= {};
-	$scope.name					= '';
+	$scope.name					= $rootScope.userName;
 	$scope.userActivities			= [];
 
 	$scope.sort = {
@@ -120,6 +120,32 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	}
 
 	$scope.loadVisualizationLibraries	= google.load('visualization', '1.1', null);
+
+  var prepareActivitiesForChart = function()
+  {
+    var loggedGdeName = $rootScope.userName;
+    var loggedGdePlusID = $rootScope.usrId;
+    $scope.name = $rootScope.userName;
+    for (var i=0;i<$scope.data.items.length;i++)
+    {
+      if (!$scope.activitiesByGdeNameTemp[$scope.name])
+      {
+        $scope.activitiesByGdeNameTemp[$scope.name]					= {};	// Initialize a new JSON unordered array
+        $scope.activitiesByGdeNameTemp[$scope.name]['name']			= loggedGdeName;
+        $scope.activitiesByGdeNameTemp[$scope.name]['id']				= loggedGdePlusID;
+        $scope.activitiesByGdeNameTemp[$scope.name]['activities']			= [];	// Initialize a new JSON ordered array
+      }
+
+      $scope.utils.updateStats($scope.activitiesByGdeNameTemp[$scope.name], $scope.data.items[i]);
+
+      var activity = $scope.utils.activityFromApi($scope.data.items[i]);
+      $scope.activitiesByGdeNameTemp[$scope.name]['activities'].push(activity);
+      $scope.userActivities.push(activity);
+    };
+    $scope.$apply();
+    drawGeneralStatistics();
+  }
+
 	$scope.getActivitiesFromGAE = function (nextPageToken,gplusId,minDate,maxDate,order)
 	{
 	  //Empty the scope objects on the first run
@@ -142,77 +168,29 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
     $scope.gdeTrackingAPI.activity_record.list(requestData).execute(
       function(response)
-  		{
-  		  //Check if the backend returned and error
+      {
+        //Check if the backend returned and error
         if (response.code){
           window.alert('There was a problem loading the app. This windows will be re-loaded automatically. Error: '+response.code + ' - '+ response.message);
           location.reload(true);
         }else{
-    			//Add response Items to the full list
-    			$scope.data.items = $scope.data.items.concat(response.items);
+          //Add response Items to the full list
+          $scope.data.items = $scope.data.items.concat(response.items);
 
-    			if (response.nextPageToken)	// If there is still more data
-    			{
-    				$scope.getActivitiesFromGAE(response.nextPageToken,gplusId,minDate,maxDate,order);	// Get the next page
-    			} else
+          if (response.nextPageToken)	// If there is still more data
+          {
+            $scope.getActivitiesFromGAE(response.nextPageToken,gplusId,minDate,maxDate,order);	// Get the next page
+          } else
     			{																			// Done
     //				console.log($scope.data.items);
     				if ($rootScope.usrId)												// Check if the user it's an authorized user.
     				{
-    				  var loggedGdeName = $('.userName').text();
-  						var loggedGdePlusID = $rootScope.usrId;
-    //					console.log('User was logged in');
-    					for (var i=0;i<$scope.data.items.length;i++)
-    					{
-    						$scope.name = $scope.data.items[i].gde_name;
-
-    						if (!$scope.activitiesByGdeNameTemp[$scope.name])
-    						{
-    							$scope.activitiesByGdeNameTemp[$scope.name]					= {};	// Initialize a new JSON unordered array
-
-    							$scope.activitiesByGdeNameTemp[$scope.name]['name']			= $scope.name;
-    							$scope.activitiesByGdeNameTemp[$scope.name]['id']				= $scope.data.items[i].gplus_id;
-
-    							$scope.activitiesByGdeNameTemp[$scope.name]['activities']			= [];	// Initialize a new JSON ordered array
-    						}
-
-    						$scope.utils.updateStats($scope.activitiesByGdeNameTemp[$scope.name], $scope.data.items[i]);
-
-    						var activity = $scope.utils.activityFromApi($scope.data.items[i]);
-    						$scope.activitiesByGdeNameTemp[$scope.name]['activities'].push(activity);
-    						$scope.userActivities.push(activity);
-    					};
-    					$scope.$apply();
-    					drawGeneralStatistics();
+    				  prepareActivitiesForChart();
     				} else {																// Wait for a valid GDE to log in.
     //					console.log('User was not logged in');
     					$scope.$on('gde:logged', function(event,loggedGdeName)				// Listen to the gde:logged
     					{
-    //						console.log(loggedGdeName);
-    						for (var i=0;i<$scope.data.items.length;i++) //activities by GDE Name
-    						{
-    							$scope.name = $scope.data.items[i].gde_name;
-    							if ($scope.data.items[i].gde_name == loggedGdeName)
-    							{
-    								if (!$scope.activitiesByGdeNameTemp[$scope.name])
-    								{
-    									$scope.activitiesByGdeNameTemp[$scope.name]					= {};	// Initialize a new JSON unordered array
-
-    									$scope.activitiesByGdeNameTemp[$scope.name]['name']			= $scope.name;
-    									$scope.activitiesByGdeNameTemp[$scope.name]['id']				= $scope.data.items[i].gplus_id;
-
-    									$scope.activitiesByGdeNameTemp[$scope.name]['activities']			= [];	// Initialize a new JSON ordered array
-    								}
-
-    								$scope.utils.updateStats($scope.activitiesByGdeNameTemp[$scope.name], $scope.data.items[i]);
-
-    								var activity = $scope.utils.activityFromApi($scope.data.items[i]);
-    								$scope.activitiesByGdeNameTemp[$scope.name]['activities'].push(activity);
-    								$scope.userActivities.push(activity);
-    							};
-    						};
-    						$scope.$apply();
-    						drawGeneralStatistics();
+    					  prepareActivitiesForChart();
     					});
     				}
     			}
@@ -679,6 +657,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
         return;
       }
       $scope.currentActivity.metadata = $scope.metadataArray;
+      $scope.currentActivity.gde_name = $rootScope.userName;
 
       //Clear data_created and updated that are calculated on the backend
       $scope.currentActivity.date_updated =null;

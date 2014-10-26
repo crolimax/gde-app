@@ -22,7 +22,7 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
           //Response is ok, keep going
           $scope.type	= response.type;
           console.log('Welcome '+$scope.userName+'.');
-
+          $rootScope.userName = response.display_name;
           $('#generalStatisticsForGooglers')			.css('display','none');	//Hide the previously shown menu
           //Show the right menu by user type
           switch (response.type){
