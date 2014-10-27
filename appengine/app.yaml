@@ -1,4 +1,7 @@
+# LIVE
 application: omega-keep-406
+# STAGE
+#application: elite-firefly-737
 version: 3
 runtime: python27
 api_version: 1
@@ -17,6 +20,10 @@ handlers:
 - url: /_ah/spi/.*
   script: services.register.application
 # Cron job handler
+- url: /crons/.*
+  script: services.register_tasks.app
+  login: admin
+# Task job handler
 - url: /tasks/.*
   script: services.register_tasks.app
   login: admin
@@ -31,4 +38,3 @@ libraries:
 
 builtins:
  - remote_api: on
-

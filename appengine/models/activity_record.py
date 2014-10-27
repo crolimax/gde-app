@@ -8,6 +8,8 @@ from protorpc import messages
 from models.activity_post import ActivityPost
 from models.account import Account
 
+import logging
+import endpoints
 
 class ActivityMetaData(EndpointsModel):
 
@@ -175,26 +177,11 @@ def create_activity_record(activity_post):
                                      activity_link=activity_link,
                                      activity_title=activity_post.title)
     activity_record.put()
+    logging.info('create new activity record')
     return activity_record
 
 
-def find_or_create(activity_post):
-    # is there a link attached to the post? if not query using the post as
-    # activity link
-    activity_link = activity_post.links
-    if activity_post.links == "":
-        activity_link = activity_post.url
 
-    # find out if a record exist
-    records = ActivityRecord.query(ActivityRecord.activity_link ==
-                                   activity_link).fetch(20)
-    if (len(records) == 0):
-        return create_activity_record(activity_post)
-    elif(len(records) == 1):
-        return records[0]
-    else:
-        # TODO : DON'T KNOW WHAT TO DO HERE
-        return remote.ApplicationError("Mutiple Matching ActivityRecord")
 
 
 def find(activity_post):

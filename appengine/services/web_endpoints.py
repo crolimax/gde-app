@@ -85,17 +85,6 @@ class ActivityRecordService(remote.Service):
 @api_root.api_class(resource_name='activity_post', path='activityPost')
 class ActivityPostService(remote.Service):
 
-    @ActivityPost.method(path='/activityPost/{id}', http_method='POST',
-                         name='insert')
-    def insert(self, activity_post):
-        if not check_auth(activity_post.gplus_id, activity_post.api_key):
-            raise endpoints.UnauthorizedException('Only GDEs and admins may enter or change data.')
-
-        activity_post.put()
-        activity_record = ar.find_or_create(activity_post)
-        activity_record.add_post(activity_post)
-        return activity_post
-
     @ActivityPost.method(request_fields=('id',),  path='/activityPost/{id}',
                          http_method='GET', name='get')
     def get(self, activity_post):
