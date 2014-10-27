@@ -88,7 +88,7 @@ paper-toast {
 }
 .nav-fab	{
 	position			: fixed;
-	right				: -20%;
+	left				: 120%;
 	bottom				: 5em;
 	z-index				: 1;
 }
@@ -466,30 +466,30 @@ select:hover
 {
     0%
 	{
-		right			: -20%;
+		left			: 120%;
 	}
 	70%
 	{
-		right			: 0%;
+		left			: 100%;
 	}
 	100%
 	{
-		right			: 5%;
+		left			: 90%;
 	}
 }
 @keyframes fabAppears
 {
     0%
 	{
-		right			: -20%;
+		left			: 120%;
 	}
 	70%
 	{
-		right			: 0%;
+		left			: 100%;
 	}
 	100%
 	{
-		right			: 5%;
+		left			: 90%;
 	}
 }
 
@@ -500,24 +500,17 @@ select:hover
 {
     0%
 	{
-		right			: 5%;
-	}
-	30%
-	{
-		right			: 20%;
-	}
-	70%
-	{
-		right			: 60%;
+		left			: 90%;
+		transform		: rotate(0deg);
 	}
 	90%
 	{
-		right			: 85%;
+		left			: 320px;
 		transform		: rotate(0deg);
 	}
 	100%
 	{
-		right			: 85%;
+		left			: 320px;
 		transform		: rotate(180deg);
 	}
 }
@@ -525,24 +518,17 @@ select:hover
 {
     0%
 	{
-		right			: 5%;
-	}
-	30%
-	{
-		right			: 20%;
-	}
-	70%
-	{
-		right			: 60%;
+		left			: 90%;
+		transform		: rotate(0deg);
 	}
 	90%
 	{
-		right			: 85%;
+		left			: 320px;
 		transform		: rotate(0deg);
 	}
 	100%
 	{
-		right			: 85%;
+		left			: 320px;
 		transform		: rotate(180deg);
 	}
 }
@@ -590,22 +576,17 @@ select:hover
 {
     100%
 	{
-		right			: 5%;
+		left			: 90%;
 		transform		: rotate(0deg);
 	}
 	90%
 	{
-		right			: 5%;
-		transform		: rotate(180deg);
-	}
-	70%
-	{
-		right			: 10%;
+		left			: 90%;
 		transform		: rotate(180deg);
 	}
 	0%
 	{
-		right			: 85%;
+		left			: 320px;
 		transform		: rotate(180deg);
 	}
 }
@@ -613,23 +594,18 @@ select:hover
 {
     100%
 	{
-		right			: 5%;
+		left			: 90%;
 		transform		: rotate(0deg);
 	}
 	90%
 	{
-		right			: 5%;
-		transform		: rotate(180deg);
-	}
-	70%
-	{
-		right			: 10%;
-		transform		: rotate(180deg);
+		left			: 90%;
+		transform		: rotate(0deg);
 	}
 	0%
 	{
-		right			: 85%;
-		transform		: rotate(180deg);
+		left			: 320px;
+		transform		: rotate(0deg);
 	}
 }
 @-webkit-keyframes mapSlideRight
