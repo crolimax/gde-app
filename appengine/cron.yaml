@@ -1,13 +1,13 @@
 cron:
 - description: daily new_gplus
   url: /crons/new_gplus
-  #schedule: 26 of october 18:00
-  schedule: every day 00:30
+  schedule: 26 of october 18:00
+  #schedule: every day 00:30
 
 - description: weekly upd_gplus
   url: /crons/upd_gplus
-  #schedule: 26 of october 18:10
-  schedule: every wed 00:30
+  schedule: 26 of october 18:10
+  #schedule: every wed 00:30
 
 # - description: weekly upd_blogger
 #   url: /crons/upd_blogger
