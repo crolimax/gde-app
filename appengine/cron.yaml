@@ -1,23 +1,14 @@
 cron:
-- description: daily activity post update
-  url: /tasks/uapost
-  # schedule: 13 of july 04:10
-  schedule: every mon 00:30
-
-- description: daily new activity post
-  url: /tasks/napost
-  # schedule: 13 of july 04:28
+- description: daily new_gplus
+  url: /crons/new_gplus
+  #schedule: 26 of october 18:00
   schedule: every day 00:30
 
-# - description: activity post update run 
-#   url: /tasks/uapost
-#   schedule: 16 of august 06:35
-  # schedule: every day 00:00
+- description: weekly upd_gplus
+  url: /crons/upd_gplus
+  #schedule: 26 of october 18:10
+  schedule: every wed 00:30
 
-- description: reconstruct data set
-  url: /tasks/datechange
-  schedule: 21 of august 13:38
-
-# - description: reconstruct data set
-#   url: /tasks/reconstruct
-#   schedule: 12 of july 19:05
+# - description: weekly upd_blogger
+#   url: /crons/upd_blogger
+#   schedule: 26 of october 09:00

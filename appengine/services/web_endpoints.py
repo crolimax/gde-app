@@ -92,8 +92,10 @@ class ActivityPostService(remote.Service):
             raise endpoints.UnauthorizedException('Only GDEs and admins may enter or change data.')
 
         activity_post.put()
-        activity_record = ar.find_or_create(activity_post)
-        activity_record.add_post(activity_post)
+        # patt0 10262014 finc_or_create moved to update gplus.py
+        # insert method to be deleted eventually
+        # activity_record = ar.find_or_create(activity_post)
+        # activity_record.add_post(activity_post)
         return activity_post
 
     @ActivityPost.method(request_fields=('id',),  path='/activityPost/{id}',
