@@ -18,6 +18,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	$scope.years				= years;
 	$scope.monthSelected		= "";
 	$scope.yearSelected			= "";
+	var backend_key = '8A483971F5A2CD2EF934561E3C858';
 
 	$scope.newMonth				= function (newMonth)
 	{
@@ -664,7 +665,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
       $scope.currentActivity.date_created = null;
 
       //FIXME: currently using API_key because problem with serverside validation of the current user
-      $scope.currentActivity.api_key= '8A483971F5A2CD2EF934561E3C858';
+      $scope.currentActivity.api_key= backend_key;
 
       $scope.gdeTrackingAPI.activity_record.insert($scope.currentActivity).execute(
         function(response)
@@ -691,7 +692,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
                 //Delete the "original" activities
                 $scope.originalARToMerge.forEach(function(arItem){
                   //Remove the AR from the backend
-                  $scope.gdeTrackingAPI.activity_record.delete({id:arItem.id}).execute(
+                  $scope.gdeTrackingAPI.activity_record.delete({id:arItem.id, api_key:backend_key}).execute(
                     function(resp){
                       if (resp.code){
                         console.log('gdeTrackingAPI.activity_record.delete({id:'+arItem.id+'}) responded with Response Code: '+resp.code + ' - '+ resp.message);
