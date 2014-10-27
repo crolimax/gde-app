@@ -53,6 +53,9 @@ class CronNewGplus(webapp2.RequestHandler):
             #don't process admin users
             if account.type == "administrator":
                 continue
+            #don't process inactive users
+            if account.type != "active":
+                continue
             user_count +=1
             taskqueue.add(queue_name='gplus',
                           url='/tasks/new_gplus',
@@ -112,22 +115,11 @@ class TaskNewGplus(webapp2.RequestHandler):
                         #create a new activity
                         new_activity = ActivityPost(id=gplus_activity["id"])
                         new_activity.create_from_gplus_post(gplus_activity)
-
-                        # create the new activity record
-                        # patt0 25102014 change approach to merging AP in AR
-                        # do not merge by default except if its a reshare
-                        # if 'verb' in gplus_activity:
-                        #     if gplus_activity["verb"] == 'post':
-                        #         activity_record = ar.create_activity_record(new_activity)
-                        #     else:
-                        #         activity_record = find_or_create_ar(gplus_activity, new_activity)
-                        # else:
-                        #     activity_record = ar.create_activity_record(new_activity)
+                        new_activity.put()
+                        logging.info('new activity recorded: %s' % new_activity.url)
 
                         activity_record = find_or_create_ar(gplus_activity, new_activity)
                         activity_record.add_post(new_activity)
-                        new_activity.put()
-                        logging.info('new activity recorded: %s' % new_activity.url)
 
 
 def find_or_create_ar(gplus_activity, activity_post):
@@ -185,6 +177,9 @@ class CronUpdateGplus(webapp2.RequestHandler):
         for account in accounts:
             #don't process admin users
             if account.type == "administrator":
+                continue
+            #don't process inactive users
+            if account.type != "active":
                 continue
             user_count +=1
             taskqueue.add(queue_name='gplus',
