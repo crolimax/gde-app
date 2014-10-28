@@ -18,6 +18,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	$scope.years				= years;
 	$scope.monthSelected		= "";
 	$scope.yearSelected			= "";
+	var backend_key = '8A483971F5A2CD2EF934561E3C858';
 
 	$scope.newMonth				= function (newMonth)
 	{
@@ -664,7 +665,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
       $scope.currentActivity.date_created = null;
 
       //FIXME: currently using API_key because problem with serverside validation of the current user
-      $scope.currentActivity.api_key= '8A483971F5A2CD2EF934561E3C858';
+      $scope.currentActivity.api_key= backend_key;
 
       $scope.gdeTrackingAPI.activity_record.insert($scope.currentActivity).execute(
         function(response)
@@ -691,7 +692,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
                 //Delete the "original" activities
                 $scope.originalARToMerge.forEach(function(arItem){
                   //Remove the AR from the backend
-                  $scope.gdeTrackingAPI.activity_record.delete({id:arItem.id}).execute(
+                  $scope.gdeTrackingAPI.activity_record.delete({id:arItem.id, api_key:backend_key}).execute(
                     function(resp){
                       if (resp.code){
                         console.log('gdeTrackingAPI.activity_record.delete({id:'+arItem.id+'}) responded with Response Code: '+resp.code + ' - '+ resp.message);
@@ -727,6 +728,9 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
     		}
     	);
+    }else{
+      //Reenable the FAB
+      $("#fabDone").attr("disabled",false);//Enable the Fab again
     }
 	};
 
@@ -786,18 +790,18 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	    if (mergedActivity.activity_title==null){
 	      mergedActivity.activity_title= '';
 	    }
-	    mergedActivity.activity_title += item.activity_title;
+	    mergedActivity.activity_title += (item.activity_title || '');
 	    //Set activity date IF mergedActivity.post_date == null || mergedActivity.post_date>item.post_date
 	    if(mergedActivity.post_date==null || mergedActivity.post_date>item.post_date){
 	      mergedActivity.post_date=item.post_date;
 	    }
 	    //Sum +1s,reshares,comments
-	    mergedActivity.plus_oners += item.plus_oners;
-	    mergedActivity.resharers += item.resharers;
-	    mergedActivity.comments += item.comments;
+	    mergedActivity.plus_oners += (item.plus_oners||0);
+	    mergedActivity.resharers += (item.resharers||0);
+	    mergedActivity.comments += (item.comments||0);
 
 	    //Overwrite the activity Link
-	    mergedActivity.activity_link = item.activity_link;
+	    mergedActivity.activity_link = (item.activity_link || '');
 	    //Merge the gplus_posts
 	    if (item.gplus_posts != null && item.gplus_posts.length>0){
 	      mergedActivity.gplus_posts=mergedActivity.gplus_posts.concat(item.gplus_posts);
@@ -848,36 +852,36 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
   	            if (mergedMeta.link != null && mergedMeta.link!=metaObj.link){
   	              if (mergedMeta.other_link1 != null && mergedMeta.other_link1!=metaObj.link){
   	                if (mergedMeta.other_link2 == null){
-  	                  mergedMeta.other_link2+= metaObj.link;
+  	                  mergedMeta.other_link2= (metaObj.link || '');
   	                }
   	              }else{
-  	                mergedMeta.other_link1+= metaObj.link;
+  	                mergedMeta.other_link1= (metaObj.link|| '');
   	              }
   	            }else{
-  	              mergedMeta.link= metaObj.link;
+  	              mergedMeta.link= (metaObj.link || '');
   	            }
   	          }
   	          if (metaObj.other_link1!=null && metaObj.other_link1!='')
   	          {
                 if (mergedMeta.other_link1 != null && mergedMeta.other_link1!=metaObj.link){
                   if (mergedMeta.other_link2 == null){
-                    mergedMeta.other_link2+= metaObj.link;
+                    mergedMeta.other_link2= (metaObj.link || '');
                   }
                 }else{
-                  mergedMeta.other_link1+= metaObj.link;
+                  mergedMeta.other_link1= (metaObj.link|| '');
                 }
   	          }
-  	          mergedMeta.other_link2+= metaObj.other_link2;
+  	          //mergedMeta.other_link2= (metaObj.other_link2|| '');
   	          if (metaObj.other_link2!=null && metaObj.other_link2!='')
   	          {
-  	            mergedMeta.other_link2= metaObj.other_link2;
+  	            mergedMeta.other_link2= (metaObj.other_link2|| '');
   	          }
-  	          mergedMeta.impact+= metaObj.impact;
+  	          mergedMeta.impact+= (metaObj.impact || 0);
   	          if (metaObj.location!=null && metaObj.location!='')
   	          {
   	            mergedMeta.location= metaObj.location;
   	          }
-  	          mergedMeta.google_expensed+= metaObj.google_expensed;
+  	          //mergedMeta.google_expensed= metaObj.google_expensed;
   	          if (metaObj.google_expensed!=null && metaObj.google_expensed==true)
   	          {
   	            mergedMeta.google_expensed= true;
@@ -885,7 +889,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
   	          if (mergedMeta.google_expensed==true)
   	          {
-  	            mergedMeta.us_approx_amount= metaObj.us_approx_amount;
+  	            mergedMeta.us_approx_amount+= (metaObj.us_approx_amount ||0);
   	          }
 
   	          //Exit the loop
