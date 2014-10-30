@@ -273,16 +273,17 @@ GdeTrackingApp.run(function ($rootScope)
 			});
 			chartData.cols.push(
 			{
-				id		: 'totalResharers',
-				label	: 'Total Resharers',
-				type	: 'number'
-			});
-			chartData.cols.push(
-			{
 				id		: 'totalPlus1s',
 				label	: 'Total +1s',
 				type	: 'number'
 			});
+			chartData.cols.push(
+			{
+				id		: 'totalResharers',
+				label	: 'Total Resharers',
+				type	: 'number'
+			});
+
 			chartData.cols.push(
 			{
 				id		: 'totalComments',

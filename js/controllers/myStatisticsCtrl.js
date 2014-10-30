@@ -57,6 +57,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	var drawGeneralStatistics	= function ()
 	{	// For every GDE in activitiesByGdeNameTemp
 //		console.log('drawGeneralStatistics initiated');
+    $scope.activitiesByGdeName = [];
 		$.each($scope.activitiesByGdeNameTemp, function(k,v)
 		{
 			$scope.activitiesByGdeName.push($scope.activitiesByGdeNameTemp[k]); // Push it as a new object in a JSON ordered array.
@@ -106,7 +107,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 		gdeColumnChart.setContainerId('gdeColumnChart');
 		gdeColumnChart.setOptions(
 		{
-			'width'				:700,
+			'width'				:790,
 			'reverseCategories'	: true,
 			'legend':
 			{
@@ -126,15 +127,14 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     var loggedGdeName = $rootScope.userName;
     var loggedGdePlusID = $rootScope.usrId;
     $scope.name = $rootScope.userName;
+
+    $scope.activitiesByGdeNameTemp[$scope.name]					= {};	// Initialize a new JSON unordered array
+    $scope.activitiesByGdeNameTemp[$scope.name]['name']			= loggedGdeName;
+    $scope.activitiesByGdeNameTemp[$scope.name]['id']				= loggedGdePlusID;
+    $scope.activitiesByGdeNameTemp[$scope.name]['activities']			= [];	// Initialize a new JSON ordered array
+
     for (var i=0;i<$scope.data.items.length;i++)
     {
-      if (!$scope.activitiesByGdeNameTemp[$scope.name])
-      {
-        $scope.activitiesByGdeNameTemp[$scope.name]					= {};	// Initialize a new JSON unordered array
-        $scope.activitiesByGdeNameTemp[$scope.name]['name']			= loggedGdeName;
-        $scope.activitiesByGdeNameTemp[$scope.name]['id']				= loggedGdePlusID;
-        $scope.activitiesByGdeNameTemp[$scope.name]['activities']			= [];	// Initialize a new JSON ordered array
-      }
 
       $scope.utils.updateStats($scope.activitiesByGdeNameTemp[$scope.name], $scope.data.items[i]);
 
@@ -709,16 +709,12 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
                 break;
             }
 
-            //Update the local Arrays
+            //Update the local Array
             $scope.data.items.push(response);
-            $scope.utils.updateStats($scope.activitiesByGdeNameTemp[$scope.name], response);
-            var activity = $scope.utils.activityFromApi(response);
-  					$scope.activitiesByGdeNameTemp[$scope.name]['activities'].push(response);
-            $scope.userActivities.push(activity);
 
-            //Apply and refresh
+            //Apply and refresh Charts
             $scope.$apply();
-            //drawGeneralStatistics();
+            prepareActivitiesForChart();
 
             //Hide the dialog
             toggleDialog('singleActivity');
