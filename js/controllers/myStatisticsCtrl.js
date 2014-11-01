@@ -127,6 +127,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     var loggedGdeName = $rootScope.userName;
     var loggedGdePlusID = $rootScope.usrId;
     $scope.name = $rootScope.userName;
+    $scope.userActivities=[];
 
     $scope.activitiesByGdeNameTemp[$scope.name]					= {};	// Initialize a new JSON unordered array
     $scope.activitiesByGdeNameTemp[$scope.name]['name']			= loggedGdeName;
