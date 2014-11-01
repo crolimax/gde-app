@@ -309,8 +309,8 @@ GdeTrackingApp.run(function ($rootScope)
 
 			row.c.push({v:label});
 			row.c.push({v:activitiesLogged});
-			row.c.push({v:totalResharers});
 			row.c.push({v:totalPlus1s});
+			row.c.push({v:totalResharers});
 			row.c.push({v:totalComments});
 			row.c.push({v:total_impact});
 
