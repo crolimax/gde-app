@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/maiera/gde-app.png?label=ready&title=Ready)](https://waffle.io/maiera/gde-app)
 gde-app
 =======
 
