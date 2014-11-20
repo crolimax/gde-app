@@ -44,9 +44,17 @@ Feel free the IDE you love most to work edit the source, [Chrome Dev Editor] (ht
 
 Bower is already available in CDE, vulcanize require developer mode enabled on ChromeBooks and needs to be manually installed via shell (ping @Smokybob if needed TODO: gist for the manual install on ChromeBooks).
 
-##Contributing
+###Contributing
 
 Want to Contribute? **Awesome!!!** and thanks.
+
+#### How to contribute?
+
+All GDEs are most welcome to contribute to this project. Two main pieces of the app are Back-End (API) and Front-End (Angular+Polymer app).
+
+#### Contributing to the Front-End
+
+Since app won't run locally (issues with authentication), first thing you'll have to do is to contact [Cesar Anton](https://plus.google.com/+CesarAnton/posts) and/or [Mauro Solcia](https://plus.google.com/+MauroSmokybobSolcia/posts). They will create a Google Drive folder for you so that you can easily prototype and test your version of the app. After you are happy with your improvements you can submit them to the main repository by forking it and creating a pull request with the changes. 
 
 ###Ideas/Feature request/bugs
 Use the Git issue tracker, please check if the feature already has a dedicated issue, and provide as much information, links, steps to implement the feature.
