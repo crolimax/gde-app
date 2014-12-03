@@ -2,6 +2,7 @@ from google.appengine.ext import ndb
 from endpoints_proto_datastore.ndb import EndpointsModel
 from endpoints_proto_datastore.ndb import EndpointsAliasProperty
 from endpoints_proto_datastore.ndb import EndpointsVariantIntegerProperty
+from endpoints_proto_datastore.ndb import EndpointsComputedProperty
 from datetime import datetime
 from protorpc import messages
 
@@ -10,6 +11,7 @@ from models.account import Account
 
 import logging
 import endpoints
+
 
 class ActivityMetaData(EndpointsModel):
 
@@ -98,17 +100,17 @@ class ActivityRecord(EndpointsModel):
             return None
         return gde.display_name
 
-    @EndpointsAliasProperty(setter=DummySetter, property_type=messages.IntegerField, variant=messages.Variant.INT32)
+    @EndpointsComputedProperty(property_type=messages.FloatField)
     def total_impact(self):
-        if self.metadata is None:
-            return 0
+        if self.metadata is None or len(self.metadata) == 0:
+            return None
 
         impact = 0
         for meta in self.metadata:
             if meta.impact is not None:
                 impact += meta.impact
 
-        return impact
+        return float(impact)
 
     def MinDateSet(self, value):
         if value is not None:
@@ -179,9 +181,6 @@ def create_activity_record(activity_post):
     activity_record.put()
     logging.info('create new activity record')
     return activity_record
-
-
-
 
 
 def find(activity_post):
