@@ -30,7 +30,6 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 	$scope.activityByRegion_temp 		= {};
 	$scope.activityByProduct_temp		= {};
 	$scope.activityByTypeTemp_temp		= {};
-	$scope.top100activities_temp		= {};
 	// ------------------------------------
 
 	// ------------------------------------
@@ -79,7 +78,23 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 		//===============================================//
 		// For every Activity in $scope.top100activities
 		//===============================================//
-
+		var top100 = {
+			cols: [
+				{
+					id		: 'title',
+					label	: 'Title',
+					type	: 'string'
+				}
+			],
+			rows: []
+		};
+		$scope.utils.addMetricColumns(top100);
+		for (var i=0;i<$scope.top100activities.length;i++)
+		{
+			top100.rows.push(
+				$scope.utils.chartDataRow($scope.top100activities[i].title, $scope.top100activities[i])
+			);
+		};
 		//===============================================//
 		// For every GDE in $scope.activityByGdeName_temp
 		//===============================================//
@@ -201,6 +216,9 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 		var activitiesByGde_data		= new google.visualization.DataTable(activitiesByGde);
 		activitiesByGde_data.sort(1);
 
+		var top100activitiesByGde_data		= new google.visualization.DataTable(top100);
+		top100activitiesByGde_data.sort(1);
+
 		var activityByProduct_data		= new google.visualization.DataTable(activityByProduct);
 		activityByProduct_data.sort(1);
 
@@ -212,6 +230,20 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 		//===============================================//
 		// Sort Activities by Impact - $scope.top100activities
 		//===============================================//
+		var top100TableChart			= new google.visualization.ChartWrapper();
+		top100TableChart				.setChartType('Table');
+		top100TableChart				.setContainerId('top100activitiesChart');
+		top100TableChart				.setOptions(
+		{
+			'sortColumn': 1,
+			'sortAscending': false,
+			'page': 'enable',
+			'pageSize':10
+		});
+
+		top100TableChart.setDataTable(top100activitiesByGde_data);
+
+		top100TableChart.draw();
 
 		//===============================================//
 		// activities by GDE Name
@@ -653,6 +685,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 		//===============================================//
 		// Draw Charts
 		//===============================================//
+
 		new google.visualization.Dashboard(document.getElementById('generalStatisticsByPlatform'))
 		.bind([platformsSelector,platformsActivitiesSlider,platformsResharesSlider,platformsPlus1sSlider,platformsCommentsSlider,platformsImpactSlider], [platformsTableChart,platformsBarChart])
 		.draw(activityByProduct_data);
@@ -708,7 +741,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
           $scope.getactivitiesFromGAE(response.nextPageToken,gplusId,minDate,maxDate,order);
         } else if (response.items)
         {
-					console.log($scope.data.items);
+					//console.log($scope.data.items);
           for (var i=0;i<$scope.data.items.length;i++)
           {
             //===============================================//
@@ -730,6 +763,12 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 
             var activity = $scope.utils.activityFromApi($scope.data.items[i]);
             $scope.activityByGdeName_temp[name]['activities'].push(activity);
+
+            //Store the activity for later processing
+            var top100act = {title:activity.title, activities:[activity]};
+            $scope.utils.updateStats(top100act, $scope.data.items[i]);
+            $scope.top100activities.push(top100act);
+
             //===============================================//
             // activities by Product
             //===============================================//
@@ -755,9 +794,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
                   $scope.activityByProduct_temp[product]['product']			= product;
 
                   $scope.activityByProduct_temp[product]['activities']		= [];	// Initialize a new JSON ordered array
-                  $scope.activityByProduct_temp[product]['totalPlus1s']		= 0;	// Initialize a new acumulator for totalPlus1s
-                  $scope.activityByProduct_temp[product]['totalComments']		= 0;	// Initialize a new acumulator for totalComments
-                  $scope.activityByProduct_temp[product]['total_impact']		= 0;	// Initialize a new acumulator for total_impact - temporal -
+
                 }
                 $scope.utils.updateStats($scope.activityByProduct_temp[product], $scope.data.items[i]);
 
@@ -814,6 +851,16 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
             $scope.activityByRegion_temp[region]['activities'].push(activity);
             //===============================================//
           };
+
+          //sort by total_impact
+          $scope.top100activities.sort(function(a,b){
+            return b.total_impact-a.total_impact;
+          });
+          //keep only the first 100
+          if ($scope.top100activities.length>100){
+            $scope.top100activities=$scope.top100activities.splice(0,100);
+          }
+
           drawGeneralStatistics()
 
         };
