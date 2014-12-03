@@ -3,22 +3,18 @@ import logging
 from google.appengine.ext import ndb
 from endpoints_proto_datastore.ndb import EndpointsModel
 from endpoints_proto_datastore.ndb import EndpointsAliasProperty
-
-ACTIVITY_TYPES = ["#bugreport", "#article", "#blogpost", "#book", "#techdocs",
-                  "#translation", "#techtalk", "#opensourcecode",
-                  "#forumpost", "#community", "#video", "#tutorial", "#interview"];
-
-PRODUCT_GROUPS = ["#android", "#admob", "#adwords", "#angulars", "#chrome",
-                  "#dart", "#dartlang", "#cloudplatform", "#googleanalytics",
-                  "#googleappsapi","#googleappsscript", "#googledrive",
-                  "#glass", "#googlemapsapi", "#googleplus", "#youtube",
-                  "#uxdesign"];
+from endpoints_proto_datastore.ndb import EndpointsVariantIntegerProperty
+from protorpc import messages
+from models.activity_type import ActivityType
+from models.product_group import ProductGroup
 
 class ActivityPost(EndpointsModel):
 
     _message_fields_schema = ('id', 'post_id', 'gplus_id', 'name', 'date',
                               'plus_oners', 'resharers', 'comments', 'title', 'url',
-                              'product_group', 'activity_type', 'links')
+                              'product_group', 'activity_type', 'links', 'api_key')
+
+    _api_key = None
 
     # tempted to use the G+ unique activity id ( stack overflow ?)
     post_id = ndb.StringProperty()
@@ -27,15 +23,22 @@ class ActivityPost(EndpointsModel):
     name = ndb.StringProperty()
     # date at which the activity (post) was made
     date = ndb.StringProperty()
-    plus_oners = ndb.IntegerProperty()
-    resharers = ndb.IntegerProperty()
-    comments = ndb.IntegerProperty()
+    plus_oners = EndpointsVariantIntegerProperty(variant=messages.Variant.INT32)
+    resharers = EndpointsVariantIntegerProperty(variant=messages.Variant.INT32)
+    comments = EndpointsVariantIntegerProperty(variant=messages.Variant.INT32) 
     title = ndb.StringProperty()
     # url of the post (question for stack overflow)
     url = ndb.StringProperty()
     product_group = ndb.StringProperty(repeated=True)
     activity_type = ndb.StringProperty(repeated=True)
     links = ndb.StringProperty()
+
+    def ApiKeySet(self, value):
+        self._api_key = value
+
+    @EndpointsAliasProperty(setter=ApiKeySet, property_type=messages.StringField)
+    def api_key(self):
+        return self._api_key
 
     def IdSet(self, value):
         if not isinstance(value, basestring):
@@ -57,8 +60,13 @@ class ActivityPost(EndpointsModel):
         self.plus_oners=gplus_post['object']['plusoners']['totalItems']
         self.resharers=gplus_post['object']['resharers']['totalItems']
         self.comments=gplus_post['object']['replies']['totalItems']
-        self.activity_type = self.get_activity_types(gplus_post["object"]["content"])
-        self.product_group = self.get_product_groups(gplus_post["object"]["content"])
+
+        content = gplus_post["object"]["content"]
+        if 'annotation' in gplus_post:
+            content += ' ' + gplus_post['annotation']
+
+        self.activity_type = self.get_activity_types(content)
+        self.product_group = self.get_product_groups(content)
         try:
             attachments = gplus_post["object"]["attachments"]
         except Exception as e:
@@ -71,7 +79,7 @@ class ActivityPost(EndpointsModel):
     def get_activity_types(self, content):
         """Extract activity type hashtags."""
         at = []
-        for activity_type in ACTIVITY_TYPES:
+        for activity_type in ActivityType.all_tags():
             result = re.search(activity_type, content, flags=re.IGNORECASE)
             if result is not None:
                 at.append(activity_type)
@@ -80,7 +88,7 @@ class ActivityPost(EndpointsModel):
     def get_product_groups(self, content):
         """Extract product group hashtags."""
         pg = []
-        for product_group in PRODUCT_GROUPS:
+        for product_group in ProductGroup.all_tags():
             result = re.search(product_group, content, flags=re.IGNORECASE)
             if result is not None:
                 pg.append(product_group)
@@ -95,6 +103,3 @@ class ActivityPost(EndpointsModel):
                     links += ", "
                 links += attachment["url"]
         return links
-
-
-
