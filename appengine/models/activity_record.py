@@ -104,6 +104,9 @@ class ActivityRecord(EndpointsModel):
     @EndpointsComputedProperty(property_type=messages.FloatField)
     def total_impact(self):
 
+        if self.activity_title is None:
+            return None
+
         social_impact = 1
         if self.resharers is not None:
             social_impact += self.resharers
