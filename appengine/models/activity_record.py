@@ -10,7 +10,8 @@ from models.activity_post import ActivityPost
 from models.account import Account
 
 import logging
-import endpoints
+
+import math
 
 
 class ActivityMetaData(EndpointsModel):
@@ -102,13 +103,26 @@ class ActivityRecord(EndpointsModel):
 
     @EndpointsComputedProperty(property_type=messages.FloatField)
     def total_impact(self):
-        if self.metadata is None or len(self.metadata) == 0:
-            return None
 
-        impact = 0
-        for meta in self.metadata:
-            if meta.impact is not None:
-                impact += meta.impact
+        social_impact = 1
+        if self.resharers is not None:
+            social_impact += self.resharers
+        if self.plus_oners is not None:
+            social_impact += self.plus_oners
+        if self.comments is not None:
+            social_impact += self.comments
+
+        meta_impact = 1
+        if self.metadata is None or len(self.metadata) == 0:
+            pass
+        else:
+            for meta in self.metadata:
+                if meta.impact is not None:
+                    meta_impact += meta.impact
+
+        impact = 1 + math.log10(social_impact) + math.log10(meta_impact)
+
+        logging.info('social_impact %s meta_impact %s impact %s', social_impact, meta_impact, impact)
 
         return float(impact)
 
