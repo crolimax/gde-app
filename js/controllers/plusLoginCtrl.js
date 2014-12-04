@@ -117,9 +117,9 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 		console.log('Error in sign in flow.');
 		console.log(authResult);
 	});
-	$scope.$on('event:gde-app-back-end-ready', function (event, gdeTrackingAPI)
+	$scope.$on('event:metadata-ready', function (event, gdeTrackingAPI)
 	{
-		console.log('plusLoginCtrl: gde-app-back-end-ready received');
+		console.log('plusLoginCtrl: metadata-ready received');
 
 		//Save the API object in the scope
 		$scope.gdeTrackingAPI = gdeTrackingAPI;

@@ -379,5 +379,6 @@ GdeTrackingApp.run(function ($rootScope)
 		$rootScope.utils.activityTypesFromApi(gdeTrackingAPI);
 		$rootScope.utils.productGroupsFromApi(gdeTrackingAPI);
 		$rootScope.utils.activityGroupsFromApi(gdeTrackingAPI);
+		$rootScope.$broadcast('event:metadata-ready',gapi.client.gdetracking);
 	});
 });

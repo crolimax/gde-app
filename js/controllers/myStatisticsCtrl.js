@@ -205,9 +205,9 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	}
 
 	//MSO - 20140806 - should never happen, as we redirect the user to the main page if not logged in, but just in case keep it
-	$scope.$on('event:gde-app-back-end-ready', function (event, gdeTrackingAPI)
+	$scope.$on('event:metadata-ready', function (event, gdeTrackingAPI)
 	{
-		console.log('myStatisticsCtrl: gde-app-back-end-ready received');
+		console.log('myStatisticsCtrl: metadata-ready received');
 
 		//Save the API object in the scope
 		$scope.gdeTrackingAPI = gdeTrackingAPI;

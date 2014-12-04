@@ -136,9 +136,9 @@ GdeTrackingApp.controller("startCtrl",							function($rootScope, $scope,	$http,
 	  $scope.getGdeList();
 	}
 
-	$scope.$on('event:gde-app-back-end-ready', function (event, gdeTrackingAPI)
+	$scope.$on('event:metadata-ready', function (event, gdeTrackingAPI)
 	{
-		console.log('startCtrl: gde-app-back-end-ready received');
+		console.log('startCtrl: metadata-ready received');
 
 		//Save the API object in the scope
 		$scope.gdeTrackingAPI = gdeTrackingAPI;
