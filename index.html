@@ -24,40 +24,36 @@
 	<!--				Polymer													-->
 	<!-- **********************************************************************	-->
 	<!-- ---------------------------- Platform --------------------------------	-->
-	<script src="components/platform/platform.js">						</script>
-	<script src="components/web-animations-js/web-animations.js">		</script>
+	<script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
 	<!-- ---------------------------- Core Elements ---------------------------	-->
-	<link rel="import" href="components/core-toolbar/core-toolbar.html">
-	<link rel="import" href="components/core-menu/core-menu.html">
-	<link rel="import" href="components/core-item/core-item.html">
-	<link rel="import" href="components/core-header-panel/core-header-panel.html">
-	<link rel="import" href="components/core-drawer-panel/core-drawer-panel.html">
-	<link rel="import" href="components/core-scaffold/core-scaffold.html">
-	<link rel="import" href="components/core-icons/core-icons.html">
-	<link rel="import" href="components/core-scroll-header-panel/core-scroll-header-panel.html">
+	<link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
+	<link rel="import" href="bower_components/core-menu/core-menu.html">
+	<link rel="import" href="bower_components/core-item/core-item.html">
+	<link rel="import" href="bower_components/core-header-panel/core-header-panel.html">
+	<link rel="import" href="bower_components/core-drawer-panel/core-drawer-panel.html">
+	<link rel="import" href="bower_components/core-scaffold/core-scaffold.html">
+	<link rel="import" href="bower_components/core-icons/core-icons.html">
+	<link rel="import" href="bower_components/core-scroll-header-panel/core-scroll-header-panel.html">
 
 	<!-- ----------------------------------------------------------------------	-->
 	<!-- --------------------------- Paper Elements ---------------------------	-->
-	<link rel="import" href="components/paper-button/paper-button.html" >
-	<link rel="import" href="components/paper-icon-button/paper-icon-button.html">
-	<link rel="import" href="components/paper-fab/paper-fab.html" >
-	<link rel="import" href="components/paper-item/paper-item.html" >
-	<link rel="import" href="components/paper-shadow/paper-shadow.html" >
-	<link rel="import" href="components/paper-dialog/paper-dialog.html" >
-	<link rel="import" href="components/paper-dialog/paper-dialog-transition.html" >
-	<link rel="import" href="components/paper-toast/paper-toast.html">
-	<link rel="import" href="components/paper-input/paper-input.html">
-	<link rel="import" href="components/paper-checkbox/paper-checkbox.html">
-	<link rel="import" href="components/paper-tabs/paper-tabs.html">
+	<link rel="import" href="bower_components/paper-button/paper-button.html" >
+	<link rel="import" href="bower_components/paper-fab/paper-fab.html" >
+	<link rel="import" href="bower_components/paper-shadow/paper-shadow.html" >
+	<link rel="import" href="bower_components/paper-dialog/paper-dialog.html" >
+	<link rel="import" href="bower_components/paper-toast/paper-toast.html">
+	<link rel="import" href="bower_components/paper-input/paper-input.html">
+	<link rel="import" href="bower_components/paper-checkbox/paper-checkbox.html">
+	<link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
 
-	<link rel="import" href="components/core-animated-pages/core-animated-pages.html">
-	<link rel="import" href="components/core-animated-pages/transitions/hero-transition.html">
-	<link rel="import" href="components/core-animated-pages/transitions/cross-fade.html">
-	<link rel="import" href="components/core-animated-pages/transitions/slide-down.html">
-	<link rel="import" href="components/core-animated-pages/transitions/slide-up.html">
-	<link rel="import" href="components/core-animated-pages/transitions/tile-cascade.html">
+	<link rel="import" href="bower_components/core-animated-pages/core-animated-pages.html">
+	<link rel="import" href="bower_components/core-animated-pages/transitions/hero-transition.html">
+	<link rel="import" href="bower_components/core-animated-pages/transitions/cross-fade.html">
+	<link rel="import" href="bower_components/core-animated-pages/transitions/slide-down.html">
+	<link rel="import" href="bower_components/core-animated-pages/transitions/slide-up.html">
+	<link rel="import" href="bower_components/core-animated-pages/transitions/tile-cascade.html">
 
-	<link rel="import" href="components/gde-badge/gde-badge.html">
+	<link rel="import" href="elements/gde-badge/gde-badge.html">
 	<!-- ----------------------------------------------------------------------	-->
 	<!-- **********************************************************************	-->
 	<!--				Custom CSS					-->
@@ -78,27 +74,33 @@
 			</core-toolbar	header>
 			<core-menu	nav	ng-controller="menuCtrl">
 				<core-item class="menuButtonZone">
-					<paper-button	raisedButton	label="Googlers access"		class="colored red"			ng-click="showGeneralStatisticsForGooglers()"	id="generalStatisticsForGooglers">
+					<paper-button	raised class="colored red"			ng-click="showGeneralStatisticsForGooglers()"	id="generalStatisticsForGooglers">
+					  Googlers access
 					</paper-button>
 				</core-item>
 				<core-item class="menuButtonZone">
-					<paper-button	raisedButton	label="GDE Avatar Builder"	class="colored red"			onclick="toggleDialog('GDEAvatarBuilder')"		id="gdeAvatarBuilder">
+					<paper-button	raised class="colored red"			onclick="toggleDialog('GDEAvatarBuilder')"		id="gdeAvatarBuilder">
+					  GDE Avatar Builder
 					</paper-button>
 				</core-item>
 				<core-item class="menuButtonZone">
-					<paper-button	raisedButton	label="GDE access"		class="colored blue"		ng-click="showGdeStatistics()"					id="gdeStatistics">
+					<paper-button	raised class="colored blue"		ng-click="showGdeStatistics()"					id="gdeStatistics">
+					  GDE access
 					</paper-button>
 				</core-item>
 				<core-item class="menuButtonZone">
-					<paper-button	raisedButton	label="How is it used?"		class="colored green"		onclick="toggleDialog('HowItsUsed')">
+					<paper-button	raised class="colored green"		onclick="toggleDialog('HowItsUsed')">
+					  How is it used?
 					</paper-button>
 				</core-item>
 				<core-item class="menuButtonZone">
-					<paper-button	raisedButton	label="How does it works?"		class="colored yellow"		onclick="toggleDialog('HowItWorks')">
+					<paper-button	raised class="colored yellow"		onclick="toggleDialog('HowItWorks')">
+					  How does it works?
 					</paper-button>
 				</core-item>
 				<core-item class="menuButtonZone">
-					<paper-button	raisedButton	label="Who are the GDEs?"	class="colored deepPurple"	onclick="toggleDialog('WhoAreTheGDEs')">
+					<paper-button	raised class="colored deepPurple"	onclick="toggleDialog('WhoAreTheGDEs')">
+					  Who are the GDEs?
 					</paper-button>
 				</core-item>
 				<div	class="gplus">
@@ -140,15 +142,23 @@
 			</paper-toast>
 			<paper-dialog	id="Googler"			transition="paper-dialog-transition-center"	ng-controller="menuCtrl">
 				<p>
-					<paper-button	raisedButton	affirmative	label="General Statistics"	ng-click="showGeneralStatisticsForGooglers()"></paper-button>
+					<paper-button	raised	affirmative		ng-click="showGeneralStatisticsForGooglers()">
+					  General Statistics
+					</paper-button>
 				</p>
-				<paper-button	label="close"	icon="close" dismissive ></paper-button>
+				<paper-button		icon="close" dismissive >
+				  Close
+				</paper-button>
 			</paper-dialog>
 			<paper-dialog	id="GDE"				transition="paper-dialog-transition-center"	ng-controller="menuCtrl">
 				<p>
-					<paper-button	raisedButton	affirmative	label="My Statistics"		ng-click="showGdeStatistics()"></paper-button>
+					<paper-button	raised	affirmative			ng-click="showGdeStatistics()">
+					  My Statistics
+					</paper-button>
 				</p>
-				<paper-button	label="close"	icon="close" dismissive ></paper-button>
+				<paper-button	icon="close" dismissive >
+				  Close
+				</paper-button>
 			</paper-dialog>
 			<paper-dialog	id="HowItsUsed"			transition="paper-dialog-transition-center">
 				<div>
@@ -193,20 +203,26 @@
 					  </tr>
 					</table>
 				</div>
-				<paper-button	label="close"	icon="close" dismissive ></paper-button>
+				<paper-button		icon="close" dismissive >
+				  Close
+				</paper-button>
 			</paper-dialog>
 			<paper-dialog	id="HowItWorks"			transition="paper-dialog-transition-center">
 				<h1> Soon!</h1>
-				<paper-button	label="close"	icon="close" dismissive ></paper-button>
+				<paper-button		icon="close" dismissive >
+				  Close
+				</paper-button>
 			</paper-dialog>
 			<paper-dialog	id="WhoAreTheGDEs"		transition="paper-dialog-transition-center">
 					<div>
 						<h1>Who are the Google Developer Experts?</h1>
 						<p>The Google Developer Experts (GDE) title recognizes the <strong>outstanding developers who exhibit great expertise in one or more Google technologies and share it with the developer community</strong>.</p>
-						<p>GDEs are gurus, mentors and evangelists; they create tutorials, code samples, and write books and blogs; they publish videos, drive community projects, and present at events large and small. These independent developers bring their real-world experience and knowledge working with Google technologies to developer communities worldwide.</p>
+						<p>GDEs are gurus, mentors and evangelists; they create tutorials, code samples, and write books and blogs; they publish videos, drive community projects, and present at bower_bower_components/s large and small. These independent developers bring their real-world experience and knowledge working with Google technologies to developer communities worldwide.</p>
 						<p><a href="https://developers.google.com/experts/" target="_blank">More infos ...</a></p>
 					</div>
-				<paper-button	label="close"	icon="close" dismissive ></paper-button>
+				<paper-button		icon="close" dismissive >
+				  Close
+				</paper-button>
 			</paper-dialog>
 
 			<paper-dialog	id="GDEAvatarBuilder"		transition="paper-dialog-transition-center">
@@ -221,7 +237,9 @@
 
 			    <gde-badge  userid="" apikey="AIzaSyA00Bh_4YQx34Zc5z_JIlqYQJjNCr2ihV4" text="GDE"></gde-badge>
 
-					<paper-button	label="close"	icon="close" dismissive ></paper-button>
+					<paper-button		icon="close" dismissive >
+				  Close
+				</paper-button>
 				</div>
 			</paper-dialog>
 	<!--	---------------------------------------------------------------------	-->
