@@ -37,3 +37,9 @@ indexes:
   properties:
   - name: gplus_id
   - name: total_impact
+
+- kind: ActivityRecord
+  properties:
+  - name: gplus_id
+  - name: total_impact
+    direction: desc

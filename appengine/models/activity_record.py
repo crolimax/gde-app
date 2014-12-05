@@ -125,7 +125,7 @@ class ActivityRecord(EndpointsModel):
 
         impact = 1 + math.log10(social_impact) + math.log10(meta_impact)
 
-        logging.info('social_impact %s meta_impact %s impact %s', social_impact, meta_impact, impact)
+        # logging.info('social_impact %s meta_impact %s impact %s', social_impact, meta_impact, impact)
 
         return float(impact)
 

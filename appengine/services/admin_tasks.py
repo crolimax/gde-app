@@ -14,7 +14,7 @@ class TaskCalcImpact(webapp2.RequestHandler):
 
     """Force calculate of total_impact with a put()."""
 
-    def post(self):
+    def get(self):
         """."""
         logging.info('tasks/calc_impact')
 
