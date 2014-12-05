@@ -35,6 +35,11 @@ indexes:
 
 - kind: ActivityRecord
   properties:
+  - name: gplus_id
   - name: total_impact
-  - name: date_created
+
+- kind: ActivityRecord
+  properties:
+  - name: gplus_id
+  - name: total_impact
     direction: desc

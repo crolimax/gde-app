@@ -1,13 +1,24 @@
 cron:
 - description: daily new_gplus
   url: /crons/new_gplus
-  #schedule: 26 of october 18:00
-  schedule: every day 00:30
+  schedule: 26 of october 18:00
+  #schedule: every day 00:30
 
 - description: weekly upd_gplus
   url: /crons/upd_gplus
-  #schedule: 26 of october 18:10
-  schedule: every wed 00:30
+  schedule: 26 of october 18:10
+  #schedule: every wed 01:30
+
+- description: ad-hoc calc_impact
+  url: /tasks/calc_impact
+  schedule: 5 of december 07:56
+
+- description: daily backup
+  url: /_ah/datastore_admin/backup.create?kind=Account&kind=ActivityPost&kind=ActivityRecord
+  target: ah-builtin-python-bundle
+  schedule: 3 of december 17:00
+  #schedule every monday 02:30
+
 
 # - description: weekly upd_blogger
 #   url: /crons/upd_blogger

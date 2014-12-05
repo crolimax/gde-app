@@ -1,7 +1,7 @@
 # LIVE
-application: omega-keep-406
+#application: omega-keep-406
 # STAGE
-#application: elite-firefly-737
+application: elite-firefly-737
 version: 3
 runtime: python27
 api_version: 1
