@@ -223,32 +223,32 @@ GdeTrackingApp.run(function ($rootScope)
 {
   $rootScope.is_backend_ready=false;
 
-	$rootScope.utils =
-	{
-		'activityFromApi'			: function(apiData)
-		{
-			var activity = {};
-			activity.gde_name		= apiData.gde_name;
-			activity.title			= apiData.activity_title;
-			activity.url			= apiData.activity_link;
-			activity.gplus_id		= apiData.gplus_id;
-			activity.resharers		= parseInt(apiData.resharers	|| 0, 10);
-			activity.comments		= parseInt(apiData.comments		|| 0, 10);
-			activity.activity_id	= apiData.id;
-			activity.plus_oners		= parseInt(apiData.plus_oners	|| 0, 10);
-			activity.date			= $rootScope.utils.dateToCommonString(new Date(apiData.post_date));
-			activity.id				= apiData.id;
-			activity.product_group	= apiData.product_groups;
-			activity.activity_type	= apiData.activity_types;
-			//Activity Types as string for table ordering
-			var toRet = '';
-			if (activity.activity_type !=null && activity.activity_type.length>0){
-			    activity.activity_type.forEach(function(item){
-	  		    if(toRet.length>0){
-	  		      toRet+=',';
-	  		    }
-	  		    toRet+=item;
-	  		  });
+  $rootScope.utils =
+  {
+    'activityFromApi'			: function(apiData)
+    {
+      var activity = {};
+      activity.gde_name		= apiData.gde_name;
+      activity.title			= apiData.activity_title;
+      activity.url			= apiData.activity_link;
+      activity.gplus_id		= apiData.gplus_id;
+      activity.resharers		= parseInt(apiData.resharers	|| 0, 10);
+      activity.comments		= parseInt(apiData.comments		|| 0, 10);
+      activity.activity_id	= apiData.id;
+      activity.plus_oners		= parseInt(apiData.plus_oners	|| 0, 10);
+      activity.date			= $rootScope.utils.dateToCommonString(new Date(apiData.post_date));
+      activity.id				= apiData.id;
+      activity.product_group	= apiData.product_groups;
+      activity.activity_type	= apiData.activity_types;
+      //Activity Types as string for table ordering
+      var toRet = '';
+      if (activity.activity_type !=null && activity.activity_type.length>0){
+        activity.activity_type.forEach(function(item){
+          if(toRet.length>0){
+            toRet+=',';
+          }
+          toRet+=item;
+        });
 			}
 			activity.activity_types_str = toRet;
 			activity.total_impact	= apiData.total_impact;
