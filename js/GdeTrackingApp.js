@@ -251,7 +251,7 @@ GdeTrackingApp.run(function ($rootScope)
         });
 			}
 			activity.activity_types_str = toRet;
-			activity.total_impact	= apiData.total_impact;
+			activity.total_impact	= apiData.total_impact.toFixed(2);//Use to fixed instead of round(x*100)/100 to avoid float strage behavior
 
 			//console.log(activity);
 			return activity;
