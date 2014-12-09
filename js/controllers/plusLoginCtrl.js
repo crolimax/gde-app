@@ -53,8 +53,8 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 	};
 
 	$scope.$on('event:google-plus-signin-success', function (event, authResult)
-	{																				// User successfully authorized the G+ App!
-//		console.log(event);
+	{	// User successfully authorized the G+ App!
+    //console.log(event);
 		$('.signinButton')	.css('display','none');
 		$('.signout')		.css('display','block');
 
@@ -74,7 +74,7 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 				$scope.userImageUrl		= (resp.image.url).replace("=50", "=90");
 				$scope.userEmails		= resp.emails;
 				$scope.id				= resp.id;
-//				console.log('User Id:' + resp.id);
+        //console.log('User Id:' + resp.id);
 
 			  for (var i=0;i<$scope.userEmails.length;i++)
 				{
@@ -86,6 +86,8 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 						$('#generalStatisticsForGooglers')	.css('display','block');
 						$rootScope.usrId		= resp.id; //User authorized, save the Id in the rootScope
 					}
+					console.log('Logged userId:' + resp.id);
+					console.log('Logged email:' + $scope.userEmails[i].value);
 
 				}
 
@@ -97,7 +99,6 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 
 				if($rootScope.is_backend_ready){
 				  $scope.getUserAccount(resp.id);
-
 				}
 
 			});
@@ -106,7 +107,7 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 	$scope.$on('event:google-plus-signin-failure', function (event, authResult)
 	{																					// User has not authorized the G+ App!
 		$('.signinButton')	.css('display','block');
-//		$('.signout')		.css('display','none');
+    //$('.signout')		.css('display','none');
     if ($('.userName').text!= '')
     {
       alert("There was an Error with Oauth");
