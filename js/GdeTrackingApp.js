@@ -251,7 +251,7 @@ GdeTrackingApp.run(function ($rootScope)
         });
 			}
 			activity.activity_types_str = toRet;
-			activity.total_impact	= apiData.total_impact.toFixed(2);//Use to fixed instead of round(x*100)/100 to avoid float strage behavior
+			activity.total_impact	= parseFloat(apiData.total_impact	|| 0).toFixed(2);//Use to fixed instead of round(x*100)/100 to avoid float strage behavior
 
 			//console.log(activity);
 			return activity;
@@ -261,7 +261,7 @@ GdeTrackingApp.run(function ($rootScope)
 			dataset.totalPlus1s		= (dataset.totalPlus1s		|| 0) + parseInt(apiData.plus_oners	|| 0, 10);
 			dataset.totalResharers	= (dataset.totalResharers	|| 0) + parseInt(apiData.resharers	|| 0, 10);
 			dataset.totalComments	= (dataset.totalComments	|| 0) + parseInt(apiData.comments	|| 0, 10);
-			dataset.total_impact	= (dataset.total_impact		|| 0) + parseInt(apiData.total_impact	|| 0, 10);
+			dataset.total_impact	= parseFloat((dataset.total_impact		|| 0) + (apiData.total_impact	|| 0)).toFixed(2);
 		},
 		'addMetricColumns'			: function(chartData)
 		{
