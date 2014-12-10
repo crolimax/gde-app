@@ -43,7 +43,7 @@ function onGapiClientLoad(){
 // =====================================================================================================
 function toggleDialog(id)
 {
-	var dialog = document.querySelector('paper-dialog[id=' + id + ']');
+	var dialog = document.querySelector('[id=' + id + ']');
 	dialog.toggle();
 }
 document.addEventListener('polymer-ready', function()
