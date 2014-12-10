@@ -61,24 +61,24 @@ paper-button {
 	height				: 5em;
 	line-height			: 4.25em;
 }
-paper-button[raisedButton].colored	{
+paper-button.colored	{
 	fill				: #fafafa;
 	color				: #fafafa;
 	text-shadow			: 0 0 0.5px #fafafa;
 }
-paper-button[raisedButton].colored.red		{
+paper-button.colored.red		{
 	background			: #e84e40;
 }
-paper-button[raisedButton].colored.blue		{
+paper-button.colored.blue		{
 	background			: #5677fc;
 }
-paper-button[raisedButton].colored.green		{
+paper-button.colored.green		{
 	background			: #7cb342;
 }
-paper-button[raisedButton].colored.yellow		{
+paper-button.colored.yellow		{
 	background			: #f9a825;
 }
-paper-button[raisedButton].colored.deepPurple	{
+paper-button.colored.deepPurple	{
 	background			: #673ab7;
 }
 paper-toast {
