@@ -41,6 +41,7 @@
 	<link rel="import" href="bower_components/paper-fab/paper-fab.html" >
 	<link rel="import" href="bower_components/paper-shadow/paper-shadow.html" >
 	<link rel="import" href="bower_components/paper-dialog/paper-dialog.html" >
+	<link rel="import" href="bower_components/paper-dialog/paper-action-dialog.html" >
 	<link rel="import" href="bower_components/paper-toast/paper-toast.html">
 	<link rel="import" href="bower_components/paper-input/paper-input.html">
 	<link rel="import" href="bower_components/paper-checkbox/paper-checkbox.html">
@@ -160,7 +161,7 @@
 				  Close
 				</paper-button>
 			</paper-dialog>
-			<paper-dialog	id="HowItsUsed"			transition="paper-dialog-transition-center">
+			<paper-action-dialog id="HowItsUsed" transition="paper-dialog-transition-center">
 				<div>
 					<h1>How to use</h1>
 					<p>
@@ -206,14 +207,14 @@
 				<paper-button		icon="close" dismissive >
 				  Close
 				</paper-button>
-			</paper-dialog>
-			<paper-dialog	id="HowItWorks"			transition="paper-dialog-transition-center">
+			</paper-action-dialog>
+			<paper-action-dialog	id="HowItWorks"			transition="paper-dialog-transition-center">
 				<h1> Soon!</h1>
 				<paper-button		icon="close" dismissive >
 				  Close
 				</paper-button>
-			</paper-dialog>
-			<paper-dialog	id="WhoAreTheGDEs"		transition="paper-dialog-transition-center">
+			</paper-action-dialog>
+			<paper-action-dialog	id="WhoAreTheGDEs"		transition="paper-dialog-transition-center">
 					<div>
 						<h1>Who are the Google Developer Experts?</h1>
 						<p>The Google Developer Experts (GDE) title recognizes the <strong>outstanding developers who exhibit great expertise in one or more Google technologies and share it with the developer community</strong>.</p>
@@ -223,9 +224,9 @@
 				<paper-button		icon="close" dismissive >
 				  Close
 				</paper-button>
-			</paper-dialog>
+			</paper-action-dialog>
 
-			<paper-dialog	id="GDEAvatarBuilder"		transition="paper-dialog-transition-center">
+			<paper-action-dialog	id="GDEAvatarBuilder"		transition="paper-dialog-transition-center">
 				<div>
 					<h1>GDE Avatar Builder</h1>
 					<p>Fill the form below with your G+ id (eg: +SandroPaganotti) to get your GDE Avatar:</p>
@@ -241,7 +242,7 @@
 				  Close
 				</paper-button>
 				</div>
-			</paper-dialog>
+			</paper-action-dialog>
 	<!--	---------------------------------------------------------------------	-->
 		</core-header-panel>
 	</core-drawer-panel>
