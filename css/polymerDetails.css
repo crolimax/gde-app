@@ -462,30 +462,30 @@ select:hover
 {
     0%
 	{
-		right			: 5em;
+		right			: 3em;
 	}
 	70%
 	{
-		right			: 5em;
+		right			: 3em;
 	}
 	100%
 	{
-		right			: 5em;
+		right			: 3em;
 	}
 }
 @keyframes fabAppears
 {
     0%
 	{
-		right			: 5em;
+		right			: 3em;
 	}
 	70%
 	{
-		right			: 5em;
+		right			: 3em;
 	}
 	100%
 	{
-		right			: 5em;
+		right			: 3em;
 	}
 }
 
@@ -496,12 +496,12 @@ select:hover
 {
   0%
 	{
-	  right			: 5em;
+	  right			: 3em;
 		transform		: rotate(0deg);
 	}
 	100%
 	{
-	  right			: 5em;
+	  right			: 3em;
 		transform		: rotate(180deg);
 	}
 }
@@ -509,12 +509,12 @@ select:hover
 {
   0%
 	{
-	  right			: 5em;
+	  right			: 3em;
 		transform		: rotate(0deg);
 	}
 	100%
 	{
-	  right			: 5em;
+	  right			: 3em;
 		transform		: rotate(180deg);
 	}
 }
@@ -562,12 +562,12 @@ select:hover
 {
   100%
 	{
-	  right			: 5em;
+	  right			: 3em;
 		transform		: rotate(0deg);
 	}
 	0%
 	{
-	  right			: 5em;
+	  right			: 3em;
 		transform		: rotate(180deg);
 	}
 }
@@ -575,12 +575,12 @@ select:hover
 {
   100%
 	{
-	  right			: 5em;
+	  right			: 3em;
 		transform		: rotate(0deg);
 	}
 	0%
 	{
-	  right			: 5em;
+	  right			: 3em;
 		transform		: rotate(180deg);
 	}
 }
