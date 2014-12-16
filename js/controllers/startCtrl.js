@@ -126,6 +126,9 @@ GdeTrackingApp.controller("startCtrl",							function($rootScope, $scope,	$http,
 					$('.nav-fab')	.css('animation'			, 'fabAppears	2s	linear	1	both');	//	W3C	CSS
 					$('.mapArea')	.css('-webkit-animation'	, 'mapAppears	2s	linear	1	both');	//	-webkit- CSS
 					$('.mapArea')	.css('animation'			, 'mapAppears	2s	linear	1	both');	//	W3C	CSS
+
+					//Hide the splash screen
+					$('#splash_screen').hide();
 					$scope.$apply();
 				}
 			}
