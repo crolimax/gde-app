@@ -108,8 +108,9 @@ paper-radio-button::shadow #ink {
 /*								AngularJS Directives									*/
 /*	*********************************************************************************	*/
 google-map	{
-	display				: inline-block;
+	display			: inline-block;
 	width				: 100%;
+	min-height  : 80%;
 }
 marker	{
 	box-shadow:			1px 1px 50px #aaa, inset -1px -1px 50px #ccc;
@@ -220,12 +221,11 @@ select:hover
 .appLogo	{
 	position			: absolute;
 	left				: 0;
-	bottom				: 20px;
 	margin				: 1em;
 	padding				: 1em;
 	text-align			: right;
 	width				: 300px;
-	margin-top			: -7em;
+	margin-top			: -10em;
 	border-radius		: 0.5em;
 	background-color	: rgba(255, 255, 255, .7);
 	box-shadow			: 1px 1px 4px #999, inset 1px 1px 3px #aaa;
@@ -396,30 +396,10 @@ select:hover
     box-orient: horizontal;
     box-flex:1;
 }
-.countryButtons
+
+.countryButtons	paper-button
 {
-	display		: -webkit-box;
-	display		: -webkit-flex;
-	display		: -ms-flexbox;
-	display		: flex;
-	-webkit-box-orient		: horizontal;
-	-webkit-box-direction	: normal;
-	-webkit-flex-direction	: row;
-		-ms-flex-direction	: row;
-			flex-direction	: row;
-	-webkit-flex-wrap		: wrap-reverse;
-		-ms-flex-wrap		: wrap-reverse;
-			flex-wrap		: wrap-reverse;
-	position	: absolute;
-	left		: 0;
-	bottom		: -45%;
-}
-.countryButtons{
-}
-.countryButtons	paper-icon-button
-{
-	margin 			: 1em;
-	padding			: 0.5em;
+	background  : #dfdfdf;
 }
 /*	*********************************************************************************	*/
 /*								CSS3 Animation Keyframes								*/
