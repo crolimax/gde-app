@@ -3,10 +3,6 @@
 /*		Author: GDE tracking app team.													*/
 /*		Polymer & CSS3 -Webkit/W3C- Layout												*/
 /*	*********************************************************************************	*/
-@font-face {
-	font-family: 'roboto';
-	src: url(components/font-roboto/Roboto-Bold.ttf);
-}
 html,body {
 	height				: 95%;
 	font-family			: 'roboto' !important;
@@ -87,10 +83,10 @@ paper-toast {
 	width				: 20%;
 }
 .nav-fab	{
-	position			: fixed;
-	left				: 120%;
-	bottom				: 5em;
-	z-index				: 1;
+	position      : fixed;
+	right         : 5em;
+	bottom        : 5em;
+	z-index       : 1;
 }
 
 paper-input{
