@@ -732,17 +732,19 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     var tmp = $.grep($scope.userActivities,function(item){
       return (item.selectedForMerge != null && item.selectedForMerge==true)
     });
-
+    $("#mergeButton").removeClass();
     $("#mergeButton").attr("disabled",true); //Disable the button
     if (currVal==null || currVal == false){
       if (tmp.length>0)//The event is rised before the data is changed so we have to check that
       {//Enable the merge button
         $("#mergeButton").attr("disabled",false);
+        $("#mergeButton").addClass("colored blue");
       }
     }else{
       if(tmp.length>2){//3 or more selected, one less selecting, still more (or equal) then 2
         //Enable the merge button
         $("#mergeButton").attr("disabled",false);
+        $("#mergeButton").addClass("colored blue");
       }
     }
 
