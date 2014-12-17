@@ -701,6 +701,8 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 		new google.visualization.Dashboard(document.getElementById('generalStatisticsByRegion'))
 		.bind([region_Selector,region_ActivitiesSlider,region_ResharesSlider,region_Plus1sSlider,region_CommentsSlider], [regionTableChart,regionBarChart])
 		.draw(activityByRegion_data);
+
+		loadingToast.opened=false;
 	}
 
 	var loadingToast	= document.querySelector('paper-toast[id="loading"]');	// Called to show loading sign

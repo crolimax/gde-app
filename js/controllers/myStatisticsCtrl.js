@@ -9,7 +9,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
   }
 
 	var loadingToast	= document.querySelector('paper-toast[id="loading"]');	// Show loading sign
-	loadingToast		.show();
+	loadingToast.show();
 
 	$('paper-fab')		.css('-webkit-animation',	'hideFab	1s	linear	1	both');	//	-webkit- CSS3 animation
 	$('paper-fab')		.css('animation',			'hideFab	1s	linear	1	both');	//	W3C	CSS3 animation
@@ -182,6 +182,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
           {
             $scope.getActivitiesFromGAE(response.nextPageToken,gplusId,minDate,maxDate,order);	// Get the next page
           } else{// Done
+            loadingToast.opened=false;
             //console.log($scope.data.items);
             if ($rootScope.usrId)// Check if the user it's an authorized user.
             {

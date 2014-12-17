@@ -87,6 +87,7 @@ GdeTrackingApp.controller("startCtrl",							function($rootScope, $scope,	$http,
 				$scope.getGdeList(response.nextPageToken);	// Get the next page
 			  } else
 			  {
+			    loadingToast.opened=false;
 					$scope.gdeNumber	= $scope.gdeList.length;
 					for (var i=0;i<$scope.gdeNumber;i++)
 					{
