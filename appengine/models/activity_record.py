@@ -158,7 +158,7 @@ class ActivityRecord(EndpointsModel):
 
     def IncludeDeletedSet(self, value):
         """
-        If value is true all timelineItems will be returned.
+        If value is true all activity records will be returned.
         Otherwise a filter for non-deleted items is necessary for the query.
         """
         if value is None or value is False:
