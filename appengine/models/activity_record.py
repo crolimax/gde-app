@@ -52,7 +52,8 @@ class ActivityRecord(EndpointsModel):
                               'date_updated', 'post_date', 'activity_types',
                               'product_groups', 'activity_link', 'gplus_posts',
                               'activity_title', 'plus_oners', 'resharers',
-                              'comments', 'metadata', 'total_impact', 'api_key')
+                              'comments', 'metadata', 'total_impact', 'api_key',
+                              'deleted')
 
     _api_key = None
 
@@ -80,6 +81,8 @@ class ActivityRecord(EndpointsModel):
 
     #  activity type metadata
     metadata = ndb.StructuredProperty(ActivityMetaData, repeated=True)
+
+    deleted = ndb.BooleanProperty()
 
     def ApiKeySet(self, value):
         self._api_key = value
@@ -153,6 +156,24 @@ class ActivityRecord(EndpointsModel):
         """
         return None
 
+    def IncludeDeletedSet(self, value):
+        """
+        If value is true all timelineItems will be returned.
+        Otherwise a filter for non-deleted items is necessary for the query.
+        """
+        if value is None or value is False:
+            self._endpoints_query_info._filters.add(
+                ActivityRecord.deleted == False
+            )
+
+    @EndpointsAliasProperty(setter=IncludeDeletedSet, property_type=messages.BooleanField, default=False)
+    def includeDeleted(self):
+        """
+        includedDeleted is only used as parameter in query_methods
+        so there should never be a reason to actually retrieve the value
+        """
+        return None
+
     def calculate_impact(self):
         self.plus_oners = 0
         self.resharers = 0
@@ -194,7 +215,8 @@ def create_activity_record(activity_post):
     activity_record = ActivityRecord(gplus_id=activity_post.gplus_id,
                                      post_date=date_format,
                                      activity_link=activity_link,
-                                     activity_title=activity_post.title)
+                                     activity_title=activity_post.title,
+                                     deleted=False)
     activity_record.put()
     logging.info('create new activity record')
     return activity_record

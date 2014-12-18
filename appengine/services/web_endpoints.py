@@ -35,6 +35,9 @@ class ActivityRecordService(remote.Service):
         if not check_auth(activity_record.gplus_id, activity_record.api_key):
             raise endpoints.UnauthorizedException('Only GDEs and admins may enter or change data.')
 
+        if activity_record.deleted is None:
+            activity_record.deleted = False
+
         activity_record.put()
         return activity_record
 
@@ -47,6 +50,9 @@ class ActivityRecordService(remote.Service):
         if not check_auth(activity_record.gplus_id, activity_record.api_key):
             raise endpoints.UnauthorizedException('Only GDEs and admins may enter or change data.')
 
+        if activity_record.deleted is None:
+            activity_record.deleted = False
+
         activity_record.put()
         return activity_record
 
@@ -58,6 +64,9 @@ class ActivityRecordService(remote.Service):
 
         if not check_auth(activity_record.gplus_id, activity_record.api_key):
             raise endpoints.UnauthorizedException('Only GDEs and admins may enter or change data.')
+
+        if activity_record.deleted is None:
+            activity_record.deleted = False
 
         activity_record.put()
         return activity_record
@@ -72,11 +81,13 @@ class ActivityRecordService(remote.Service):
         if not check_auth(activity_record.gplus_id, activity_record.api_key):
             raise endpoints.UnauthorizedException('Only GDEs and admins may enter or change data.')
 
-        activity_record.key.delete()
+        activity_record.deleted = True
+        activity_record.put()
+
         return activity_record
 
     @ActivityRecord.query_method(query_fields=('limit', 'order', 'pageToken', 'gplus_id',
-                                               'minDate', 'maxDate'),
+                                               'minDate', 'maxDate', 'deleted', 'includeDeleted'),
                                  path='activityRecord', name='list')
     def ActivityRecordList(self, query):
         return query
