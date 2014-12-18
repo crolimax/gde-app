@@ -81,12 +81,12 @@
 			</th>
 		</tr>
 		<tr ng-repeat="activity in userActivities |orderBy:sort.column:sort.descending">
-		  <td>
-		    <paper-checkbox ng-model="activity.selectedForMerge" ng-click="checkMergeEnable(activity.selectedForMerge)"></paper-checkbox>
-		  </td>
-		  <td>
-		    <paper-icon-button icon="create" ng-click="editGDEActivity(activity.id)"></paper-icon-button>
-		  </td>
+      <td>
+        <paper-checkbox ng-model="activity.selectedForMerge" ng-click="checkMergeEnable(activity.selectedForMerge)"></paper-checkbox>
+      </td>
+      <td>
+        <paper-icon-button icon="create" ng-click="editGDEActivity(activity.id)"></paper-icon-button>
+      </td>
 			<td>
 				<a href={{activity.url}} target="_blank">{{activity.title}}</a>
 			</td>
