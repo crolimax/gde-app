@@ -424,6 +424,23 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     toggleDialog('selectProductGroups');
   };
 
+  $scope.deleteGDEActivity = function(activityId){
+    //Remove the AR from the backend
+    $scope.gdeTrackingAPI.activity_record.delete({id:activityId}).execute(
+      function(resp){
+        if (resp.code){
+          console.log('gdeTrackingAPI.activity_record.delete({id:'+activityId+'}) responded with Response Code: '+resp.code + ' - '+ resp.message);
+          console.log(JSON.stringify(arItem));
+          alert(resp.message);
+        }else{
+          //AR Deleted, remove from the table
+          removeARfromList(resp.id);
+          //Apply and refresh
+          $scope.$apply();
+        }
+    });
+  }
+
 	$scope.editGDEActivity = function(activityId){
     //console.log(activityId)
     //Set the current Editing Activity

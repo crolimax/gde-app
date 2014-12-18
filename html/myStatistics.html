@@ -79,6 +79,8 @@
 			<th style="width:3em;cursor: pointer;" ng-click="changeSorting('date')" >
 				Date
 			</th>
+			<th>
+			</th>
 		</tr>
 		<tr ng-repeat="activity in userActivities |orderBy:sort.column:sort.descending">
       <td>
@@ -108,6 +110,9 @@
 			<td>
 				{{activity.date}}
 			</td>
+			<td>
+        <paper-icon-button icon="delete" ng-click="deleteGDEActivity(activity.id)"></paper-icon-button>
+      </td>
 		</tr>
 	</table>
 	<paper-shadow z="1"></paper-shadow>
