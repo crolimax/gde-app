@@ -10,11 +10,6 @@ than converting between ProtoRPC messages and entities and then back again.
 
 import functools
 import itertools
-try:
-  import json
-except ImportError:
-  import simplejson as json
-import pickle
 import re
 
 import endpoints
@@ -98,10 +93,6 @@ def ToValue(prop, value):
     return value.ToMessage()
   elif hasattr(prop, 'ToValue') and callable(prop.ToValue):
     return prop.ToValue(value)
-  elif isinstance(prop, ndb.JsonProperty):
-    return json.dumps(value)
-  elif isinstance(prop, ndb.PickleProperty):
-    return pickle.dumps(value)
   elif isinstance(prop, ndb.UserProperty):
     return utils.UserMessageFromUser(value)
   elif isinstance(prop, ndb.GeoPtProperty):
@@ -146,10 +137,6 @@ def FromValue(prop, value):
 
   if hasattr(prop, 'FromValue') and callable(prop.FromValue):
     return prop.FromValue(value)
-  elif isinstance(prop, ndb.JsonProperty):
-    return json.loads(value)
-  elif isinstance(prop, ndb.PickleProperty):
-    return pickle.loads(value)
   elif isinstance(prop, ndb.UserProperty):
     return utils.UserMessageToUser(value)
   elif isinstance(prop, ndb.GeoPtProperty):
@@ -223,13 +210,10 @@ class _EndpointsQueryInfo(object):
     """Populates filters in query info by using values set on the entity."""
     entity = self._entity
     for prop in entity._properties.itervalues():
-      # The name of the attr on the model/object, may differ from the name
-      # of the NDB property in the datastore
-      attr_name = prop._code_name
-      current_value = getattr(entity, attr_name)
+      current_value = prop._retrieve_value(entity)
 
       if prop._repeated:
-        if current_value != []:
+        if current_value is not None:
           raise ValueError('No queries on repeated values are allowed.')
         continue
 
@@ -455,6 +439,14 @@ class EndpointsMetaModel(ndb.MetaModel):
     """Verifies additional ProtoRPC properties on an NDB model."""
     super(EndpointsMetaModel, cls).__init__(name, bases, classdict)
 
+    # Reset the `_message_fields_schema` to `None` unless it was explicitly
+    # mentioned in the class definition. It's possible for this value to be
+    # set if a superclass had this value set by `_VerifyMessageFieldsSchema`
+    # then this subclass would keep that value, even if that was not the
+    # intended behavior.
+    if '_message_fields_schema' not in classdict:
+      cls._message_fields_schema = None
+
     cls._alias_properties = {}
     cls._proto_models = {}
     cls._proto_collections = {}
@@ -654,6 +646,11 @@ class EndpointsModel(ndb.Model):
 
   __metaclass__ = EndpointsMetaModel
 
+  # Custom properties that can be specified to override this value when
+  # the class is defined. The value for `custom_property_to_proto`
+  # will persist through subclasses while that for `_message_fields_schema`
+  # will only work on the class where it is explicitly mentioned in
+  # the definition.
   _custom_property_to_proto = None
   _message_fields_schema = None
 
@@ -1336,16 +1333,20 @@ class EndpointsModel(ndb.Model):
     if request_fields is not None and request_message is not None:
       raise TypeError('Received both a request message class and a field list '
                       'for creating a request message class.')
-    if request_message is None:
-      path = kwargs.get(PATH)
-      query_fields = []
-      if path is not None:
-        query_fields = re.findall("{(.*?)}", path)
-      if len(query_fields) > 0:
-        kwargs[REQUEST_MESSAGE] = cls.ResourceContainer(
-            message=cls.ProtoModel(fields=request_fields), fields=query_fields)
-      else:
-        kwargs[REQUEST_MESSAGE] = cls.ProtoModel(fields=request_fields)
+
+    proto_message = request_message
+    if proto_message is None:
+      proto_message = cls.ProtoModel(fields=request_fields)
+
+    path = kwargs.get(PATH)
+    query_fields = []
+    if path is not None:
+      query_fields = re.findall("{(.*?)}", path)
+    if len(query_fields) > 0:
+      kwargs[REQUEST_MESSAGE] = cls.ResourceContainer(
+          message=proto_message, fields=query_fields)
+    else:
+      kwargs[REQUEST_MESSAGE] = proto_message
 
     response_message = kwargs.get(RESPONSE_MESSAGE)
     if response_fields is not None and response_message is not None:
