@@ -210,13 +210,9 @@
           <div vertical layout ng-repeat="currentMetadata in metadataArray" style="height:200px">
             <input type="hidden" value="{{currentMetadata.activity_group}}"></input>
             <div horizontal layout>
-              <paper-input floatingLabel type='text' style ="min-width: 300px;"
+              <paper-input flex floatingLabel type='text' style ="min-width: 300px;"
                 label='{{getAGFieldTitle(currentMetadata.activity_group,"title")}}'
                 ng-model='currentMetadata.title'
-                ></paper-input>
-              <paper-input floatingLabel type='text' style ="min-width: 300px;"
-                label='{{getAGFieldTitle(currentMetadata.activity_group,"description")}}'
-                ng-model='currentMetadata.description'
                 ></paper-input>
               <select ng-model="currentMetadata.type"		ng-options="actType for actType in selectedAG.types" required>
                 <option value="">
@@ -224,21 +220,27 @@
                 </option>
               </select>
             </div>
+            <div layout vertical>
+              <textarea rows="10" wrap style="margin-top:30px"
+                placeholder="{{getAGFieldTitle(currentMetadata.activity_group,'description')}}"
+                ng-model="currentMetadata.description">
+              </textarea>
+            </div>
             <div horizontal layout>
-              <paper-input floatingLabel type='url' style ="min-width: 300px;"
+              <paper-input flex floatingLabel type='url' style ="min-width: 300px;"
                 label='{{getAGFieldTitle(currentMetadata.activity_group,"link")}}'
                 ng-model='currentMetadata.link'
                 ></paper-input>
-              <paper-input floatingLabel type='url' style ="min-width: 300px;"
+              <paper-input flex floatingLabel type='url' style ="min-width: 300px;"
                 label='{{getAGFieldTitle(currentMetadata.activity_group,"other_link1")}}'
                 ng-model='currentMetadata.other_link1'
                 ></paper-input>
-              <paper-input floatingLabel type='url' style ="min-width: 300px;"
+              <paper-input flex floatingLabel type='url' style ="min-width: 300px;"
                 label='{{getAGFieldTitle(currentMetadata.activity_group,"other_link2")}}'
                 ng-model='currentMetadata.other_link2'
                 ></paper-input>
             </div>
-            <div horizontal layout>
+            <div horizontal layout style="margin-top:30px">
               <paper-input floatingLabel type='number' style ="min-width: 300px;"
                 label='{{getAGFieldTitle(currentMetadata.activity_group,"impact")}}'
                 ng-model='currentMetadata.impact'
@@ -246,7 +248,7 @@
                 ></paper-input>
             </div>
             <div horizontal layout>
-              <paper-input floatingLabel type='text' style ="min-width: 300px;"
+              <paper-input flex floatingLabel type='text' style ="min-width: 300px;"
                 label='{{getAGFieldTitle(currentMetadata.activity_group,"location")}}'
                 ng-model='currentMetadata.location'
                 ng-if='isUsedInMetadata(currentMetadata.activity_group,"location")'
@@ -256,7 +258,7 @@
                 {{getAGFieldTitle(currentMetadata.activity_group,"google_expensed")}}
                 <paper-checkbox ng-model="currentMetadata.google_expensed"></paper-checkbox>
               </div>
-              <paper-input floatingLabel type='number' style ="min-width: 300px;"
+              <paper-input flex floatingLabel type='number' style ="min-width: 300px;"
                 label='{{getAGFieldTitle(currentMetadata.activity_group,"us_approx_amount")}}'
                 ng-model='currentMetadata.us_approx_amount'
                 ng-if='isUsedInMetadata(currentMetadata.activity_group,"us_approx_amount")'
