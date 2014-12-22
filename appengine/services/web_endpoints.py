@@ -76,7 +76,7 @@ class ActivityRecordService(remote.Service):
     @ActivityRecord.method(request_fields=('id', 'api_key',), response_fields=('id',),
                            path='/activityRecord/trash/{id}',
                            http_method='DELETE', name='trash')
-    def ActivityRecordDelete(self, activity_record):
+    def ActivityRecordTrash(self, activity_record):
         if not activity_record.from_datastore:
             raise endpoints.NotFoundException('ActivityRecord not found.')
 
