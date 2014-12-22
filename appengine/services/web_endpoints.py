@@ -8,6 +8,8 @@ from models import ActivityType
 from models import ProductGroup
 from models import ActivityGroup
 
+from google.appengine.ext import ndb
+
 from .utils import check_auth
 
 _CLIENT_IDs = [
@@ -72,8 +74,8 @@ class ActivityRecordService(remote.Service):
         return activity_record
 
     @ActivityRecord.method(request_fields=('id', 'api_key',), response_fields=('id',),
-                           path='/activityRecord/{id}',
-                           http_method='DELETE', name='delete')
+                           path='/activityRecord/trash/{id}',
+                           http_method='DELETE', name='trash')
     def ActivityRecordDelete(self, activity_record):
         if not activity_record.from_datastore:
             raise endpoints.NotFoundException('ActivityRecord not found.')
@@ -83,6 +85,29 @@ class ActivityRecordService(remote.Service):
 
         activity_record.deleted = True
         activity_record.put()
+
+        return activity_record
+
+    @ActivityRecord.method(request_fields=('id', 'api_key',), response_fields=('id',),
+                           path='/activityRecord/delete/{id}',
+                           http_method='DELETE', name='delete')
+    def ActivityRecordDelete(self, activity_record):
+        if not activity_record.from_datastore:
+            raise endpoints.NotFoundException('ActivityRecord not found.')
+
+        if not check_auth(activity_record.gplus_id, activity_record.api_key):
+            raise endpoints.UnauthorizedException('Only GDEs and admins may enter or change data.')
+
+        # Mark associated Activity Posts as deleted
+        if activity_record.gplus_posts is not None and len(activity_record.gplus_posts) > 0:
+            keys = [ndb.Key(ActivityPost, post_id) for post_id in activity_record.gplus_posts]
+            posts = ndb.get_multi(keys)
+            for post in posts:
+                if post is not None:
+                    post.deleted = True
+                    post.put()
+
+        activity_record.key.delete()
 
         return activity_record
 
