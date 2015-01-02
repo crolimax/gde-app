@@ -15,7 +15,7 @@ core-header-panel {
 	background			: white;
 	overflow			: hidden;
 }
-core-toolbar {
+html /deep/ core-toolbar {
 	color				: #fafafa;
 	text-shadow			: 0 0 0.5px #fafafa;
 	background-color	: #212121;
@@ -43,12 +43,16 @@ core-drawer-panel:not([narrow]) #navicon {
 core-header-panel drawer {
 	width				: 310px;
 }
-paper-action-dialog {
+html /deep/ paper-action-dialog {
 	width				: 80%;
 	min-width			: 430px;
-	min-height			: 30%
+	min-height			: 30%;
+	margin :0px;
 }
-paper-action-dialog.tall{
+html /deep/ paper-action-dialog::shadow #scroller {
+	padding:0px;
+}
+html /deep/ paper-action-dialog.tall{
 	height:90%;
 }
 paper-button {
