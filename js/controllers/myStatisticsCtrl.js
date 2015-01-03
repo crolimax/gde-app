@@ -707,6 +707,11 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
                   });
                 });
                 $scope.originalARToMerge = [];
+
+                //disable the merge button
+                $("#mergeButton").removeClass();
+                $("#mergeButton").attr("disabled",true); //Disable the button
+
                 break;
             }
 
