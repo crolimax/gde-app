@@ -50,11 +50,12 @@ html /deep/ paper-action-dialog {
 	margin :0px;
 }
 html /deep/ paper-action-dialog::shadow #scroller {
-	padding:0px;
+	padding:5px;
 }
 html /deep/ paper-action-dialog.tall{
 	height:90%;
 }
+
 paper-button {
 	margin				: 1em;
 	width				: 13em;
@@ -93,9 +94,10 @@ paper-toast {
 	z-index       : 1;
 }
 
-paper-input{
+html /deep/ paper-input{
   width:auto;
   padding:8px;
+  margin:0px 2px 0px 2px;
 }
 
 paper-checkbox::shadow #ink {
