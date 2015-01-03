@@ -38,7 +38,7 @@
         <paper-button raised class ="colored red" dismissive>
           No
         </paper-button>
-        <paper-button raised class ="colored green" ng-click="mergeSelectedAR()">
+        <paper-button raised class ="colored green" ng-click="mergeSelectedAR($event)">
           Yes
         </paper-button>
       </div>
@@ -53,7 +53,7 @@
       </div>
       <div horizontal layout center-justified>
         <paper-button raised class ="colored red" dismissive>No</paper-button>
-        <paper-button raised class ="colored green" ng-click="saveMergedAR()">Yes</paper-button>
+        <paper-button raised class ="colored green" ng-click="saveMergedAR($event)">Yes</paper-button>
       </div>
     </div>
 
@@ -127,161 +127,152 @@
 	<paper-icon-button icon="arrow-back" label="map"></paper-icon-button>
 </a>
 
-
 <!-- Activity record detail -->
-<paper-action-dialog	id="singleActivity"	class="tall" transition="core-transition-center" autoCloseDisabled="true">
-  <div class="content" fit>
-    <core-scroll-header-panel>
+<paper-action-dialog	id="singleActivity"	transition="core-transition-center">
+  <div>
+    <core-toolbar class="medium" >
+      <div flex>{{editMode}} Activity : {{currentActivity.activity_title}}</div>
+    </core-toolbar>
 
-      <core-toolbar class="medium-tall">
-        <div flex>{{editMode}} Activity : {{currentActivity.activity_title}}</div>
-        <div class ='bottom' style='width:95%' vertical layout end>
-          <div>
-            <paper-fab icon="close" class ="mini" dismissive></paper-fab>
-            <paper-fab id ="fabDone" icon="done" class ="mini" style='background: #5677fc;' ng-click="saveGDEActivity()"></paper-fab>
-          </div>
-        </div>
-      </core-toolbar>
-
-      <div class="content" >
-        <div style="height: 128px;"></div>
-        <paper-input floatingLabel label="Title of the activity" ng-model="currentActivity.activity_title"  style="width:100%;"></paper-input>
-        <br/>
-        <div style="text-align:center">
-          <paper-input floatingLabel label="Activity Date" type="date" ng-model="currPost_dateLocale" ></paper-input>
-          <paper-input floatingLabel label="Date Created" disabled type="date" ng-model="currDate_createdLocale"  ></paper-input>
-          <paper-input floatingLabel label="Date Updated" disabled type="date" ng-model="currDate_updatedLocale"  ></paper-input>
-        </div>
-        <div style="text-align:center" ng-if="currentActivityPosts.length!=0">
-          <paper-input floatingLabel disabled label="+1's" ng-model="currentActivity.plus_oners"  type="number"></paper-input>
-          <paper-input floatingLabel disabled label="Resharers" ng-model="currentActivity.resharers"  type="number" ></paper-input>
-          <paper-input floatingLabel disabled label="Comments" ng-model="currentActivity.comments" type="number"></paper-input>
-        </div>
-        <div style="text-align:center" ng-if="currentActivityPosts.length==0">
-          <paper-input floatingLabel label="+1's" ng-model="currentActivity.plus_oners"  type="number"></paper-input>
-          <paper-input floatingLabel label="Resharers" ng-model="currentActivity.resharers"  type="number" ></paper-input>
-          <paper-input floatingLabel label="Comments" ng-model="currentActivity.comments" type="number"></paper-input>
-        </div>
-        <h4>Links</h4>
-        <a href={{currentActivity.activity_link}} style="text-align:left" target="_blank" ng-if="currActLink">Activity Link</a>
+    <div style="margin:0px 5px 0px 5px" layout vertical>
+      <paper-input floatingLabel label="Title of the activity" ng-model="currentActivity.activity_title"  self-stretch></paper-input>
+      <div layout horizontal center-justified wrap>
+        <paper-input floatingLabel label="Activity Date" type="date" ng-model="currPost_dateLocale" ></paper-input>
+        <paper-input floatingLabel label="Date Created" disabled type="date" ng-model="currDate_createdLocale"  ></paper-input>
+        <paper-input floatingLabel label="Date Updated" disabled type="date" ng-model="currDate_updatedLocale"  ></paper-input>
+      </div>
+      <div layout horizontal center-justified wrap ng-if="currentActivityPosts.length!=0">
+        <paper-input floatingLabel disabled label="+1's" ng-model="currentActivity.plus_oners"  type="number"></paper-input>
+        <paper-input floatingLabel disabled label="Resharers" ng-model="currentActivity.resharers"  type="number" ></paper-input>
+        <paper-input floatingLabel disabled label="Comments" ng-model="currentActivity.comments" type="number"></paper-input>
+      </div>
+      <div layout horizontal center-justified wrap ng-if="currentActivityPosts.length==0">
+        <paper-input floatingLabel label="+1's" ng-model="currentActivity.plus_oners"  type="number"></paper-input>
+        <paper-input floatingLabel label="Resharers" ng-model="currentActivity.resharers"  type="number" ></paper-input>
+        <paper-input floatingLabel label="Comments" ng-model="currentActivity.comments" type="number"></paper-input>
+      </div>
+      <h4>Links</h4>
+      <div ng-if="currActLink" >
+        <a href={{currentActivity.activity_link}} style="text-align:left" target="_blank" >Activity Link</a>
         <paper-icon-button id="editLink" icon="create" ng-click="enableLinkEdit()" ng-if="currActLink"></paper-icon-button>
-        <paper-input floatingLabel label="Activity Link" ng-model="currentActivity.activity_link" ng-if="!currActLink" style="width:100%;"></paper-input>
-        <br/>
-        <a ng-repeat="post in currentActivityPosts" style="float:left;width:10em"
+      </div>
+      <paper-input floatingLabel label="Activity Link" ng-model="currentActivity.activity_link" ng-if="!currActLink" self-stretch></paper-input>
+      <br/>
+      <div layout horizontal wrap>
+        <a ng-repeat="post in currentActivityPosts" style="width:10em"
           href={{post.url}} target="_blank">Original Post</a>
         <br/>
-        <div horizontal layout> <!--Polymer Layout attributes-->
-          <div flex>
-            <h4>Activity Types</h4>
-            <div ng-repeat="actType in currentActivity.activity_types" style="float:left;width:auto">
+      </div>
 
-              <div class="card paper-shadow-top paper-shadow-top-z-1">
-                <div class="card-inner paper-shadow-bottom paper-shadow-bottom-z-1">
-                  <span style="padding:10px;margin:10px">{{actType}}</span>
-                </div>
+      <div horizontal layout> <!--Polymer Layout attributes-->
+        <div flex vertical layout wrap>
+          <h4>Activity Types</h4>
+          <div layout horizontal self-stretch wrap>
+            <div class="card paper-shadow-top paper-shadow-top-z-1" ng-repeat="actType in currentActivity.activity_types">
+              <div class="card-inner paper-shadow-bottom paper-shadow-bottom-z-1">
+                <span style="padding:10px;margin:10px">{{actType}}</span>
               </div>
-
             </div>
-            <br/>
-            <paper-button ng-click="showActivityTypes()">Select</paper-button>
           </div>
-          <div flex>
-            <h4>Products</h4>
-            <div ng-repeat="product in currentActivity.product_groups" style="float:left;width:auto">
-
-              <div class="card paper-shadow-top paper-shadow-top-z-1">
-                <div class="card-inner paper-shadow-bottom paper-shadow-bottom-z-1">
-                  <span style="padding:10px;margin:10px">{{product}}</span>
-                </div>
-              </div>
-
-            </div>
-            <br/>
-            <paper-button ng-click="showProductGroups()">Select</paper-button>
-          </div>
+          <paper-button self-center ng-click="showActivityTypes()">Select</paper-button>
         </div>
-        <br/>
-
-        <h4>Activity Metadata</h4>
-        <div style="height:300px">
-          <div ng-show="metadataArray.length==0">
-              <p>Please select an Activity Type</p>
+        <div flex vertical layout wrap>
+          <h4>Products</h4>
+          <div layout horizontal self-stretch wrap>
+            <div class="card paper-shadow-top paper-shadow-top-z-1"  ng-repeat="product in currentActivity.product_groups" >
+              <div class="card-inner paper-shadow-bottom paper-shadow-bottom-z-1">
+                <span style="padding:10px;margin:10px">{{product}}</span>
+              </div>
+            </div>
           </div>
-          <!--Dynamically Change the metadata fileds by activity_type group -->
-          <paper-tabs id="AGTabs">
-            <paper-tab ng-repeat="ag in currActivityGroups" ng-click="selectAG(ag.tag)">
-                {{ag.tag}}
-            </paper-tab>
-          </paper-tabs>
-          <core-animated-pages id="core_animated_pages" notap transitions="slide-from-right">
+          <paper-button self-center ng-click="showProductGroups()">Select</paper-button>
+        </div>
+      </div>
+      <br/>
 
-            <div vertical layout ng-repeat="currentMetadata in metadataArray" style="height:200px">
-              <input type="hidden" value="{{currentMetadata.activity_group}}"></input>
-              <div horizontal layout>
-                <paper-input floatingLabel type='text' style ="min-width: 300px;"
+      <h4>Activity Metadata</h4>
+      <div style="height:300px">
+        <div ng-if="currentActivity.activity_types.length==0">
+            <p>Please select an Activity Type to enable Metadata edit</p>
+        </div>
+        <!--Dynamically Change the metadata fileds by activity_type group -->
+        <paper-tabs id="AGTabs">
+          <paper-tab ng-repeat="ag in currActivityGroups" ng-click="selectAG(ag.tag)">
+              {{ag.tag}}
+          </paper-tab>
+        </paper-tabs>
+        <core-animated-pages id="core_animated_pages" notap transitions="slide-from-right">
+
+          <div vertical layout ng-repeat="currentMetadata in metadataArray" style="min-height:200px">
+            <input type="hidden" value="{{currentMetadata.activity_group}}"></input>
+            <div layout horizontal wrap>
+              <paper-input flex floatingLabel type='text' style ="min-width: 300px;"
                   label='{{getAGFieldTitle(currentMetadata.activity_group,"title")}}'
                   ng-model='currentMetadata.title'
                   ></paper-input>
-                <paper-input floatingLabel type='text' style ="min-width: 300px;"
-                  label='{{getAGFieldTitle(currentMetadata.activity_group,"description")}}'
-                  ng-model='currentMetadata.description'
-                  ></paper-input>
-                <select ng-model="currentMetadata.type"		ng-options="actType for actType in selectedAG.types" required>
-                  <option value="">
-                    Select type of Activity
-                  </option>
-                </select>
-              </div>
-              <div horizontal layout>
-                <paper-input floatingLabel type='url' style ="min-width: 300px;"
-                  label='{{getAGFieldTitle(currentMetadata.activity_group,"link")}}'
-                  ng-model='currentMetadata.link'
-                  ></paper-input>
-                <paper-input floatingLabel type='url' style ="min-width: 300px;"
-                  label='{{getAGFieldTitle(currentMetadata.activity_group,"other_link1")}}'
-                  ng-model='currentMetadata.other_link1'
-                  ></paper-input>
-                <paper-input floatingLabel type='url' style ="min-width: 300px;"
-                  label='{{getAGFieldTitle(currentMetadata.activity_group,"other_link2")}}'
-                  ng-model='currentMetadata.other_link2'
-                  ></paper-input>
-              </div>
-              <div horizontal layout>
-                <paper-input floatingLabel type='number' style ="min-width: 300px;"
-                  label='{{getAGFieldTitle(currentMetadata.activity_group,"impact")}}'
-                  ng-model='currentMetadata.impact'
-                  ng-if='isUsedInMetadata(currentMetadata.activity_group,"impact")'
-                  ></paper-input>
-              </div>
-              <div horizontal layout>
-                <paper-input floatingLabel type='text' style ="min-width: 300px;"
-                  label='{{getAGFieldTitle(currentMetadata.activity_group,"location")}}'
-                  ng-model='currentMetadata.location'
-                  ng-if='isUsedInMetadata(currentMetadata.activity_group,"location")'
-                  ></paper-input>
-                <!--TODO: Fix with the proper usage of ng-model, but it seems to be not working properly with boolean values-->
-                <div ng-if='isUsedInMetadata(currentMetadata.activity_group,"google_expensed")' style ="min-width: 300px;">
-                  {{getAGFieldTitle(currentMetadata.activity_group,"google_expensed")}}
-                  <paper-checkbox ng-model="currentMetadata.google_expensed"></paper-checkbox>
-                </div>
-                <paper-input floatingLabel type='number' style ="min-width: 300px;"
-                  label='{{getAGFieldTitle(currentMetadata.activity_group,"us_approx_amount")}}'
-                  ng-model='currentMetadata.us_approx_amount'
-                  ng-if='isUsedInMetadata(currentMetadata.activity_group,"us_approx_amount")'
-                  ng-disabled="!currentMetadata.google_expensed"
-                  ></paper-input>
-              </div>
+              <select ng-model="currentMetadata.type"	ng-options="actType for actType in selectedAG.types" self-stretch>
+                <option value="">
+                  Select type of Activity
+                </option>
+              </select>
             </div>
-          </core-animated-pages>
-        </div>
+            <paper-input floatingLabel type='url' style ="min-width: 300px;"
+              label='{{getAGFieldTitle(currentMetadata.activity_group,"description")}}'
+              ng-model='currentMetadata.description'
+              ></paper-input>
+            <div horizontal layout wrap>
+              <paper-input floatingLabel type='url' style ="min-width: 300px;"
+                label='{{getAGFieldTitle(currentMetadata.activity_group,"link")}}'
+                ng-model='currentMetadata.link'
+                ></paper-input>
+              <paper-input floatingLabel type='url' style ="min-width: 300px;"
+                label='{{getAGFieldTitle(currentMetadata.activity_group,"other_link1")}}'
+                ng-model='currentMetadata.other_link1'
+                ></paper-input>
+              <paper-input floatingLabel type='url' style ="min-width: 300px;"
+                label='{{getAGFieldTitle(currentMetadata.activity_group,"other_link2")}}'
+                ng-model='currentMetadata.other_link2'
+                ></paper-input>
+            </div>
+            <div horizontal layout wrap>
+              <paper-input floatingLabel type='number' style ="min-width: 300px;"
+                label='{{getAGFieldTitle(currentMetadata.activity_group,"impact")}}'
+                ng-model='currentMetadata.impact'
+                ng-if='isUsedInMetadata(currentMetadata.activity_group,"impact")'
+                ></paper-input>
+            </div>
+            <div horizontal layout wrap>
+              <paper-input floatingLabel type='text' style ="min-width: 300px;"
+                label='{{getAGFieldTitle(currentMetadata.activity_group,"location")}}'
+                ng-model='currentMetadata.location'
+                ng-if='isUsedInMetadata(currentMetadata.activity_group,"location")'
+                ></paper-input>
+              <!--TODO: Fix with the proper usage of ng-model, but it seems to be not working properly with boolean values-->
+              <div ng-if='isUsedInMetadata(currentMetadata.activity_group,"google_expensed")' style ="min-width: 300px;">
+                {{getAGFieldTitle(currentMetadata.activity_group,"google_expensed")}}
+                <paper-checkbox ng-model="currentMetadata.google_expensed"></paper-checkbox>
+              </div>
+              <paper-input floatingLabel type='number' style ="min-width: 300px;"
+                label='{{getAGFieldTitle(currentMetadata.activity_group,"us_approx_amount")}}'
+                ng-model='currentMetadata.us_approx_amount'
+                ng-if='isUsedInMetadata(currentMetadata.activity_group,"us_approx_amount")'
+                ng-disabled="!currentMetadata.google_expensed"
+                ></paper-input>
+            </div>
+          </div>
+        </core-animated-pages>
       </div>
-
-    </core-scroll-header-panel>
+    </div>
+  </div>
+  <div affirmative layout horizontal end-justified>
+    <paper-fab icon="close" mini dismissive></paper-fab>
+    <paper-fab id ="fabDone" icon="done" mini style="background: #5677fc;" ng-click="saveGDEActivity($event)"></paper-fab>
   </div>
 </paper-action-dialog>
+
 <!-- Activity Type Selection -->
 <paper-action-dialog	id="selectActivityTypes"	transition="paper-action-dialog-transition-center" autoCloseDisabled="true">
-	<table style="margin-left: 100px;padding-left: 10px;border-style: solid;height: 600px;"	class='prettyTable' ng-if="currentActivity!=null" >
+	<table style="padding-left: 10px;border-style: solid;height: 600px;"	class='prettyTable' ng-if="currentActivity!=null" >
 		<tr>
 			<th colspan="3">
 				Activity Type Tags
@@ -297,17 +288,14 @@
 	  </tr>
 	</table>
 
-  <div vertical layout start>
-    <div>
-      <paper-button dismissive>Cancel</paper-button>
-      <paper-button affirmative ng-click="updCurrActivity('at')" >Save</paper-button>
-    </div>
-  </div>
+  <paper-button dismissive>Cancel</paper-button>
+  <paper-button affirmative ng-click="updCurrActivity('at')" >Save</paper-button>
+
 </paper-action-dialog>
 <!-- Product Groups Selection -->
 <paper-action-dialog	id="selectProductGroups"	transition="paper-action-dialog-transition-center" autoCloseDisabled="true">
 
-	<table style="margin-right: 10px;padding-right: 10px;border-style: solid;height: 600px; width:100%" class='prettyTable' ng-if="currentActivity!=null" >
+	<table style="padding-right: 10px;border-style: solid;height: 600px; width:100%" class='prettyTable' ng-if="currentActivity!=null" >
 		<tr>
 			<th colspan="3">
 				Product Tags
@@ -324,12 +312,8 @@
 	  </tr>
 	</table>
 
-  <div vertical layout start>
-    <div>
-      <paper-button dismissive>Cancel</paper-button>
-      <paper-button affirmative ng-click="updCurrActivity('pg')" >Save</paper-button>
-    </div>
-  </div>
+  <paper-button dismissive>Cancel</paper-button>
+  <paper-button affirmative ng-click="updCurrActivity('pg')" >Save</paper-button>
 
 </paper-action-dialog>
 <script src="js/googleUniversalAnalytics.js"></script>

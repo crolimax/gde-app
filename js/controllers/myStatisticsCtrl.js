@@ -352,6 +352,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
       //Clean the metadataObject
       $scope.metadataArray=[];
 		}
+
   };
 
   var setCurrActivityDefaults = function(){
@@ -564,7 +565,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     }
 	};
 
-	$scope.saveGDEActivity = function(){
+	$scope.saveGDEActivity = function(senderEvent){
 
     var readyToSave = true;
 
@@ -716,7 +717,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
             prepareActivitiesForChart();
 
             //Hide the dialog
-            toggleDialog('singleActivity');
+            senderEvent.target.closest("#singleActivity").toggle();
 
           }
 
@@ -759,9 +760,10 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     toggleDialog("mergeDialog");
   };
 
-	$scope.mergeSelectedAR = function(){
+	$scope.mergeSelectedAR = function(senderEvent){
     //Hide the dialog
-    toggleDialog("mergeDialog");
+    //toggleDialog("mergeDialog");
+    senderEvent.target.closest("#mergeSaveDialog").toggle();
 
     //Create a new Empty AR
     $scope.newActivity(false);
@@ -923,8 +925,9 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
 	};
 
-  $scope.saveMergedAR = function(){
-    toggleDialog("mergeSaveDialog");
+  $scope.saveMergedAR = function(senderEvent){
+    //toggleDialog("mergeSaveDialog");
+    senderEvent.target.closest("#mergeSaveDialog").toggle();
     //Set the EditMode to Merged
     $scope.editMode='Merged';
     //Save the activity
