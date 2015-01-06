@@ -879,9 +879,19 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 	$scope.monthSince				= today.getMonth() + 1;
 	$scope.yearSince				= today.getFullYear();
 
+  //MSO - 20150106 - Set month and Year selected
+  $scope.monthSelected = $scope.months[$scope.monthSince-1];
+  $scope.years.some(function(item){
+    if (item.value==""+$scope.yearSince){
+      $scope.yearSelected = item;
+      return true;
+    }
+    return false;
+  });
+
 	if ($rootScope.is_backend_ready){
-	  var minDate	= $scope.yearSince +'-'+ ($scope.monthSince<10?"0":"")+$scope.monthSince; //Format date into YYYY/MM
-	  $scope.getactivitiesFromGAE(null,null,minDate,null,null);	// Get the activities
+    var minDate	= $scope.yearSince +'-'+ ($scope.monthSince<10?"0":"")+$scope.monthSince; //Format date into YYYY/MM
+    $scope.getactivitiesFromGAE(null,null,minDate,null,null);	// Get the activities
 	}
 
 	// -------------------------------------
