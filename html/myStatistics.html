@@ -30,31 +30,33 @@
 </paper-button>
 <paper-action-dialog id="mergeDialog" autoCloseDisabled="true" >
 
-    <div class="content" vertical layout center>
-      <div horizontal layout center-justified>
+    <div class="content" layout horizontal fit center center-justified>
+      <div>
         Are you sure to merge the selected records into a new one?
-      </div>
-      <div horizontal layout center-justified>
-        <paper-button raised class ="colored red" dismissive>
-          No
-        </paper-button>
-        <paper-button raised class ="colored green" ng-click="mergeSelectedAR($event)">
-          Yes
-        </paper-button>
+
+        <div horizontal layout center-justified >
+          <paper-button raised class ="colored red" dismissive>
+            No
+          </paper-button>
+          <paper-button raised class ="colored green" ng-click="mergeSelectedAR($event)">
+            Yes
+          </paper-button>
+        </div>
       </div>
     </div>
 
 </paper-action-dialog>
 <paper-action-dialog id="mergeSaveDialog" autoCloseDisabled="true" >
 
-    <div class="content" vertical layout center>
-      <div horizontal layout center-justified>
+    <div class="content" layout horizontal fit center center-justified>
+      <div>
         Saving will DELETE permanently the Original Activities and save the current, Are you sure you want to continue?
+        <div horizontal layout center-justified>
+          <paper-button raised class ="colored red" dismissive>No</paper-button>
+          <paper-button raised class ="colored green" ng-click="saveMergedAR($event)">Yes</paper-button>
+        </div>
       </div>
-      <div horizontal layout center-justified>
-        <paper-button raised class ="colored red" dismissive>No</paper-button>
-        <paper-button raised class ="colored green" ng-click="saveMergedAR($event)">Yes</paper-button>
-      </div>
+
     </div>
 
 </paper-action-dialog>

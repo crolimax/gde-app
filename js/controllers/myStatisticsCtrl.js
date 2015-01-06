@@ -620,7 +620,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     }
 
     $scope.metadataArray.forEach(function(currMeta){
-      if (currMeta.hasOwnProperty('impact')){
+      if ($scope.getAGFieldTitle(currMeta.activity_group,'impact').length>0){
         if ($.isNumeric(currMeta.impact)){
           //Sanity Checks on Numbers
           if (currMeta.impact==null || currMeta.impact==""){
@@ -633,7 +633,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
         }
       }
 
-      if(currMeta.hasOwnProperty('us_approx_amount')){
+      if($scope.getAGFieldTitle(currMeta.activity_group,'us_approx_amount').length>0){
         if ($.isNumeric(currMeta.us_approx_amount)){
           //Sanity Checks on Numbers
           if (currMeta.us_approx_amount==null || currMeta.us_approx_amount==""){
@@ -652,6 +652,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     {
       if ($scope.editMode=='Merge'){
         $("#fabDone").attr("disabled",false);//Enable the Fab again
+        $scope.parentEvent=senderEvent;
         //ask confirmation to delete the original activities
         toggleDialog("mergeSaveDialog");
         return;
@@ -706,6 +707,11 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
                   });
                 });
                 $scope.originalARToMerge = [];
+
+                //disable the merge button
+                $("#mergeButton").removeClass();
+                $("#mergeButton").attr("disabled",true); //Disable the button
+
                 break;
             }
 
@@ -763,7 +769,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	$scope.mergeSelectedAR = function(senderEvent){
     //Hide the dialog
     //toggleDialog("mergeDialog");
-    senderEvent.target.closest("#mergeSaveDialog").toggle();
+    senderEvent.target.closest("#mergeDialog").toggle();
 
     //Create a new Empty AR
     $scope.newActivity(false);
@@ -931,7 +937,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     //Set the EditMode to Merged
     $scope.editMode='Merged';
     //Save the activity
-    $scope.saveGDEActivity();
+    $scope.saveGDEActivity($scope.parentEvent);
 
   };
   //Metadata functions
