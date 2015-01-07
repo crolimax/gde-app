@@ -13,7 +13,6 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 
 	$scope.months				= months;
 	$scope.years				= years;
-	$scope.products     = [];
 
 	// ------------------------------------
 	//		Initialize local data
@@ -72,36 +71,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 		};
 	};
 	// ------------------------------------
-  $scope.productFilter				= function ()
-	{
-	  // ------------------------------------
-		//		Reset local data
-		// ------------------------------------
-		$scope.data							= {};
-		$scope.data.items					= [];
 
-		$scope.top100activities				= [];
-		$scope.activityByGdeName			= [];
-		$scope.activityByRegion				= [];
-		$scope.activityByProduct			= [];
-		$scope.activityByType				= [];
-
-		$scope.activityByGdeName_temp		= {};
-		$scope.activityByRegion_temp 		= {};
-		$scope.activityByProduct_temp		= {};
-		$scope.activityByTypeTemp_temp		= {};
-
-		if ( $scope.monthSelected && $scope.yearSelected )
-		{
-      $scope.dateFilter();
-		}else{
-		  //console.log($scope.monthSelected.value + " " + $scope.yearSelected.value);
-			var loadingToast	= document.querySelector('paper-toast[id="loading"]');	// Called to show loading sign
-			loadingToast		.show();
-			$('.forGooglers')	.css('display','block');
-		  $scope.getactivitiesFromGAE(null,null,null,null,null);	// Get the activities
-		};
-	};
 	var drawGeneralStatistics		= function ()
 	{
     //console.log('drawGeneralStatistics initiated');
@@ -760,20 +730,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 			{	//Everything ok, keep going
         if (response.items)	// If there is data
         {	//Add response Items to the full list
-          //Filter the data for product if the product is selected
-          if ($scope.productSelected){
-            response.items.forEach(function(item){
-              if (item.product_groups){
-                item.product_groups.some(function(pg){
-                  if (pg==$scope.productSelected.tag){
-                    $scope.data.items.push(item);
-                  }
-                });
-              }
-            });
-          }else{
-            $scope.data.items = $scope.data.items.concat(response.items);
-          }
+				  $scope.data.items = $scope.data.items.concat(response.items);
         } else
         {
           window.alert('There are no recorded activities at the date range you selected.');
@@ -921,8 +878,6 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 	$scope.yearSince				= today.getFullYear();
 
 	if ($rootScope.is_backend_ready){
-	  $scope.products=$rootScope.productGroups;
-
 	  var minDate	= $scope.yearSince +'-'+ ($scope.monthSince<10?"0":"")+$scope.monthSince; //Format date into YYYY/MM
 	  $scope.getactivitiesFromGAE(null,null,minDate,null,null);	// Get the activities
 	}
@@ -932,7 +887,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 	$scope.$on('event:metadata-ready', function (event, gdeTrackingAPI)
 	{
 		console.log('generalStatisticsForGooglersCtrl: metadata-ready received');
-    $scope.products=$rootScope.productGroups;
+
 		//Save the API object in the scope
 		$scope.gdeTrackingAPI = gdeTrackingAPI;
 		//Get data from the backend only if activities are not already loaded
