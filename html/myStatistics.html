@@ -1,24 +1,26 @@
 <div class="stats dateRange" style="display: none">
-	<h2>Show activities since:</h2>
-	<select	ng-model="monthSelected"	ng-options="month.value for month in months"	ng-change="newMonth(month.value)">
-		<option>
-			-Select month-
-		</option>
-	</select>
-	<select ng-model="yearSelected"		ng-options="year.value for year in years"		ng-change="newYear(year.value)">
-		<option>
-			-Select year-
-		</option>
-	</select>
-	<paper-shadow z="1"></paper-shadow>
+	<paper-shadow z="1">
+  	<h2>Show activities since:</h2>
+  	<select	ng-model="monthSelected"	ng-options="month.value for month in months"	ng-change="newMonth(month.value)">
+  		<option>
+  			-Select month-
+  		</option>
+  	</select>
+  	<select ng-model="yearSelected"		ng-options="year.value for year in years"		ng-change="newYear(year.value)">
+  		<option>
+  			-Select year-
+  		</option>
+  	</select>
+	</paper-shadow>
 </div>
 <div class="stats">
-	<h1>My General Statistics</h1>
-	<div class="gdesGeneralStats" id="generalStatisticsByGDE"  vertical layout >
-		<div id="gdeTableChart" style='width:800px;' self-center></div>
-		<div id="gdeColumnChart" self-center></div>
-	</div>
-	<paper-shadow z="1"></paper-shadow>
+	<paper-shadow z="1">
+  	<h1>My General Statistics</h1>
+  	<div class="gdesGeneralStats" id="generalStatisticsByGDE"  vertical layout >
+  		<div id="gdeTableChart" style='width:800px;' self-center></div>
+  		<div id="gdeColumnChart" self-center></div>
+  	</div>
+	</paper-shadow>
 </div>
 <br/>
 <!--<paper-fab	class="paper-fab"	icon="add"	id="fabNewActivity" ng-click="newActivity()"></paper-fab>-->
@@ -62,7 +64,8 @@
 </paper-action-dialog>
 <br/>
 <div class="stats">
-	<table class="prettyTable">
+  <paper-shadow z="1">
+	  <table class="prettyTable">
 		<tr>
 		  <th>
 		  </th>
@@ -120,7 +123,7 @@
 			</td>
 		</tr>
 	</table>
-	<paper-shadow z="1"></paper-shadow>
+	</paper-shadow>
 </div>
 
 </br>

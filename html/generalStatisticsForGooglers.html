@@ -1,76 +1,81 @@
 <form class="stats dateRange">
-	<h2>Show activities since:</h2>
-	<select	ng-model="monthSelected"	ng-options="month.value for month in months"	ng-change="dateFilter()" required>
-		<option	value="">
-			-Select month-
-		</option>
-	</select>
-	<select ng-model="yearSelected"		ng-options="year.value for year in years"		ng-change="dateFilter()" required>
-		<option value="">
-			-Select year-
-		</option>
-	</select>
-	<paper-shadow z="1"></paper-shadow>
+	<paper-shadow z="1">
+  	<h2>Show activities since:</h2>
+  	<select	ng-model="monthSelected"	ng-options="month.value for month in months"	ng-change="dateFilter()" required>
+  		<option	value="">
+  			-Select month-
+  		</option>
+  	</select>
+  	<select ng-model="yearSelected"		ng-options="year.value for year in years"		ng-change="dateFilter()" required>
+  		<option value="">
+  			-Select year-
+  		</option>
+  	</select>
+	</paper-shadow>
 </form>
 <div class="stats forGooglers">
-	<h1>Most popular activities</h1>
-	<h5><i>since {{monthSince}}/{{yearSince}}</i></h5>
-	<div class="top100activities" id="top100activities" horizontal layout wrap center-justified>
-		<div id="top100activitiesChart"></div>
-	</div>
-	<paper-shadow z="1"></paper-shadow>
+	<paper-shadow z="1">
+  	<h1>Most popular activities</h1>
+  	<h5><i>since {{monthSince}}/{{yearSince}}</i></h5>
+  	<div class="top100activities" id="top100activities" horizontal layout wrap center-justified>
+  		<div id="top100activitiesChart"></div>
+  	</div>
+	</paper-shadow>
 </div>
 <div class="stats forGooglers">
-	<h1>General Statistics by GDE</h1>
-	<h5><i>since {{monthSince}}/{{yearSince}}</i></h5>
-	<div class="gdesGeneralStats" id="generalStatisticsByGDE" horizontal layout wrap center-justified>
-		<div vertical layout>
-			<div id="gdeSelector" class="gdeSelector"></div>
-			<div id="activitiesSlider"	class="activitiesSlider"></div>
-			<div id="resharesSlider"	class="resharesSlider"></div>
-			<div id="plus1sSlider" class="plus1sSlider"></div>
-			<div id="commentsSlider" class="commentsSlider"></div>
-			<div id="impactSlider" class="impactSlider"></div>
-		</div>
-		<div id="gdeTableChart"></div>
-		<div id="gdePieChart"></div>
-	</div>
-	<paper-shadow z="1"></paper-shadow>
+	<paper-shadow z="1">
+  	<h1>General Statistics by GDE</h1>
+  	<h5><i>since {{monthSince}}/{{yearSince}}</i></h5>
+  	<div class="gdesGeneralStats" id="generalStatisticsByGDE" horizontal layout wrap center-justified>
+  		<div vertical layout>
+  			<div id="gdeSelector" class="gdeSelector"></div>
+  			<div id="activitiesSlider"	class="activitiesSlider"></div>
+  			<div id="resharesSlider"	class="resharesSlider"></div>
+  			<div id="plus1sSlider" class="plus1sSlider"></div>
+  			<div id="commentsSlider" class="commentsSlider"></div>
+  			<div id="impactSlider" class="impactSlider"></div>
+  		</div>
+  		<div id="gdeTableChart"></div>
+  		<div id="gdePieChart"></div>
+  	</div>
+	</paper-shadow>
 </div>
 
 <div class="stats forGooglers">
-	<h1>General Statistics by Product</h1>
-	<h5><i>since {{monthSince}}/{{yearSince}}</i></h5>
-	<div class="gdesGeneralStats" id="generalStatisticsByPlatform" horizontal layout wrap center-justified>
-		<div vertical layout>
-			<div id="platformsSelector" class="platformsSelector"></div>
-			<div id="platformsActivitiesSlider" class="platformsActivitiesSlider"></div>
-			<div id="platformsResharesSlider" class="platformsResharesSlider"></div>
-			<div id="platformsPlus1sSlider" class="platformsPlus1sSlider"></div>
-			<div id="platformsCommentsSlider" class="platformsCommentsSlider"></div>
-			<div id="platformsImpactSlider" class="platformsImpactSlider"></div>
-		</div>
-		<div id="platformsTableChart"></div>
-		<div id="platformsBarChart"></div>
-	</div>
-	<paper-shadow z="1"></paper-shadow>
+	<paper-shadow z="1">
+  	<h1>General Statistics by Product</h1>
+  	<h5><i>since {{monthSince}}/{{yearSince}}</i></h5>
+  	<div class="gdesGeneralStats" id="generalStatisticsByPlatform" horizontal layout wrap center-justified>
+  		<div vertical layout>
+  			<div id="platformsSelector" class="platformsSelector"></div>
+  			<div id="platformsActivitiesSlider" class="platformsActivitiesSlider"></div>
+  			<div id="platformsResharesSlider" class="platformsResharesSlider"></div>
+  			<div id="platformsPlus1sSlider" class="platformsPlus1sSlider"></div>
+  			<div id="platformsCommentsSlider" class="platformsCommentsSlider"></div>
+  			<div id="platformsImpactSlider" class="platformsImpactSlider"></div>
+  		</div>
+  		<div id="platformsTableChart"></div>
+  		<div id="platformsBarChart"></div>
+  	</div>
+	</paper-shadow>
 </div>
 <div class="stats forGooglers">
-	<h1>General Statistics by Activity</h1>
-	<h5><i>since {{monthSince}}/{{yearSince}}</i></h5>
-	<div class="gdesGeneralStats" id="generalStatisticsByActivity" horizontal layout wrap center-justified>
-		<div vertical layout>
-			<div id="activities_Selector" class="activities_Selector"></div>
-			<div id="activities_ActivitiesSlider" class="activities_ActivitiesSlider"></div>
-			<div id="activities_ResharesSlider" class="activities_ResharesSlider"></div>
-			<div id="activities_Plus1sSlider" class="activities_Plus1sSlider"></div>
-			<div id="activities_CommentsSlider" class="activities_CommentsSlider"></div>
-			<div id="activities_ImpactSlider" class="activities_ImpactSlider"></div>
-		</div>
-		<div id="activityTableChart"></div>
-		<div id="activityBarChart"></div>
-	</div>
-	<paper-shadow z="1"></paper-shadow>
+	<paper-shadow z="1">
+  	<h1>General Statistics by Activity</h1>
+  	<h5><i>since {{monthSince}}/{{yearSince}}</i></h5>
+  	<div class="gdesGeneralStats" id="generalStatisticsByActivity" horizontal layout wrap center-justified>
+  		<div vertical layout>
+  			<div id="activities_Selector" class="activities_Selector"></div>
+  			<div id="activities_ActivitiesSlider" class="activities_ActivitiesSlider"></div>
+  			<div id="activities_ResharesSlider" class="activities_ResharesSlider"></div>
+  			<div id="activities_Plus1sSlider" class="activities_Plus1sSlider"></div>
+  			<div id="activities_CommentsSlider" class="activities_CommentsSlider"></div>
+  			<div id="activities_ImpactSlider" class="activities_ImpactSlider"></div>
+  		</div>
+  		<div id="activityTableChart"></div>
+  		<div id="activityBarChart"></div>
+  	</div>
+	</paper-shadow>
 </div>
 <!-- Bug
 <div class="stats forGooglers">
