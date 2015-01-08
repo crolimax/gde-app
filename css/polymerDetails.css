@@ -341,31 +341,31 @@ select:hover
 {
 	display				: none;
 }
-.prettyTable
+html /deep/ .prettyTable
 {
 	/* W3C */
 	margin				: 1em;
 	padding				: 1em;
 }
-.prettyTable tr
+html /deep/ .prettyTable tr
 {
 	/* W3C */
 	margin				: 1em;
 	padding				: 1em;
 	transition			: all 0.3s ease-in-out;
 }
-.prettyTable tr:nth-child(even)
+html /deep/ .prettyTable tr:nth-child(even)
 {
 	/* W3C */
 	background-color	: #eee;
 }
-.prettyTable tr:hover
+html /deep/ .prettyTable tr:hover
 {
 	/* W3C */
 	background-color	: #666;
 	color				: #fff!important;
 }
-.prettyTable th
+html /deep/ .prettyTable th
 {
 	/* W3C */
 	font-size			: 1.17em;
