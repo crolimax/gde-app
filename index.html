@@ -49,6 +49,7 @@
 	<link rel="import" href="bower_components/paper-input/paper-input.html">
 	<link rel="import" href="bower_components/paper-checkbox/paper-checkbox.html">
 	<link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
+	<link rel="import" href="bower_components/paper-spinner/paper-spinner.html">
 
 	<link rel="import" href="bower_components/core-animated-pages/core-animated-pages.html">
 	<link rel="import" href="bower_components/core-animated-pages/transitions/hero-transition.html">
@@ -146,7 +147,8 @@
       <!--	---------------------------------------------------------------------	-->
       <!--						Polymer Paper Dialogs								                        -->
       <!--	---------------------------------------------------------------------	-->
-			<paper-toast id="loading" text="Loading...">
+			<paper-toast id="loading" autoCloseDisabled duration="60000" text="Loading...">
+			  <paper-spinner active></paper-spinner>
 			</paper-toast>
 			<paper-action-dialog id="HowItsUsed" transition="core-transition-center "autoCloseDisabled="true">
 				<div>
