@@ -58,8 +58,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 			$scope.activityByTypeTemp_temp		= {};
 
       //console.log($scope.monthSelected.value + " " + $scope.yearSelected.value);
-			var loadingToast	= document.querySelector('paper-toast[id="loading"]');	// Called to show loading sign
-			loadingToast		.show();
+			loadingToast.show();
 			$('.forGooglers')	.css('display','block');
 
 			$scope.monthSince				= months.indexOf($scope.monthSelected) + 1;
@@ -96,8 +95,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
       $scope.dateFilter();
 		}else{
 		  //console.log($scope.monthSelected.value + " " + $scope.yearSelected.value);
-			var loadingToast	= document.querySelector('paper-toast[id="loading"]');	// Called to show loading sign
-			loadingToast		.show();
+			loadingToast.show();
 			$('.forGooglers')	.css('display','block');
 		  $scope.getactivitiesFromGAE(null,null,null,null,null);	// Get the activities
 		};
@@ -732,12 +730,12 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 		.bind([region_Selector,region_ActivitiesSlider,region_ResharesSlider,region_Plus1sSlider,region_CommentsSlider], [regionTableChart,regionBarChart])
 		.draw(activityByRegion_data);
 
-		loadingToast.opened=false;
+		loadingToast.dismiss();
 	}
 
 	var loadingToast	= document.querySelector('paper-toast[id="loading"]');	// Called to show loading sign
 	$scope.loadVisualizationLibraries = google.load('visualization', '1.1', null);
-	loadingToast		.show();
+	loadingToast.show();
 	$('.forGooglers')	.css('display','block');
 
 	$scope.getactivitiesFromGAE = function (nextPageToken,gplusId,minDate,maxDate,order)

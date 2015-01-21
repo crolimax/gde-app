@@ -182,7 +182,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
           {
             $scope.getActivitiesFromGAE(response.nextPageToken,gplusId,minDate,maxDate,order);	// Get the next page
           } else{// Done
-            loadingToast.opened=false;
+            loadingToast.dismiss();
             //console.log($scope.data.items);
             if ($rootScope.usrId)// Check if the user it's an authorized user.
             {

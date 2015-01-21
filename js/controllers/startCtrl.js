@@ -87,7 +87,7 @@ GdeTrackingApp.controller("startCtrl",							function($rootScope, $scope,	$http,
 				$scope.getGdeList(response.nextPageToken);	// Get the next page
 			  } else
 			  {
-			    loadingToast.opened=false;
+			    loadingToast.dismiss();
 					$scope.gdeNumber	= $scope.gdeList.length;
 					for (var i=0;i<$scope.gdeNumber;i++)
 					{
@@ -125,8 +125,6 @@ GdeTrackingApp.controller("startCtrl",							function($rootScope, $scope,	$http,
 					//	Trigger CSS3 animation after map loads
 					$('.nav-fab')	.css('-webkit-animation'	, 'fabAppears	2s	linear	1	both');	//	-webkit- CSS
 					$('.nav-fab')	.css('animation'			, 'fabAppears	2s	linear	1	both');	//	W3C	CSS
-					$('.mapArea')	.css('-webkit-animation'	, 'mapAppears	2s	linear	1	both');	//	-webkit- CSS
-					$('.mapArea')	.css('animation'			, 'mapAppears	2s	linear	1	both');	//	W3C	CSS
 
 					//Hide the splash screen
 					$('#splash_screen').hide();
