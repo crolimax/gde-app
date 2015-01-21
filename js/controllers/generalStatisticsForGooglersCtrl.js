@@ -726,9 +726,9 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 		.bind([activities_Selector,activities_ActivitiesSlider,activities_ResharesSlider,activities_Plus1sSlider,activities_CommentsSlider,activities_ImpactSlider], [activityTableChart,activityBarChart])
 		.draw(activityByType_data);
 
-		new google.visualization.Dashboard(document.getElementById('generalStatisticsByRegion'))
+		/*new google.visualization.Dashboard(document.getElementById('generalStatisticsByRegion'))
 		.bind([region_Selector,region_ActivitiesSlider,region_ResharesSlider,region_Plus1sSlider,region_CommentsSlider], [regionTableChart,regionBarChart])
-		.draw(activityByRegion_data);
+		.draw(activityByRegion_data);*/
 
 		loadingToast.dismiss();
 	}
