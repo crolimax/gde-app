@@ -25,13 +25,15 @@ class ActivityPost(EndpointsModel):
     date = ndb.StringProperty()
     plus_oners = EndpointsVariantIntegerProperty(variant=messages.Variant.INT32)
     resharers = EndpointsVariantIntegerProperty(variant=messages.Variant.INT32)
-    comments = EndpointsVariantIntegerProperty(variant=messages.Variant.INT32) 
+    comments = EndpointsVariantIntegerProperty(variant=messages.Variant.INT32)
     title = ndb.StringProperty()
     # url of the post (question for stack overflow)
     url = ndb.StringProperty()
     product_group = ndb.StringProperty(repeated=True)
     activity_type = ndb.StringProperty(repeated=True)
     links = ndb.StringProperty()
+
+    deleted = ndb.BooleanProperty(default=False)
 
     def ApiKeySet(self, value):
         self._api_key = value

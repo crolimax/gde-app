@@ -29,6 +29,19 @@ indexes:
 
 - kind: ActivityRecord
   properties:
+  - name: deleted
+  - name: post_date
+    direction: desc
+
+- kind: ActivityRecord
+  properties:
+  - name: deleted
+  - name: gplus_id
+  - name: post_date
+    direction: desc
+
+- kind: ActivityRecord
+  properties:
   - name: gplus_id
   - name: post_date
     direction: desc

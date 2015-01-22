@@ -196,7 +196,7 @@ class TaskUpdateGplus(webapp2.RequestHandler):
     def post(self):
         """."""
         logging.info('tasks/upd_gplus')
-        
+
         bad_posts = []
         gplus_id = self.request.get('gplus_id')
         logging.info(gplus_id)
@@ -208,6 +208,15 @@ class TaskUpdateGplus(webapp2.RequestHandler):
         activities = ActivityPost.query(ActivityPost.gplus_id == gplus_id)
 
         for activity in activities:
+            if activity.deleted:
+                continue
+
+            # check if post belongs to deleted activity
+            activity_record = ar.find(activity)
+            if activity_record is not None:
+                if activity_record.deleted:
+                    continue
+
             # get the activity from gplus
             fields = 'id,verb,actor/id,annotation,object(id,actor/id,plusoners/totalItems,replies/totalItems,resharers/totalItems,content)'
             try:
