@@ -920,6 +920,16 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 	$scope.monthSince				= today.getMonth() + 1;
 	$scope.yearSince				= today.getFullYear();
 
+  //MSO - 20150106 - Set month and Year selected
+  $scope.monthSelected = $scope.months[$scope.monthSince-1];
+  $scope.years.some(function(item){
+    if (item.value==""+$scope.yearSince){
+      $scope.yearSelected = item;
+      return true;
+    }
+    return false;
+  });
+
 	if ($rootScope.is_backend_ready){
 	  $scope.products=$rootScope.productGroups;
 
