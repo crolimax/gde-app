@@ -10,6 +10,17 @@
 			-Select year-
 		</option>
 	</select>
+	<select ng-model="productSelected" ng-options="product.tag for product in products"		ng-change="productFilter()" required>
+		<option value="">
+			-All Products-
+		</option>
+	</select>
+
+	<div style="width:100%">
+    Include activities from Trash?
+    <paper-checkbox ng-model="includeDeleted" ng-click="updateIsDeleted()"></paper-checkbox>
+  </div>
+
 	<paper-shadow z="1"></paper-shadow>
 </form>
 <div class="stats forGooglers">

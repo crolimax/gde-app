@@ -27,6 +27,7 @@ google.load(
 function onGapiClientLoad(){
   //Get the RootScope
   var rootScope = angular.element(document.body).scope();
+  //var ROOT = 'https://elite-firefly-737.appspot.com/_ah/api';
   var ROOT = 'https://omega-keep-406.appspot.com/_ah/api';
       gapi.client.load('gdetracking', 'v1.0b2', function() {
         rootScope.is_backend_ready=true;
@@ -194,6 +195,7 @@ GdeTrackingApp.factory("years",			[function()
 	var years		= [];
 	years			.push({"value":"2013"});
 	years			.push({"value":"2014"});
+	years			.push({"value":"2015"});
 
 	return years;
 }]);
@@ -240,6 +242,7 @@ GdeTrackingApp.run(function ($rootScope)
       activity.id				= apiData.id;
       activity.product_group	= apiData.product_groups;
       activity.activity_type	= apiData.activity_types;
+      activity.deleted	= apiData.deleted;
       //Activity Types as string for table ordering
       var toRet = '';
       if (activity.activity_type !=null && activity.activity_type.length>0){

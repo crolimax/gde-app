@@ -50,8 +50,25 @@
     </div>
 
 </paper-dialog>
+<paper-dialog id="delTrashDialog" autoCloseDisabled="true" >
+
+    <div class="content" vertical layout center>
+      <div horizontal layout center-justified>
+        Do you want to trash the activity or completely delete it?
+      </div>
+      <div horizontal layout center-justified>
+        <paper-button raisedButton label="Trash" ng-click="trashGDEActivity()"></paper-button>
+        <paper-button raisedButton class ="colored red" label="Delete (Forever)" ng-click="deleteGDEActivity()"></paper-button>
+      </div>
+    </div>
+
+</paper-dialog>
 <br/>
 <div class="stats">
+  <div style="width:100%">
+    Include deleted?
+    <paper-checkbox ng-model="includeDeleted" ng-click="updateIsDeleted()"></paper-checkbox>
+  </div>
 	<table class="prettyTable">
 		<tr>
 		  <th>
@@ -78,6 +95,9 @@
 			</th>
 			<th style="width:3em;cursor: pointer;" ng-click="changeSorting('date')" >
 				Date
+			</th>
+			<th ng-click="changeSorting('deleted')" style="cursor: pointer;">
+				In Trash?
 			</th>
 			<th>
 			</th>
@@ -111,7 +131,10 @@
 				{{activity.date}}
 			</td>
 			<td>
-        <paper-icon-button icon="delete" ng-click="deleteGDEActivity(activity.id)"></paper-icon-button>
+			  {{activity.deleted}}
+			</td>
+			<td>
+        <paper-icon-button icon="delete" ng-click="showDelTrashDialog(activity.id)"></paper-icon-button>
       </td>
 		</tr>
 	</table>
