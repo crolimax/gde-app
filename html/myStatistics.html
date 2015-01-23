@@ -66,7 +66,7 @@
 <br/>
 <div class="stats">
   <div style="width:100%">
-    Include deleted?
+    Include activities from Trash?
     <paper-checkbox ng-model="includeDeleted" ng-click="updateIsDeleted()"></paper-checkbox>
   </div>
 	<table class="prettyTable">
@@ -97,9 +97,6 @@
 				Date
 			</th>
 			<th ng-click="changeSorting('deleted')" style="cursor: pointer;">
-				In Trash?
-			</th>
-			<th>
 			</th>
 		</tr>
 		<tr ng-repeat="activity in userActivities |orderBy:sort.column:sort.descending">
@@ -131,10 +128,15 @@
 				{{activity.date}}
 			</td>
 			<td>
-			  {{activity.deleted}}
-			</td>
-			<td>
-        <paper-icon-button icon="delete" ng-click="showDelTrashDialog(activity.id)"></paper-icon-button>
+			  <!--TODO: if the activity is deleted, hide the button or use a single column and swap the delete and restore buttons -->
+        <paper-icon-button ng-show="activity.deleted==false"
+            icon="delete"
+            ng-click="showDelTrashDialog(activity.id)">
+        </paper-icon-button>
+        <paper-icon-button ng-show="activity.deleted==true"
+            icon="undo" style="color:blue"
+            ng-click="restoreActivity(activity.id)">
+        </paper-icon-button>
       </td>
 		</tr>
 	</table>

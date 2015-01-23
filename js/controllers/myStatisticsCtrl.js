@@ -38,6 +38,8 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	$scope.name					= $rootScope.userName;
 	$scope.userActivities			= [];
 
+	$scope.includeDeleted = false;
+
 	$scope.sort = {
       column: 'date',
       descending: true
@@ -147,7 +149,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     drawGeneralStatistics();
   }
 
-	$scope.getActivitiesFromGAE = function (nextPageToken,gplusId,minDate,maxDate,order)
+	$scope.getActivitiesFromGAE = function (nextPageToken,gplusId,minDate,maxDate,order,includeDeleted)
 	{
 	  //Empty the scope objects on the first run
 	  if (!nextPageToken){
@@ -166,10 +168,12 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     requestData.minDate=minDate;
     requestData.maxDate=maxDate;
     requestData.order=order;
+    requestData.includeDeleted=includeDeleted;
 
     $scope.gdeTrackingAPI.activity_record.list(requestData).execute(
       function(response)
       {
+
         //Check if the backend returned and error
         if (response.code){
           window.alert('There was a problem loading the app. This windows will be re-loaded automatically. Error: '+response.code + ' - '+ response.message);
@@ -180,7 +184,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
           if (response.nextPageToken)	// If there is still more data
           {
-            $scope.getActivitiesFromGAE(response.nextPageToken,gplusId,minDate,maxDate,order);	// Get the next page
+            $scope.getActivitiesFromGAE(response.nextPageToken,gplusId,minDate,maxDate,order,includeDeleted);	// Get the next page
           } else{// Done
             //console.log($scope.data.items);
             if ($rootScope.usrId)// Check if the user it's an authorized user.
@@ -200,7 +204,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	};
 
 	if ($rootScope.is_backend_ready){
-	  $scope.getActivitiesFromGAE(null,$rootScope.usrId,null,null,null);	// Get the GDE Activites
+	  $scope.getActivitiesFromGAE(null,$rootScope.usrId,null,null,null,$scope.includeDeleted);	// Get the GDE Activites
 	}
 
 	//MSO - 20140806 - should never happen, as we redirect the user to the main page if not logged in, but just in case keep it
@@ -213,10 +217,14 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 		//Get data from the backend only if activities are not already loaded
 		if($scope.data.items.length==0){
 		  //run the function to get data from the backend
-		  $scope.getActivitiesFromGAE(null,$rootScope.usrId,null,null,null);	// Get the GDE Activites
+		  $scope.getActivitiesFromGAE(null,$rootScope.usrId,null,null,null,$scope.includeDeleted);	// Get the GDE Activites
 		}
 
 	});
+	$scope.updateIsDeleted = function(){
+	  //as this function is called before !$scope.includeDeleted is updated, call the function with the inverted value
+	  $scope.getActivitiesFromGAE(null,$rootScope.usrId,null,null,null,!$scope.includeDeleted);	// Get the GDE Activites
+	}
 
 	//Edit/new an Activity
 	$scope.currentActivity			= null;
@@ -424,21 +432,89 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     toggleDialog('selectProductGroups');
   };
 
-  $scope.deleteGDEActivity = function(activityId){
+  $scope.showDelTrashDialog= function(activityId){
+    $scope.delTrashActId = activityId;
+    toggleDialog('delTrashDialog');
+  }
+
+  $scope.trashGDEActivity = function(){
+    var activityId = $scope.delTrashActId;
+
+    //Remove the AR from the backend
+    $scope.gdeTrackingAPI.activity_record.trash({id:activityId}).execute(
+      function(resp){
+        if (resp.code){
+          console.log('gdeTrackingAPI.activity_record.trash({id:'+activityId+'}) responded with Response Code: '+resp.code + ' - '+ resp.message);
+
+          alert(resp.message);
+        }else{
+          toggleDialog('delTrashDialog');
+
+          //Get the item
+          var item = $.grep($scope.data.items, function(item){
+            return item.id== activityId;
+          })[0];
+
+          item.deleted=true;
+          //remove the item from the array
+          removeARfromList(resp.id);
+
+          //Re push updated Item only if the user is displaying the trashed items
+          if ($scope.includeDeleted==true){
+            $scope.data.items.push(item);
+            //Apply and refresh Charts
+            $scope.$apply();
+          }
+          prepareActivitiesForChart();
+        }
+    });
+  }
+
+  $scope.deleteGDEActivity = function(){
+    var activityId = $scope.delTrashActId;
+
     //Remove the AR from the backend
     $scope.gdeTrackingAPI.activity_record.delete({id:activityId}).execute(
       function(resp){
         if (resp.code){
           console.log('gdeTrackingAPI.activity_record.delete({id:'+activityId+'}) responded with Response Code: '+resp.code + ' - '+ resp.message);
-          console.log(JSON.stringify(arItem));
+
           alert(resp.message);
         }else{
+          toggleDialog('delTrashDialog');
           //AR Deleted, remove from the table
           removeARfromList(resp.id);
-          //Apply and refresh
+
+          //Apply and refresh Charts
           $scope.$apply();
+          prepareActivitiesForChart();
+
         }
     });
+  }
+
+  $scope.restoreActivity = function(activityId){
+
+    //patch the item
+    $scope.gdeTrackingAPI.activity_record.patch({id:activityId,resource:{deleted:false}}).execute(
+      function(resp){
+        if (resp.code){
+          console.log('gdeTrackingAPI.activity_record.patch({id:'+activityId+'}) responded with Response Code: '+resp.code + ' - '+ resp.message);
+
+          alert(resp.message);
+        }else{
+          //remove the item from the array
+          removeARfromList(activityId);
+
+          //Update the local Array
+          $scope.data.items.push(resp);
+
+          //Apply and refresh Charts
+          $scope.$apply();
+          prepareActivitiesForChart();
+        }
+      });
+
   }
 
 	$scope.editGDEActivity = function(activityId){
@@ -677,9 +753,6 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
       //Clear data_created and updated that are calculated on the backend
       $scope.currentActivity.date_updated =null;
       $scope.currentActivity.date_created = null;
-
-      //FIXME: currently using API_key because problem with serverside validation of the current user
-      $scope.currentActivity.api_key= '8A483971F5A2CD2EF934561E3C858';
 
       $scope.gdeTrackingAPI.activity_record.insert($scope.currentActivity).execute(
         function(response)
