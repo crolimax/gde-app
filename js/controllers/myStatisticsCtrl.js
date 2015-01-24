@@ -124,12 +124,15 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
 	$scope.loadVisualizationLibraries	= google.load('visualization', '1.1', null);
 
-  var prepareActivitiesForChart = function()
+  var prepareActivitiesForChart = function(includeDeleted)
   {
     var loggedGdeName = $rootScope.userName;
     var loggedGdePlusID = $rootScope.usrId;
     $scope.name = $rootScope.userName;
     $scope.userActivities=[];
+    if (includeDeleted==null){
+      includeDeleted = $scope.includeDeleted;
+    }
 
     $scope.activitiesByGdeNameTemp[$scope.name]					= {};	// Initialize a new JSON unordered array
     $scope.activitiesByGdeNameTemp[$scope.name]['name']			= loggedGdeName;
@@ -138,18 +141,28 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
     for (var i=0;i<$scope.data.items.length;i++)
     {
+      var addToArrays = true;
+      //Check if the deleted activities should be displayed in the charts
+      if (!includeDeleted){
+        //Exclude deleted Activities
+        if ($scope.data.items[i].deleted){
+          addToArrays=false;
+        }
 
-      $scope.utils.updateStats($scope.activitiesByGdeNameTemp[$scope.name], $scope.data.items[i]);
+      }
+      if (addToArrays){
+        $scope.utils.updateStats($scope.activitiesByGdeNameTemp[$scope.name], $scope.data.items[i]);
 
-      var activity = $scope.utils.activityFromApi($scope.data.items[i]);
-      $scope.activitiesByGdeNameTemp[$scope.name]['activities'].push(activity);
-      $scope.userActivities.push(activity);
+        var activity = $scope.utils.activityFromApi($scope.data.items[i]);
+        $scope.activitiesByGdeNameTemp[$scope.name]['activities'].push(activity);
+        $scope.userActivities.push(activity);
+      }
     };
     $scope.$apply();
     drawGeneralStatistics();
   }
 
-	$scope.getActivitiesFromGAE = function (nextPageToken,gplusId,minDate,maxDate,order,includeDeleted)
+	$scope.getActivitiesFromGAE = function (nextPageToken,gplusId,minDate,maxDate,order)
 	{
 	  //Empty the scope objects on the first run
 	  if (!nextPageToken){
@@ -168,7 +181,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     requestData.minDate=minDate;
     requestData.maxDate=maxDate;
     requestData.order=order;
-    requestData.includeDeleted=includeDeleted;
+    requestData.includeDeleted=true;
 
     $scope.gdeTrackingAPI.activity_record.list(requestData).execute(
       function(response)
@@ -184,7 +197,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
           if (response.nextPageToken)	// If there is still more data
           {
-            $scope.getActivitiesFromGAE(response.nextPageToken,gplusId,minDate,maxDate,order,includeDeleted);	// Get the next page
+            $scope.getActivitiesFromGAE(response.nextPageToken,gplusId,minDate,maxDate,order);	// Get the next page
           } else{// Done
             //console.log($scope.data.items);
             if ($rootScope.usrId)// Check if the user it's an authorized user.
@@ -204,7 +217,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	};
 
 	if ($rootScope.is_backend_ready){
-	  $scope.getActivitiesFromGAE(null,$rootScope.usrId,null,null,null,$scope.includeDeleted);	// Get the GDE Activites
+	  $scope.getActivitiesFromGAE(null,$rootScope.usrId,null,null,null);	// Get the GDE Activites
 	}
 
 	//MSO - 20140806 - should never happen, as we redirect the user to the main page if not logged in, but just in case keep it
@@ -217,14 +230,17 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 		//Get data from the backend only if activities are not already loaded
 		if($scope.data.items.length==0){
 		  //run the function to get data from the backend
-		  $scope.getActivitiesFromGAE(null,$rootScope.usrId,null,null,null,$scope.includeDeleted);	// Get the GDE Activites
+		  $scope.getActivitiesFromGAE(null,$rootScope.usrId,null,null,null);// Get the GDE Activites
 		}
 
 	});
-	$scope.updateIsDeleted = function(){
-	  //as this function is called before !$scope.includeDeleted is updated, call the function with the inverted value
-	  $scope.getActivitiesFromGAE(null,$rootScope.usrId,null,null,null,!$scope.includeDeleted);	// Get the GDE Activites
-	}
+	$scope.$watch('includeDeleted', function(newValue, oldValue){
+
+    // Check if value has changes
+    if(newValue != oldValue){
+      prepareActivitiesForChart(newValue);
+    }
+  });
 
 	//Edit/new an Activity
 	$scope.currentActivity			= null;
