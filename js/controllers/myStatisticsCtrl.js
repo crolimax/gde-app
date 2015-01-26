@@ -475,12 +475,11 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
           //remove the item from the array
           removeARfromList(resp.id);
 
-          //Re push updated Item only if the user is displaying the trashed items
-          if ($scope.includeDeleted==true){
-            $scope.data.items.push(item);
-            //Apply and refresh Charts
-            $scope.$apply();
-          }
+          //Re push updated Item
+          $scope.data.items.push(item);
+          //Apply and refresh Charts
+          $scope.$apply();
+
           prepareActivitiesForChart();
         }
     });
