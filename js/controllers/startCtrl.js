@@ -6,14 +6,15 @@ GdeTrackingApp.controller("startCtrl",							function($rootScope, $scope,	$http,
 	var loadingToast	= document.querySelector('paper-toast[id="loading"]');	// Show loading sign
 	loadingToast.show();
 
-	var mapWidth		= screen.width	* 0.7	+ 'px';	// Adjust Google Maps container to 70% of screen width
-	var mapHeight		= screen.height	* 0.6	+ 'px';	// Adjust Google Maps container to 60% of screen height
-	$('.mapZone')						.css('width',	mapWidth);
-	$('.mapZone')						.css('height',	mapHeight);
-	$('.angular-google-map-container')	.css('width',	mapWidth);
-	$('.angular-google-map-container')	.css('height',	mapHeight);
-	$('.angular-google-map-container')	.css('border-bottom-left-radius',	'0.5em');
-	$('.angular-google-map-container')	.css('border-bottom-right-radius',	'0.5em');
+	$('.angular-google-map-container').css('border-bottom-left-radius',	'0.5em');
+	$('.angular-google-map-container').css('border-bottom-right-radius',	'0.5em');
+
+	//Set width with percentage and use polymer attributes to that the map is responsive
+	$('.angular-google-map-container').css('height',	'80%');
+	$('.angular-google-map-container').attr('layout',true);
+	$('.angular-google-map-container').attr('vertical',true);
+	$('.angular-google-map-container').attr('fit',true);
+
 	$scope.map			= mapOptions;
 	$scope.focusMap		= function (zone)
 	{

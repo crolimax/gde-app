@@ -202,7 +202,7 @@ select:hover
 }
 .appLogo	{
 	position			: absolute;
-	left				: 0;
+	left				: 2.5em;
 	margin				: 1em;
 	padding				: 1em;
 	text-align			: right;
