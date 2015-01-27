@@ -17,8 +17,8 @@
 	<paper-shadow z="1">
   	<h1>My General Statistics</h1>
   	<div class="gdesGeneralStats" id="generalStatisticsByGDE"  vertical layout >
-  		<div id="gdeTableChart" style='width:800px;' self-center></div>
-  		<div id="gdeColumnChart" self-center></div>
+  		<div id="gdeTableChart" style='margin-left:5px;margin-right:5px' self-center></div>
+  		<div id="gdeColumnChart" style='margin-left:5px;margin-right:5px' self-center></div>
   	</div>
 	</paper-shadow>
 </div>
@@ -241,15 +241,11 @@
                 label='{{getAGFieldTitle(currentMetadata.activity_group,"other_link2")}}'
                 ng-model='currentMetadata.other_link2'
                 ></paper-input>
-            </div>
-            <div horizontal layout wrap>
               <paper-input floatingLabel type='number' style ="min-width: 300px;"
                 label='{{getAGFieldTitle(currentMetadata.activity_group,"impact")}}'
                 ng-model='currentMetadata.impact'
                 ng-if='isUsedInMetadata(currentMetadata.activity_group,"impact")'
                 ></paper-input>
-            </div>
-            <div horizontal layout wrap>
               <paper-input floatingLabel type='text' style ="min-width: 300px;"
                 label='{{getAGFieldTitle(currentMetadata.activity_group,"location")}}'
                 ng-model='currentMetadata.location'

@@ -105,9 +105,11 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 		var gdeColumnChart 		= new google.visualization.ChartWrapper();
 		gdeColumnChart.setChartType('ColumnChart');
 		gdeColumnChart.setContainerId('gdeColumnChart');
+
+		var chartWidth		= $("#generalStatisticsByGDE").width()-10;
 		gdeColumnChart.setOptions(
 		{
-			'width'				:790,
+			'width'				:chartWidth,
 			'reverseCategories'	: true,
 			'legend':
 			{
