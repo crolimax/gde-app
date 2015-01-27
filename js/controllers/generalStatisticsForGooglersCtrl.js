@@ -483,13 +483,14 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 			'page'			: 'enable',
 			'pageSize'		:30
 		});
+    var chartWidth		= $("#generalStatisticsByPlatform").width()-10;
 
 		var platformsBarChart 		= new google.visualization.ChartWrapper();
 		platformsBarChart.setChartType('BarChart');
 		platformsBarChart.setContainerId('platformsBarChart');
 		platformsBarChart.setOptions(
 		{
-			'width'				:570,
+			'width'				:chartWidth,
 			'isStacked'			: true,
 			'reverseCategories'	: true,
 			'legend':
@@ -606,7 +607,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 		activityBarChart.setContainerId('activityBarChart');
 		activityBarChart.setOptions(
 		{
-			'width'			:570,
+			'width'			:chartWidth,
 			'isStacked'		: true,
 			'reverseCategories': true,
 			'legend':
@@ -699,7 +700,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 		regionBarChart.setContainerId('regionBarChart');
 		regionBarChart.setOptions(
 		{
-			'width'				:570,
+			'width'				:chartWidth,
 			'isStacked'			: true,
 			'reverseCategories'	: true,
 			'legend':
