@@ -166,19 +166,6 @@ select:hover
 {
 	justify-content		: center;
 }
-.center
-{
-    /* webkit */
-    display				: -webkit-box;
-    -webkit-box-orient	: vertical;
-    -webkit-box-pack	: center;
-    -webkit-box-align	: center;
-    /* W3C */
-    display				: box;
-    box-orient			: vertical;
-    box-pack			: center;
-    box-align			: center;
-}
 .scrollBar	{
 	display				: block;
 	overflow-y			: hidden;
@@ -212,17 +199,6 @@ select:hover
 	display				: inline-block;
 	position			: relative;
 	top					: -15px;
-}
-.appLogo_box	{
-	display	: -webkit-box;
-	display	: -webkit-flex;
-	display	: -ms-flexbox;
-	display	: flex;
-	-webkit-box-pack		: center;
-	-webkit-justify-content	: center;
-	    -ms-flex-pack		: center;
-	        justify-content	: center;
-	width	: 100%;
 }
 .appLogo	{
 	position			: absolute;
@@ -264,18 +240,7 @@ select:hover
 	width				: 100%;
 }
 .gdeList {
-    /* webkit */
-    -webkit-box-pack	: start;
-    -webkit-box-align	: start;
-    -webkit-box-orient	: horizontal;
-    -webkit-box-flex	: 1;
 
-    /* W3C */
-    display				: box;
-    box-pack			: start;
-    box-align			: start;
-    box-orient			: horizontal;
-    box-flex			: 1;
 	opacity				: 0;
 	position			: absolute;
 	right				: 0;
@@ -283,25 +248,12 @@ select:hover
     transition			: all 0.4s ease-in-out;
 }
 .gdeCard {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: -ms-flexbox;
-	display: flex;
-	-webkit-align-content: center;
-	    -ms-flex-line-pack: center;
-	        align-content: center;
-	-webkit-box-pack: center;
-	-webkit-justify-content: center;
-	    -ms-flex-pack: center;
-	        justify-content: center;
 	min-width: 15em;
 	background-color: #f5f5f5;
 	margin: 0.5em;
 	padding: 1.5em;
 	text-align: center;
 	border-radius: 5px;
-	-webkit-transition: all 1s ease-in-out;
-	        transition: all 1s ease-in-out;
 	box-shadow: 0px 1px 4px #777, inset 0px 0px 2px #aaa;
 }
 .gdeCard:hover {
@@ -386,21 +338,6 @@ html /deep/ .prettyTable th
 .dateRange
 {
 	width			: 30%;
-}
-.gdesGeneralStats
-{
-    display:-webkit-box;
-    -webkit-box-pack:start;
-    -webkit-box-align:stretch;
-    -webkit-box-orient: horizontal;
-    -webkit-box-flex:1;
-
-    /* W3C */
-    display: box;
-    box-pack:start;
-    box-align:stretch;
-    box-orient: horizontal;
-    box-flex:1;
 }
 
 .countryButtons	paper-button

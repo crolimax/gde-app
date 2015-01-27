@@ -3,7 +3,7 @@
 		<markers>
 			<marker ng-repeat="marker in markers"	coords="marker" icon="marker.icon"	click="markerClick(marker.id)">
 				<window isIconVisibleOnClick="false">
-					<div style="width:300px" class="center">
+					<div style="width:300px" layout vertical center>
 						<h2>{{marker.name}}</h2>
 						<img src="{{marker.pic}}" class="gdePic"/>
 						<br/>
@@ -53,13 +53,12 @@
 	</div>
 </core-item>
 <core-item>
-	<div class="gdeList wrap">
-		<div class="gdeCard" ng-repeat="gde in gdeList | orderBy : +'display_name'"  id="{{gde.id}}">
+	<div layout horizontal start wrap class="gdeList">
+		<div class="gdeCard" layout vertical center center-justified
+		      ng-repeat="gde in gdeList | orderBy : +'display_name'"  id="{{gde.id}}">
 			<a href={{gde.gplus_page}} target="_blank" title="Open {{gde.real_name}} g+ in another page.">
 				<h2>{{gde.real_name}}</h2>
-				<br/>
 				<img src="{{gde.pic_url}}" class="gdePic"/>
-				<br/>
 				<h3 ng-repeat="product in gde.pgObjects">
 					{{product.description}}
 				</h3>
