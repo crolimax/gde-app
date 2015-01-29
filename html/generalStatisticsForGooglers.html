@@ -15,6 +15,12 @@
 			-All Products-
 		</option>
 	</select>
+
+	<div style="width:100%">
+    Include activities from Trash?
+    <paper-checkbox ng-model="includeDeleted" ng-click="updateIsDeleted()"></paper-checkbox>
+  </div>
+
 	<paper-shadow z="1"></paper-shadow>
 </form>
 <div class="stats forGooglers">

@@ -14,6 +14,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 	$scope.months				= months;
 	$scope.years				= years;
 	$scope.products     = [];
+	$scope.includeDeleted = false;
 
 	// ------------------------------------
 	//		Initialize local data
@@ -67,7 +68,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 			if ($rootScope.is_backend_ready)
 			{
 			  var minDate		= $scope.yearSince +'-'+ ($scope.monthSince<10?"0":"")+$scope.monthSince; //Format date into YYYY/MM
-			  $scope.getactivitiesFromGAE(null,null,minDate,null,null);	// Get the activities
+			  $scope.getactivitiesFromGAE(null,null,minDate,null,null,$scope.includeDeleted);	// Get the activities
 			}
 		};
 	};
@@ -99,7 +100,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 			var loadingToast	= document.querySelector('paper-toast[id="loading"]');	// Called to show loading sign
 			loadingToast		.show();
 			$('.forGooglers')	.css('display','block');
-		  $scope.getactivitiesFromGAE(null,null,null,null,null);	// Get the activities
+		  $scope.getactivitiesFromGAE(null,null,null,null,null,$scope.includeDeleted);	// Get the activities
 		};
 	};
 	var drawGeneralStatistics		= function ()
@@ -738,9 +739,9 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 	loadingToast		.show();
 	$('.forGooglers')	.css('display','block');
 
-	$scope.getactivitiesFromGAE = function (nextPageToken,gplusId,minDate,maxDate,order)
+	$scope.getactivitiesFromGAE = function (nextPageToken,gplusId,minDate,maxDate,order,includeDeleted)
 	{
-    //Create request data object
+	  //Create request data object
     var requestData			= {};
     requestData.limit		= 100;
     requestData.gplus_id	= gplusId;
@@ -748,6 +749,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
     requestData.minDate		= minDate;
     requestData.maxDate		= maxDate;
     requestData.order		= order;
+    requestData.includeDeleted=includeDeleted;
 
     $scope.gdeTrackingAPI.activity_record.list(requestData).execute(
 		function(response)
@@ -760,6 +762,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 			{	//Everything ok, keep going
         if (response.items)	// If there is data
         {	//Add response Items to the full list
+
           //Filter the data for product if the product is selected
           if ($scope.productSelected){
             response.items.forEach(function(item){
@@ -781,7 +784,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 
         if (response.nextPageToken)	// If there is still more data
         {	// Get the next page
-          $scope.getactivitiesFromGAE(response.nextPageToken,gplusId,minDate,maxDate,order);
+          $scope.getactivitiesFromGAE(response.nextPageToken,gplusId,minDate,maxDate,order,includeDeleted);
         } else if (response.items)
         {
 					//console.log($scope.data.items);
@@ -934,7 +937,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 	  $scope.products=$rootScope.productGroups;
 
 	  var minDate	= $scope.yearSince +'-'+ ($scope.monthSince<10?"0":"")+$scope.monthSince; //Format date into YYYY/MM
-	  $scope.getactivitiesFromGAE(null,null,minDate,null,null);	// Get the activities
+	  $scope.getactivitiesFromGAE(null,null,minDate,null,null,$scope.includeDeleted);	// Get the activities
 	}
 
 	// -------------------------------------
@@ -949,8 +952,31 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 		if($scope.data.items.length==0){
 		  //run the function to get data from the backend
 		  var minDate             = $scope.yearSince +'-'+ ($scope.monthSince<10?"0":"")+$scope.monthSince; //Format date into YYYY/MM
-		  $scope.getactivitiesFromGAE(null,null,minDate,null,null);	// Get the activities
+		  $scope.getactivitiesFromGAE(null,null,minDate,null,null,$scope.includeDeleted);	// Get the activities
 		}
 
 	});
+
+	$scope.updateIsDeleted = function(){
+	  // ------------------------------------
+		//		Reset local data
+		// ------------------------------------
+		$scope.data							= {};
+		$scope.data.items					= [];
+
+		$scope.top100activities				= [];
+		$scope.activityByGdeName			= [];
+		$scope.activityByRegion				= [];
+		$scope.activityByProduct			= [];
+		$scope.activityByType				= [];
+
+		$scope.activityByGdeName_temp		= {};
+		$scope.activityByRegion_temp 		= {};
+		$scope.activityByProduct_temp		= {};
+		$scope.activityByTypeTemp_temp		= {};
+
+	  var minDate	= $scope.yearSince +'-'+ ($scope.monthSince<10?"0":"")+$scope.monthSince; //Format date into YYYY/MM
+	  //as this function is called before !$scope.includeDeleted is updated, call the function with the inverted value
+	  $scope.getactivitiesFromGAE(null,null,minDate,null,null,!$scope.includeDeleted);	// Get the activities
+	}
 });
