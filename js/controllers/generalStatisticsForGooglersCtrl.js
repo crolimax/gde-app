@@ -307,36 +307,24 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 			}
 		});
 
-		var resharesSlider			= new google.visualization.ControlWrapper();
-		resharesSlider.setControlType('NumberRangeFilter');
-		resharesSlider.setContainerId('resharesSlider');
-		resharesSlider.setOptions(
+		var socialImpactSlider			= new google.visualization.ControlWrapper();
+		socialImpactSlider.setControlType('NumberRangeFilter');
+		socialImpactSlider.setContainerId('socialImpactSlider');
+		socialImpactSlider.setOptions(
 		{
-			'filterColumnLabel': 'Total Resharers',
+			'filterColumnLabel': 'Social Impact',
 			'ui':
 			{
 				'labelStacking': 'vertical'
 			}
 		});
 
-		var plus1sSlider			= new google.visualization.ControlWrapper();
-		plus1sSlider				.setControlType('NumberRangeFilter');
-		plus1sSlider				.setContainerId('plus1sSlider');
-		plus1sSlider				.setOptions(
+		var metaImpactSlider			= new google.visualization.ControlWrapper();
+		metaImpactSlider.setControlType('NumberRangeFilter');
+		metaImpactSlider.setContainerId('metaImpactSlider');
+		metaImpactSlider.setOptions(
 		{
-			'filterColumnLabel': 'Total +1s',
-			'ui':
-			{
-				'labelStacking': 'vertical'
-			}
-		});
-
-		var commentsSlider			= new google.visualization.ControlWrapper();
-		commentsSlider.setControlType('NumberRangeFilter');
-		commentsSlider.setContainerId('commentsSlider');
-		commentsSlider.setOptions(
-		{
-			'filterColumnLabel': 'Total Comments',
+			'filterColumnLabel': 'Metadata Impact',
 			'ui':
 			{
 				'labelStacking': 'vertical'
@@ -427,36 +415,24 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 			}
 		});
 
-		var platformsResharesSlider	= new google.visualization.ControlWrapper();
-		platformsResharesSlider.setControlType('NumberRangeFilter');
-		platformsResharesSlider.setContainerId('platformsResharesSlider');
-		platformsResharesSlider.setOptions(
+		var platformsSocialImpactSlider	= new google.visualization.ControlWrapper();
+		platformsSocialImpactSlider.setControlType('NumberRangeFilter');
+		platformsSocialImpactSlider.setContainerId('platformsSocialImpactSlider');
+		platformsSocialImpactSlider.setOptions(
 		{
-			'filterColumnLabel': 'Total Resharers',
+			'filterColumnLabel': 'Social Impact',
 			'ui':
 			{
 				'labelStacking': 'vertical'
 			}
 		});
 
-		var platformsPlus1sSlider	= new google.visualization.ControlWrapper();
-		platformsPlus1sSlider.setControlType('NumberRangeFilter');
-		platformsPlus1sSlider.setContainerId('platformsPlus1sSlider');
-		platformsPlus1sSlider.setOptions(
+		var platforms_metaImpactSlider	= new google.visualization.ControlWrapper();
+		platforms_metaImpactSlider.setControlType('NumberRangeFilter');
+		platforms_metaImpactSlider.setContainerId('platforms_metaImpactSlider');
+		platforms_metaImpactSlider.setOptions(
 		{
-			'filterColumnLabel': 'Total +1s',
-			'ui':
-			{
-				'labelStacking': 'vertical'
-			}
-		});
-
-		var platformsCommentsSlider			= new google.visualization.ControlWrapper();
-		platformsCommentsSlider.setControlType('NumberRangeFilter');
-		platformsCommentsSlider.setContainerId('platformsCommentsSlider');
-		platformsCommentsSlider.setOptions(
-		{
-			'filterColumnLabel': 'Total Comments',
+			'filterColumnLabel': 'Metadata Impact',
 			'ui':
 			{
 				'labelStacking': 'vertical'
@@ -533,36 +509,24 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 			}
 		});
 
-		var activities_ResharesSlider	= new google.visualization.ControlWrapper();
-		activities_ResharesSlider.setControlType('NumberRangeFilter');
-		activities_ResharesSlider.setContainerId('activities_ResharesSlider');
-		activities_ResharesSlider.setOptions(
+		var activities_socialImpactSlider	= new google.visualization.ControlWrapper();
+		activities_socialImpactSlider.setControlType('NumberRangeFilter');
+		activities_socialImpactSlider.setContainerId('activities_socialImpactSlider');
+		activities_socialImpactSlider.setOptions(
 		{
-			'filterColumnLabel': 'Total Resharers',
+			'filterColumnLabel': 'Social Impact',
 			'ui':
 			{
 				'labelStacking': 'vertical'
 			}
 		});
 
-		var activities_Plus1sSlider		= new google.visualization.ControlWrapper();
-		activities_Plus1sSlider.setControlType('NumberRangeFilter');
-		activities_Plus1sSlider.setContainerId('activities_Plus1sSlider');
-		activities_Plus1sSlider.setOptions(
+		var activities_metaImpactSlider		= new google.visualization.ControlWrapper();
+		activities_metaImpactSlider.setControlType('NumberRangeFilter');
+		activities_metaImpactSlider.setContainerId('activities_metaImpactSlider');
+		activities_metaImpactSlider.setOptions(
 		{
-			'filterColumnLabel': 'Total +1s',
-			'ui':
-			{
-				'labelStacking': 'vertical'
-			}
-		});
-
-		var activities_CommentsSlider		= new google.visualization.ControlWrapper();
-		activities_CommentsSlider.setControlType('NumberRangeFilter');
-		activities_CommentsSlider.setContainerId('activities_CommentsSlider');
-		activities_CommentsSlider.setOptions(
-		{
-			'filterColumnLabel': 'Total Comments',
+			'filterColumnLabel': 'Metadata Impact',
 			'ui':
 			{
 				'labelStacking': 'vertical'
@@ -622,7 +586,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 		//===============================================//
 		// activities by Region
 		//===============================================//
-		var region_Selector				= new google.visualization.ControlWrapper();
+		/*var region_Selector				= new google.visualization.ControlWrapper();
 		region_Selector.setControlType('CategoryFilter');
 		region_Selector.setContainerId('region_Selector');
 		region_Selector.setOptions(
@@ -650,22 +614,22 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 			}
 		});
 
-		var region_ResharesSlider		= new google.visualization.ControlWrapper();
-		region_ResharesSlider.setControlType('NumberRangeFilter');
-		region_ResharesSlider.setContainerId('region_ResharesSlider');
-		region_ResharesSlider.setOptions(
+		var region_socialImpactSlider		= new google.visualization.ControlWrapper();
+		region_socialImpactSlider.setControlType('NumberRangeFilter');
+		region_socialImpactSlider.setContainerId('region_socialImpactSlider');
+		region_socialImpactSlider.setOptions(
 		{
-			'filterColumnLabel': 'Total Resharers',
+			'filterColumnLabel': 'Social Impact',
 			'ui':
 			{
 				'labelStacking': 'vertical'
 			}
 		});
 
-		var region_Plus1sSlider			= new google.visualization.ControlWrapper();
-		region_Plus1sSlider.setControlType('NumberRangeFilter');
-		region_Plus1sSlider.setContainerId('region_Plus1sSlider');
-		region_Plus1sSlider.setOptions(
+		var region_metaImpactSlider			= new google.visualization.ControlWrapper();
+		region_metaImpactSlider.setControlType('NumberRangeFilter');
+		region_metaImpactSlider.setContainerId('region_metaImpactSlider');
+		region_metaImpactSlider.setOptions(
 		{
 			'filterColumnLabel': 'Total +1s',
 			'ui':
@@ -711,27 +675,27 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 				'alignment'	:'center',
 				'maxLines'	:4
 			}
-		});
+		});*/
 
 		//===============================================//
 		// Draw Charts
 		//===============================================//
 
 		new google.visualization.Dashboard(document.getElementById('generalStatisticsByPlatform'))
-		.bind([platformsSelector,platformsActivitiesSlider,platformsResharesSlider,platformsPlus1sSlider,platformsCommentsSlider,platformsImpactSlider], [platformsTableChart,platformsBarChart])
+		.bind([platformsSelector,platformsActivitiesSlider,platformsSocialImpactSlider,platforms_metaImpactSlider,platformsImpactSlider], [platformsTableChart,platformsBarChart])
 		.draw(activityByProduct_data);
 
 		new google.visualization.Dashboard(document.getElementById('generalStatisticsByGDE'))
-		.bind([gdeSelector,activitiesSlider,resharesSlider,plus1sSlider,commentsSlider,impactSlider], [gdeTableChart,gdePieChart])
+		.bind([gdeSelector,activitiesSlider,socialImpactSlider,metaImpactSlider,impactSlider], [gdeTableChart,gdePieChart])
 		.draw(activitiesByGde_data);
 
 		new google.visualization.Dashboard(document.getElementById('generalStatisticsByActivity'))
-		.bind([activities_Selector,activities_ActivitiesSlider,activities_ResharesSlider,activities_Plus1sSlider,activities_CommentsSlider,activities_ImpactSlider], [activityTableChart,activityBarChart])
+		.bind([activities_Selector,activities_ActivitiesSlider,activities_socialImpactSlider,activities_metaImpactSlider,activities_ImpactSlider], [activityTableChart,activityBarChart])
 		.draw(activityByType_data);
 
-		new google.visualization.Dashboard(document.getElementById('generalStatisticsByRegion'))
-		.bind([region_Selector,region_ActivitiesSlider,region_ResharesSlider,region_Plus1sSlider,region_CommentsSlider], [regionTableChart,regionBarChart])
-		.draw(activityByRegion_data);
+		/*new google.visualization.Dashboard(document.getElementById('generalStatisticsByRegion'))
+		.bind([region_Selector,region_ActivitiesSlider,region_socialImpactSlider,region_metaImpactSlider,region_CommentsSlider], [regionTableChart,regionBarChart])
+		.draw(activityByRegion_data);*/
 	}
 
 	var loadingToast	= document.querySelector('paper-toast[id="loading"]');	// Called to show loading sign
@@ -883,7 +847,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
             //===============================================//
             // activities by GDE Region
             //===============================================//
-            var region = $scope.data.items[i].gde_region;
+            /*var region = $scope.data.items[i].gde_region;
             if (!$scope.activityByRegion_temp[region])
             {
               $scope.activityByRegion_temp[region]						= {}; // Initialize a new JSON unordered array
@@ -894,7 +858,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
             $scope.utils.updateStats($scope.activityByRegion_temp[region], $scope.data.items[i]);
 
             var activity = $scope.utils.activityFromApi($scope.data.items[i]);
-            $scope.activityByRegion_temp[region]['activities'].push(activity);
+            $scope.activityByRegion_temp[region]['activities'].push(activity);*/
             //===============================================//
           };
 

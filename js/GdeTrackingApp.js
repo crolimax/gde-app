@@ -262,12 +262,10 @@ GdeTrackingApp.run(function ($rootScope)
 		},
 		'updateStats'				: function(dataset,	apiData)
 		{
-			dataset.totalPlus1s		= (dataset.totalPlus1s		|| 0) + parseInt(apiData.plus_oners	|| 0, 10);
-			dataset.totalResharers	= (dataset.totalResharers	|| 0) + parseInt(apiData.resharers	|| 0, 10);
-			dataset.totalComments	= (dataset.totalComments	|| 0) + parseInt(apiData.comments	|| 0, 10);
-			dataset.total_impact	= parseFloat((parseFloat(dataset.total_impact		|| 0) + parseFloat(apiData.total_impact	|| 0)).toFixed(2));
 			dataset.social_impact	= (dataset.social_impact	|| 0) + parseInt(apiData.social_impact	|| 0, 10);
 			dataset.meta_impact	= (dataset.meta_impact	|| 0) + parseInt(apiData.meta_impact	|| 0, 10);
+			dataset.total_impact	= parseFloat((parseFloat(dataset.total_impact		|| 0) + parseFloat(apiData.total_impact	|| 0)).toFixed(2));
+
 		},
 		'addMetricColumns'			: function(chartData)
 		{
