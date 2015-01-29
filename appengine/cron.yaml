@@ -11,13 +11,13 @@ cron:
 
 - description: ad-hoc calc_impact
   url: /tasks/calc_impact
-  schedule: 5 of december 07:56
+  schedule: 29 of january 10:45
 
 - description: daily backup
   url: /_ah/datastore_admin/backup.create?kind=Account&kind=ActivityPost&kind=ActivityRecord
   target: ah-builtin-python-bundle
   schedule: 3 of december 17:00
-  #schedule every monday 02:30
+  #schedule: every day 02:30
 
 
 # - description: weekly upd_blogger
