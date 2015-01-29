@@ -81,17 +81,14 @@
 			<th ng-click="changeSorting('activity_types_str')" style="cursor: pointer;">
 				Type
 			</th>
-			<th ng-click="changeSorting('plus_oners')" style="cursor: pointer;">
-				+1's
+			<th ng-click="changeSorting('social_impact')" style="cursor: pointer;">
+				Social<br>Impact
 			</th>
-			<th ng-click="changeSorting('resharers')" style="cursor: pointer;">
-				Resharers
-			</th>
-			<th ng-click="changeSorting('comments')" style="cursor: pointer;">
-				Comments
+			<th ng-click="changeSorting('meta_impact')" style="cursor: pointer;">
+				Metadata<br>Impact
 			</th>
 			<th ng-click="changeSorting('total_impact')" style="cursor: pointer;">
-				Impact
+				Total Weighted<br>Impact
 			</th>
 			<th style="width:3em;cursor: pointer;" ng-click="changeSorting('date')" >
 				Date
@@ -113,13 +110,10 @@
 				{{activity.activity_types_str}}
 			</td>
 			<td>
-				{{activity.plus_oners}}
+				{{activity.social_impact}}
 			</td>
 			<td>
-				{{activity.resharers}}
-			</td>
-			<td>
-				{{activity.comments}}
+				{{activity.meta_impact}}
 			</td>
 			<td>
 			  {{activity.total_impact}}

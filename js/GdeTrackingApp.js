@@ -255,7 +255,8 @@ GdeTrackingApp.run(function ($rootScope)
 			}
 			activity.activity_types_str = toRet;
 			activity.total_impact	= parseFloat(parseFloat(apiData.total_impact	|| 0).toFixed(2));//Use to fixed instead of round(x*100)/100 to avoid float strage behavior
-
+      activity.social_impact = parseInt(apiData.social_impact	|| 0, 10);
+      activity.meta_impact = parseInt(apiData.meta_impact	|| 0, 10);
 			//console.log(activity);
 			return activity;
 		},
@@ -265,6 +266,8 @@ GdeTrackingApp.run(function ($rootScope)
 			dataset.totalResharers	= (dataset.totalResharers	|| 0) + parseInt(apiData.resharers	|| 0, 10);
 			dataset.totalComments	= (dataset.totalComments	|| 0) + parseInt(apiData.comments	|| 0, 10);
 			dataset.total_impact	= parseFloat((parseFloat(dataset.total_impact		|| 0) + parseFloat(apiData.total_impact	|| 0)).toFixed(2));
+			dataset.social_impact	= (dataset.social_impact	|| 0) + parseInt(apiData.social_impact	|| 0, 10);
+			dataset.meta_impact	= (dataset.meta_impact	|| 0) + parseInt(apiData.meta_impact	|| 0, 10);
 		},
 		'addMetricColumns'			: function(chartData)
 		{
@@ -276,21 +279,14 @@ GdeTrackingApp.run(function ($rootScope)
 			});
 			chartData.cols.push(
 			{
-				id		: 'totalPlus1s',
-				label	: 'Total +1s',
+				id		: 'social_impact',
+				label	: 'Social Impact',
 				type	: 'number'
 			});
 			chartData.cols.push(
 			{
-				id		: 'totalResharers',
-				label	: 'Total Resharers',
-				type	: 'number'
-			});
-
-			chartData.cols.push(
-			{
-				id		: 'totalComments',
-				label	: 'Total Comments',
+				id		: 'meta_impact',
+				label	: 'Metadata Impact',
 				type	: 'number'
 			});
 			chartData.cols.push(
@@ -305,16 +301,14 @@ GdeTrackingApp.run(function ($rootScope)
 			var row					= {c:[]};
 
 			var activitiesLogged	= activityRecord.activities.length;
-			var totalResharers		= activityRecord.totalResharers;
-			var totalPlus1s			= activityRecord.totalPlus1s;
-			var totalComments		= activityRecord.totalComments;
+			var social_impact		= activityRecord.social_impact;
+			var meta_impact		= activityRecord.meta_impact;
 			var total_impact		= activityRecord.total_impact;
 
 			row.c.push({v:label});
 			row.c.push({v:activitiesLogged});
-			row.c.push({v:totalPlus1s});
-			row.c.push({v:totalResharers});
-			row.c.push({v:totalComments});
+			row.c.push({v:social_impact});
+			row.c.push({v:meta_impact});
 			row.c.push({v:total_impact});
 
 			return row;
