@@ -269,6 +269,12 @@ GdeTrackingApp.run(function ($rootScope)
 		},
 		'addMetricColumns'			: function(chartData)
 		{
+		  chartData.cols.push(
+			{
+				id		: 'total_impact',
+				label	: 'Total Impact',
+				type	: 'number'
+			});
 			chartData.cols.push(
 			{
 				id		: 'activitiesLogged',
@@ -287,12 +293,7 @@ GdeTrackingApp.run(function ($rootScope)
 				label	: 'Metadata Impact',
 				type	: 'number'
 			});
-			chartData.cols.push(
-			{
-				id		: 'total_impact',
-				label	: 'Total Impact',
-				type	: 'number'
-			});
+
 		},
 		'chartDataRow'				: function(label,	activityRecord)
 		{
@@ -304,10 +305,10 @@ GdeTrackingApp.run(function ($rootScope)
 			var total_impact		= activityRecord.total_impact;
 
 			row.c.push({v:label});
+			row.c.push({v:total_impact});
 			row.c.push({v:activitiesLogged});
 			row.c.push({v:social_impact});
 			row.c.push({v:meta_impact});
-			row.c.push({v:total_impact});
 
 			return row;
 		},
