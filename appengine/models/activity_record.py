@@ -52,8 +52,8 @@ class ActivityRecord(EndpointsModel):
                               'date_updated', 'post_date', 'activity_types',
                               'product_groups', 'activity_link', 'gplus_posts',
                               'activity_title', 'plus_oners', 'resharers',
-                              'comments', 'metadata', 'total_impact', 'api_key',
-                              'deleted')
+                              'comments', 'metadata', 'social_impact', 'meta_impact',
+                              'total_impact', 'api_key', 'deleted')
 
     _api_key = None
 
@@ -128,9 +128,39 @@ class ActivityRecord(EndpointsModel):
 
         impact = 1 + math.log10(social_impact) + math.log10(meta_impact)
 
-        # logging.info('social_impact %s meta_impact %s impact %s', social_impact, meta_impact, impact)
-
         return float(impact)
+
+    @EndpointsComputedProperty(property_type=messages.IntegerField, variant=messages.Variant.INT32)
+    def social_impact(self):
+
+        if self.activity_title is None:
+            return None
+
+        impact = 0
+        if self.resharers is not None:
+            impact += self.resharers
+        if self.plus_oners is not None:
+            impact += self.plus_oners
+        if self.comments is not None:
+            impact += self.comments
+
+        return impact
+
+    @EndpointsComputedProperty(property_type=messages.IntegerField, variant=messages.Variant.INT32)
+    def meta_impact(self):
+
+        if self.activity_title is None:
+            return None
+
+        impact = 0
+        if self.metadata is None or len(self.metadata) == 0:
+            pass
+        else:
+            for meta in self.metadata:
+                if meta.impact is not None:
+                    impact += meta.impact
+
+        return impact
 
     def MinDateSet(self, value):
         if value is not None:
