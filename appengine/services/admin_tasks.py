@@ -21,6 +21,8 @@ class TaskCalcImpact(webapp2.RequestHandler):
         activity_records = ActivityRecord.query()
         ar_count = 0
         for ar in activity_records:
+            if ar.deleted is None:
+                ar.deleted = False
             ar.put()
             ar_count += 1
 
