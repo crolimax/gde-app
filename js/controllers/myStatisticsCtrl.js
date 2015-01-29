@@ -97,7 +97,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 		gdeTableChart.setContainerId('gdeTableChart');
 		gdeTableChart.setOptions(
 		{
-			'sortColumn'	: 4,
+			'sortColumn'	: 1,
 			'sortAscending'	: false,
 			'page'			: 'enable',
 			'pageSize'		: 30
