@@ -323,8 +323,10 @@ class TaskUpdateGplus(webapp2.RequestHandler):
         body_s += "hashtags can be found in the 'How Its Used?' section of http://gdetracking.gweb.io/. \n\n"
         body_s += "GDE Tracking Team"
 
-        mail.send_mail(sender="GDE Tracking App Support <no-reply@omega-keep-406.appspotmail.com>",
-              to=email,
-              subject="GDE Activity Tracker : Missing hashtags on ActivityPost for %s " % datetime.now().strftime("%Y-%m-%d"),
-              body="""%s""" % body_s)
-
+        try:
+            mail.send_mail(sender="GDE Tracking App Support <no-reply@omega-keep-406.appspotmail.com>",
+                  to=email,
+                  subject="GDE Activity Tracker : Missing hashtags on ActivityPost for %s " % datetime.now().strftime("%Y-%m-%d"),
+                  body="""%s""" % body_s)
+        except:
+            logging.warning("error sending email check user account %s", str(account.display_name))
