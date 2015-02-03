@@ -16,6 +16,10 @@
   			-All Products-
   		</option>
   	</select>
+  	<div style="width:100%">
+      Include activities from Trash?
+      <paper-checkbox ng-model="includeDeleted" ng-click="updateIsDeleted()"></paper-checkbox>
+    </div>
 	</paper-shadow>
 </form>
 <div class="stats forGooglers">
@@ -35,9 +39,8 @@
   		<div vertical layout>
   			<div id="gdeSelector" class="gdeSelector"></div>
   			<div id="activitiesSlider"	class="activitiesSlider"></div>
-  			<div id="resharesSlider"	class="resharesSlider"></div>
-  			<div id="plus1sSlider" class="plus1sSlider"></div>
-  			<div id="commentsSlider" class="commentsSlider"></div>
+  			<div id="socialImpactSlider"	class="socialImpactSlider"></div>
+  			<div id="metaImpactSlider" class="metaImpactSlider"></div>
   			<div id="impactSlider" class="impactSlider"></div>
   		</div>
   		<div id="gdeTableChart"></div>
@@ -54,9 +57,8 @@
   		<div vertical layout>
   			<div id="platformsSelector" class="platformsSelector"></div>
   			<div id="platformsActivitiesSlider" class="platformsActivitiesSlider"></div>
-  			<div id="platformsResharesSlider" class="platformsResharesSlider"></div>
-  			<div id="platformsPlus1sSlider" class="platformsPlus1sSlider"></div>
-  			<div id="platformsCommentsSlider" class="platformsCommentsSlider"></div>
+  			<div id="platformsSocialImpactSlider" class="platformsSocialImpactSlider"></div>
+  			<div id="platforms_metaImpactSlider" class="platforms_metaImpactSlider"></div>
   			<div id="platformsImpactSlider" class="platformsImpactSlider"></div>
   		</div>
   		<div id="platformsTableChart"></div>
@@ -72,9 +74,8 @@
   		<div vertical layout>
   			<div id="activities_Selector" class="activities_Selector"></div>
   			<div id="activities_ActivitiesSlider" class="activities_ActivitiesSlider"></div>
-  			<div id="activities_ResharesSlider" class="activities_ResharesSlider"></div>
-  			<div id="activities_Plus1sSlider" class="activities_Plus1sSlider"></div>
-  			<div id="activities_CommentsSlider" class="activities_CommentsSlider"></div>
+  			<div id="activities_socialImpactSlider" class="activities_socialImpactSlider"></div>
+  			<div id="activities_metaImpactSlider" class="activities_metaImpactSlider"></div>
   			<div id="activities_ImpactSlider" class="activities_ImpactSlider"></div>
   		</div>
   		<div id="activityTableChart"></div>
@@ -94,9 +95,7 @@
 			<br/>
 			<div id="region_ResharesSlider" class="region_ResharesSlider"></div>
 			<br/>
-			<div id="region_Plus1sSlider" class="region_Plus1sSlider"></div>
-			<br/>
-			<div id="region_CommentsSlider" class="region_CommentsSlider"></div>
+			<div id="region_metaImpactSlider" class="region_metaImpactSlider"></div>
 		</div>
 		<div id="regionTableChart"></div>
 		<div id="regionBarChart"></div>

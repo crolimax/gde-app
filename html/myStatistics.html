@@ -49,22 +49,35 @@
 
 </paper-action-dialog>
 <paper-action-dialog id="mergeSaveDialog" autoCloseDisabled="true" >
-
-    <div class="content" layout horizontal fit center center-justified>
-      <div>
-        Saving will DELETE permanently the Original Activities and save the current, Are you sure you want to continue?
-        <div horizontal layout center-justified>
-          <paper-button raised class ="colored red" dismissive>No</paper-button>
-          <paper-button raised class ="colored green" ng-click="saveMergedAR($event)">Yes</paper-button>
-        </div>
+  <div class="content" layout horizontal fit center center-justified>
+    <div>
+      Saving will DELETE permanently the Original Activities and save the current, Are you sure you want to continue?
+      <div horizontal layout center-justified>
+        <paper-button raised class ="colored red" dismissive>No</paper-button>
+        <paper-button raised class ="colored green" ng-click="saveMergedAR($event)">Yes</paper-button>
       </div>
-
     </div>
-
+  </div>
 </paper-action-dialog>
+<br/>
+<paper-dialog id="delTrashDialog" autoCloseDisabled="true" >
+  <div class="content" vertical layout center>
+    <div horizontal layout center-justified>
+      Do you want to trash the activity or completely delete it?
+    </div>
+    <div horizontal layout center-justified>
+      <paper-button raisedButton label="Trash" ng-click="trashGDEActivity()"></paper-button>
+      <paper-button raisedButton class ="colored red" label="Delete (Forever)" ng-click="deleteGDEActivity()"></paper-button>
+    </div>
+  </div>
+</paper-dialog>
 <br/>
 <div class="stats">
   <paper-shadow z="1">
+    <div style="width:100%">
+      Include activities from Trash?
+      <paper-checkbox ng-model="includeDeleted"></paper-checkbox>
+    </div>
 	  <table class="prettyTable">
 		<tr>
 		  <th>
@@ -77,29 +90,28 @@
 			<th ng-click="changeSorting('activity_types_str')" style="cursor: pointer;">
 				Type
 			</th>
-			<th ng-click="changeSorting('plus_oners')" style="cursor: pointer;">
-				+1's
+			<th ng-click="changeSorting('social_impact')" style="cursor: pointer;">
+				Social<br>Impact
 			</th>
-			<th ng-click="changeSorting('resharers')" style="cursor: pointer;">
-				Resharers
-			</th>
-			<th ng-click="changeSorting('comments')" style="cursor: pointer;">
-				Comments
+			<th ng-click="changeSorting('meta_impact')" style="cursor: pointer;">
+				Metadata<br>Impact
 			</th>
 			<th ng-click="changeSorting('total_impact')" style="cursor: pointer;">
-				Impact
+				Total Weighted<br>Impact
 			</th>
 			<th style="width:3em;cursor: pointer;" ng-click="changeSorting('date')" >
 				Date
 			</th>
+			<th ng-click="changeSorting('deleted')" style="cursor: pointer;">
+			</th>
 		</tr>
 		<tr ng-repeat="activity in userActivities |orderBy:sort.column:sort.descending">
-		  <td>
-		    <paper-checkbox ng-model="activity.selectedForMerge" ng-click="checkMergeEnable(activity.selectedForMerge)"></paper-checkbox>
-		  </td>
-		  <td>
-		    <paper-icon-button icon="create" ng-click="editGDEActivity(activity.id)"></paper-icon-button>
-		  </td>
+      <td>
+        <paper-checkbox ng-model="activity.selectedForMerge" ng-click="checkMergeEnable(activity.selectedForMerge)"></paper-checkbox>
+      </td>
+      <td>
+        <paper-icon-button icon="create" ng-click="editGDEActivity(activity.id)"></paper-icon-button>
+      </td>
 			<td>
 				<a href={{activity.url}} target="_blank">{{activity.title}}</a>
 			</td>
@@ -107,13 +119,10 @@
 				{{activity.activity_types_str}}
 			</td>
 			<td>
-				{{activity.plus_oners}}
+				{{activity.social_impact}}
 			</td>
 			<td>
-				{{activity.resharers}}
-			</td>
-			<td>
-				{{activity.comments}}
+				{{activity.meta_impact}}
 			</td>
 			<td>
 			  {{activity.total_impact}}
@@ -121,6 +130,17 @@
 			<td>
 				{{activity.date}}
 			</td>
+			<td>
+			  <!--TODO: if the activity is deleted, hide the button or use a single column and swap the delete and restore buttons -->
+        <paper-icon-button ng-show="activity.deleted==false"
+            icon="delete"
+            ng-click="showDelTrashDialog(activity.id)">
+        </paper-icon-button>
+        <paper-icon-button ng-show="activity.deleted==true"
+            icon="undo" style="color:blue"
+            ng-click="restoreActivity(activity.id)">
+        </paper-icon-button>
+      </td>
 		</tr>
 	</table>
 	</paper-shadow>
