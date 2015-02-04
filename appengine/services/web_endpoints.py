@@ -14,7 +14,8 @@ from .utils import check_auth
 
 _CLIENT_IDs = [
     endpoints.API_EXPLORER_CLIENT_ID,
-    '47242318878-dik3r14d8jc528h1ao35f8ehqa7tmpe1.apps.googleusercontent.com'
+    '47242318878-dik3r14d8jc528h1ao35f8ehqa7tmpe1.apps.googleusercontent.com',
+    '622745668355-rpeo1i7hjo4vj003dithtp1d71iniqqc.apps.googleusercontent.com'
 ]
 
 api_root = endpoints.api(name='gdetracking', version='v1.0b2', allowed_client_ids=_CLIENT_IDs)
