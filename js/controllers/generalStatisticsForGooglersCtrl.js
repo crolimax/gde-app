@@ -19,20 +19,26 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 	// ------------------------------------
 	//		Initialize local data
 	// ------------------------------------
-	$scope.data							= {};
-	$scope.data.items					= [];
+	$scope.initChartArrays = function(){
+	  $scope.data							= {};
+  	$scope.data.items					= [];
 
-	$scope.top100activities				= [];
-	$scope.activityByGdeName			= [];
-	$scope.activityByRegion				= [];
-	$scope.activityByProduct			= [];
-	$scope.activityByType				= [];
+  	$scope.top100activities				= [];
+  	$scope.activityBy = {
+  	  'GDE':{},
+  	  'Product':{},
+  	  'Activity':{}
+  	};
+  	$scope.activityByGdeName      = [];
+  	$scope.activityByProduct			= [];
+  	$scope.activityByType				= [];
 
-	$scope.activityByGdeName_temp		= {};
-	$scope.activityByRegion_temp 		= {};
-	$scope.activityByProduct_temp		= {};
-	$scope.activityByTypeTemp_temp		= {};
-	// ------------------------------------
+    $scope.activityByGdeName_temp ={};
+  	$scope.activityByProduct_temp		= {};
+  	$scope.activityByTypeTemp_temp		= {};
+	}
+
+	$scope.initChartArrays();
 
 	// ------------------------------------
 	//		Date Range Filter
@@ -44,19 +50,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 			// ------------------------------------
 			//		Reset local data
 			// ------------------------------------
-			$scope.data							= {};
-			$scope.data.items					= [];
-
-			$scope.top100activities				= [];
-			$scope.activityByGdeName			= [];
-			$scope.activityByRegion				= [];
-			$scope.activityByProduct			= [];
-			$scope.activityByType				= [];
-
-			$scope.activityByGdeName_temp		= {};
-			$scope.activityByRegion_temp 		= {};
-			$scope.activityByProduct_temp		= {};
-			$scope.activityByTypeTemp_temp		= {};
+			$scope.initChartArrays();
 
       //console.log($scope.monthSelected.value + " " + $scope.yearSelected.value);
 			loadingToast.show();
@@ -77,19 +71,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 	  // ------------------------------------
 		//		Reset local data
 		// ------------------------------------
-		$scope.data							= {};
-		$scope.data.items					= [];
-
-		$scope.top100activities				= [];
-		$scope.activityByGdeName			= [];
-		$scope.activityByRegion				= [];
-		$scope.activityByProduct			= [];
-		$scope.activityByType				= [];
-
-		$scope.activityByGdeName_temp		= {};
-		$scope.activityByRegion_temp 		= {};
-		$scope.activityByProduct_temp		= {};
-		$scope.activityByTypeTemp_temp		= {};
+		$scope.initChartArrays();
 
 		if ( $scope.monthSelected && $scope.yearSelected )
 		{
@@ -213,7 +195,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 		//===============================================//
 		// For every Region in activityByRegion_temp
 		//===============================================//
-		$.each($scope.activityByRegion_temp,	function(k,v)
+		/*$.each($scope.activityByRegion_temp,	function(k,v)
 		{
 			$scope.activityByRegion.push($scope.activityByRegion_temp[k]); // Push it as a new object in a JSON ordered array.
 		});
@@ -237,7 +219,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 			activitiesByRegion.rows.push(
 				$scope.utils.chartDataRow($scope.activityByRegion[i].region, $scope.activityByRegion[i])
 			);
-		};
+		};*/
     //console.log(activitiesByRegion);
 		//===============================================//
 		// Sort data by Total Activities
@@ -254,8 +236,8 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 		var activityByType_data			= new google.visualization.DataTable(activityByType);
 		activityByType_data.sort(1);
 
-		var activityByRegion_data		= new google.visualization.DataTable(activitiesByRegion);
-		activityByRegion_data.sort(1);
+		//var activityByRegion_data		= new google.visualization.DataTable(activitiesByRegion);
+		//activityByRegion_data.sort(1);
 		//===============================================//
 		// Sort Activities by Impact - $scope.top100activities
 		//===============================================//
@@ -926,19 +908,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 	  // ------------------------------------
 		//		Reset local data
 		// ------------------------------------
-		$scope.data							= {};
-		$scope.data.items					= [];
-
-		$scope.top100activities				= [];
-		$scope.activityByGdeName			= [];
-		$scope.activityByRegion				= [];
-		$scope.activityByProduct			= [];
-		$scope.activityByType				= [];
-
-		$scope.activityByGdeName_temp		= {};
-		$scope.activityByRegion_temp 		= {};
-		$scope.activityByProduct_temp		= {};
-		$scope.activityByTypeTemp_temp		= {};
+		$scope.initChartArrays();
 
 	  var minDate	= $scope.yearSince +'-'+ ($scope.monthSince<10?"0":"")+$scope.monthSince; //Format date into YYYY/MM
 	  //as this function is called before !$scope.includeDeleted is updated, call the function with the inverted value
