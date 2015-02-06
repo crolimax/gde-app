@@ -64,8 +64,8 @@
         </style>
         <img src="{{image}}" width="{{width}}">
         <p class="line {{extraclass}}">{{text || 'GDE'}}</p>
-        <core-ajax auto url="https://www.googleapis.com/plus/v1/people/{{userId}}/?key={{apiKey}}"
-            handleAs="json"
+        <core-ajax url="https://www.googleapis.com/plus/v1/people/{{userId}}/?key={{apiKey}}"
+            handleAs="json" id="ajaxGP"
             on-core-response="{{loadVideo}}">
         </core-ajax>
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
@@ -88,6 +88,10 @@
             updateImage: function(url){
                 this.image = url;
                 this.extraclass = 'active';
+            },
+            userIdChanged: function(){
+              if(this.userId.lenght>0)
+                this.$.ajaxGP.go();
             }
         });
     </script>
