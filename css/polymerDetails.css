@@ -5,7 +5,7 @@
 /*	*********************************************************************************	*/
 @font-face {
 	font-family: 'roboto';
-	src: url(components/font-roboto/Roboto-Bold.ttf);
+	src: url(../components/font-roboto/Roboto-Regular.ttf);
 }
 html,body {
 	height				: 95%;
