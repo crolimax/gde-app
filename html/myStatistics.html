@@ -74,7 +74,7 @@
 <br/>
 <div class="stats">
   <paper-shadow z="1">
-    <div style="width:100%">
+    <div style="width:100%;padding-top: 20px;">
       Include activities from Trash?
       <paper-checkbox ng-model="includeDeleted"></paper-checkbox>
     </div>
@@ -157,11 +157,10 @@
 
 <!-- Activity record detail -->
 <paper-action-dialog	id="singleActivity"	transition="core-transition-center">
+  <core-toolbar class="medium" >
+    <div flex>{{editMode}} Activity : {{currentActivity.activity_title}}</div>
+  </core-toolbar>
   <div class="content">
-    <core-toolbar class="medium" >
-      <div flex>{{editMode}} Activity : {{currentActivity.activity_title}}</div>
-    </core-toolbar>
-
     <div style="margin:0px 5px 0px 5px" layout vertical>
       <paper-input floatingLabel label="Title of the activity" ng-model="currentActivity.activity_title"  self-stretch></paper-input>
       <div layout horizontal center-justified wrap>

@@ -230,7 +230,7 @@ select:hover
 	top					: 80px;
 	height				: 200px;
 }
-.content	{
+html /deep/ .content	{
 	padding				: 20px;
 }
 .mapArea	{
