@@ -5,13 +5,11 @@
 				<window isIconVisibleOnClick="false">
 					<div style="width:300px" layout vertical center>
 						<h2>{{marker.name}}</h2>
-						<img src="{{marker.pic}}" class="gdePic"/>
-						<br/>
+						<img ng-src="{{marker.pic}}" class="gdePic"/>
 						<h3 ng-repeat="product in marker.pgObjects">
-              {{product.description}}&nbsp;
-            </h3>
-            <img class="badge" ng-repeat="pg_filename in marker.pgObjects"  src="img/badges/{{pg_filename.image}}"></img>
-						<br/>
+    					{{product.description}}&nbsp;
+    				</h3>
+    				<img class="badge" ng-repeat="pg_filename in marker.pgObjects"  ng-src="img/badges/{{pg_filename.image}}"></img>
 					</div>
 				</window>
 			</marker>
@@ -58,12 +56,12 @@
 		      ng-repeat="gde in gdeList | orderBy : +'display_name'"  id="{{gde.id}}">
 			<a href={{gde.gplus_page}} target="_blank" title="Open {{gde.real_name}} g+ in another page.">
 				<h2>{{gde.real_name}}</h2>
-				<img src="{{gde.pic_url}}" class="gdePic"/>
+				<img ng-src="{{gde.pic_url}}" class="gdePic"/>
 				<h3 ng-repeat="product in gde.pgObjects">
 					{{product.description}}
 				</h3>
-				<p><small>{{gde.country}}</small> <img class="flag" src="img/flags/{{gde.ctry_filename}}.svg"></img></p>
-				<img class="badge" ng-repeat="pg_filename in gde.pgObjects"  src="img/badges/{{pg_filename.image}}"></img>
+				<p><small>{{gde.country}}</small> <img class="flag" ng-src="img/flags/{{gde.ctry_filename}}.svg"></img></p>
+				<img class="badge" ng-repeat="pg_filename in gde.pgObjects"  ng-src="img/badges/{{pg_filename.image}}"></img>
 			</a>
 		</div>
 	</div>

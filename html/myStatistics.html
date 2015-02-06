@@ -157,7 +157,7 @@
 
 <!-- Activity record detail -->
 <paper-action-dialog	id="singleActivity"	transition="core-transition-center">
-  <div>
+  <div class="content">
     <core-toolbar class="medium" >
       <div flex>{{editMode}} Activity : {{currentActivity.activity_title}}</div>
     </core-toolbar>
@@ -296,48 +296,49 @@
 
 <!-- Activity Type Selection -->
 <paper-action-dialog	id="selectActivityTypes"	transition="paper-action-dialog-transition-center" autoCloseDisabled="true">
-	<table style="padding-left: 10px;border-style: solid;height: 600px; width:90%"	class='prettyTable' ng-if="currentActivity!=null" >
-		<tr>
-			<th colspan="3">
-				Activity Type Tags
-			</th>
-		</tr>
-	  <tr ng-repeat="activityType in currActivityTypesList">
-	    <td style='width:24px;height:24px;text-align:center'>
-	      <paper-checkbox ng-model="activityType.selected"></paper-checkbox>
+  <div class="content">
+  	<table style="padding-left: 10px;border-style: solid;height: 600px; width:90%"	class='prettyTable' ng-if="currentActivity!=null" >
+  		<tr>
+  			<th colspan="3">
+  				Activity Type Tags
+  			</th>
+  		</tr>
+  	  <tr ng-repeat="activityType in currActivityTypesList">
+  	    <td style='width:24px;height:24px;text-align:center'>
+  	      <paper-checkbox ng-model="activityType.selected"></paper-checkbox>
 
-	    </td>
-	    <td>{{activityType.tag}}</td>
-	    <td>{{activityType.description}}</td>
-	  </tr>
-	</table>
+  	    </td>
+  	    <td>{{activityType.tag}}</td>
+  	    <td>{{activityType.description}}</td>
+  	  </tr>
+  	</table>
 
-  <paper-button dismissive>Cancel</paper-button>
-  <paper-button affirmative ng-click="updCurrActivity('at')" >Save</paper-button>
-
+    <paper-button dismissive>Cancel</paper-button>
+    <paper-button affirmative ng-click="updCurrActivity('at')" >Save</paper-button>
+  </div>
 </paper-action-dialog>
 <!-- Product Groups Selection -->
 <paper-action-dialog	id="selectProductGroups"	transition="paper-action-dialog-transition-center" autoCloseDisabled="true">
+  <div class="content">
+  	<table style="padding-right: 10px;border-style: solid;height: 600px; width:90%" class='prettyTable' ng-if="currentActivity!=null" >
+  		<tr>
+  			<th colspan="3">
+  				Product Tags
+  			</th>
+  		</tr>
+  		<tr ng-repeat="pg in currProductGroupList">
+  		  <td style='width:24px;height:24px;text-align:center'>
 
-	<table style="padding-right: 10px;border-style: solid;height: 600px; width:90%" class='prettyTable' ng-if="currentActivity!=null" >
-		<tr>
-			<th colspan="3">
-				Product Tags
-			</th>
-		</tr>
-		<tr ng-repeat="pg in currProductGroupList">
-		  <td style='width:24px;height:24px;text-align:center'>
+  		    <paper-checkbox ng-model="pg.selected"></paper-checkbox>
+  		  </td>
 
-		    <paper-checkbox ng-model="pg.selected"></paper-checkbox>
-		  </td>
+  	    <td>{{pg.tag}}</td>
+  	    <td><a href='{{pg.url}}'target='_blank'>{{pg.description}}</a></td>
+  	  </tr>
+  	</table>
 
-	    <td>{{pg.tag}}</td>
-	    <td><a href='{{pg.url}}'target='_blank'>{{pg.description}}</a></td>
-	  </tr>
-	</table>
-
-  <paper-button dismissive>Cancel</paper-button>
-  <paper-button affirmative ng-click="updCurrActivity('pg')" >Save</paper-button>
-
+    <paper-button dismissive>Cancel</paper-button>
+    <paper-button affirmative ng-click="updCurrActivity('pg')" >Save</paper-button>
+  </div>
 </paper-action-dialog>
 <script src="js/googleUniversalAnalytics.js"></script>
