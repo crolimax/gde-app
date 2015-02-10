@@ -280,6 +280,27 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 			);
 		};
 
+		var top100activitiesByGde_data		= new google.visualization.DataTable(top100);
+		top100activitiesByGde_data.sort(1);
+
+		//===============================================//
+		// Sort Activities by Impact - $scope.top100activities
+		//===============================================//
+		var top100TableChart			= new google.visualization.ChartWrapper();
+		top100TableChart				.setChartType('Table');
+		top100TableChart				.setContainerId('top100activitiesChart');
+		top100TableChart				.setOptions(
+		{
+			'sortColumn': 1,
+			'sortAscending': false,
+			'page': 'enable',
+			'pageSize':10
+		});
+
+		top100TableChart.setDataTable(top100activitiesByGde_data);
+
+		top100TableChart.draw();
+
 		//By GDE Charts
 		drawChart('GDE','name');
 
