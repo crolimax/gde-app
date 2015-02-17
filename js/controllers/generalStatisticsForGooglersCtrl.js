@@ -478,6 +478,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 				'maxLines'	:3
 			}
 		});
+		platformsBarChart.setView({'columns': [0,1,2,3]});//Show only the log10 columns
 		//===============================================//
 		// activities by Activity
 		//===============================================//
@@ -581,8 +582,9 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 				'position'	:'top',
 				'alignment'	:'center',
 				'maxLines'	:4
-			}
+			},
 		});
+		activityBarChart.setView({'columns': [0,1,2,3]});//Show only the log10 columns
 		//===============================================//
 		// activities by Region
 		//===============================================//

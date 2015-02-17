@@ -267,11 +267,11 @@ GdeTrackingApp.run(function ($rootScope)
 		},
 		'updateStats'				: function(dataset,	apiData)
 		{
-		  dataset.social_impact_raw	= (dataset.social_impact	|| 0) + parseInt(apiData.social_impact	|| 0, 10);
-			dataset.meta_impact_raw	= (dataset.meta_impact	|| 0) + parseInt(apiData.meta_impact	|| 0, 10);
+		  dataset.social_impact_raw	= parseInt(dataset.social_impact	|| 0) + parseInt(apiData.social_impact	|| 0, 10);
+			dataset.meta_impact_raw	= parseInt(dataset.meta_impact	|| 0) + parseInt(apiData.meta_impact	|| 0, 10);
 			dataset.social_impact	= parseFloat(parseFloat(dataset.social_impact	|| 0.00) + log10(parseFloat(apiData.social_impact	|| 0.00, 10))).toFixed(2);
 			dataset.meta_impact	= parseFloat(parseFloat(dataset.meta_impact	|| 0.00) + log10(parseFloat(apiData.meta_impact	|| 0.00, 10))).toFixed(2);
-			dataset.total_impact	= parseFloat((parseFloat(dataset.total_impact		|| 0) + parseFloat(apiData.total_impact	|| 0)).toFixed(2));
+			dataset.total_impact	= parseFloat((parseFloat(dataset.total_impact		|| 0.00) + parseFloat(apiData.total_impact	|| 0)).toFixed(2));
 
 		},
 		'addMetricColumns'			: function(chartData)
@@ -301,6 +301,20 @@ GdeTrackingApp.run(function ($rootScope)
 				type	: 'number'
 			});
 
+		  chartData.cols.push(
+			{
+				id		: 'social_impact_raw',
+				label	: 'Social Impact (RAW)',
+				type	: 'number'
+			});
+			chartData.cols.push(
+			{
+				id		: 'meta_impact_raw',
+				label	: 'Metadata Impact (RAW)',
+				type	: 'number'
+			});
+
+
 		},
 		'chartDataRow'				: function(label,	activityRecord)
 		{
@@ -310,12 +324,16 @@ GdeTrackingApp.run(function ($rootScope)
 			var social_impact		= activityRecord.social_impact;
 			var meta_impact		= activityRecord.meta_impact;
 			var total_impact		= activityRecord.total_impact;
+			var social_impact_raw		= activityRecord.social_impact_raw;
+			var meta_impact_raw		= activityRecord.meta_impact_raw;
 
 			row.c.push({v:label});
 			row.c.push({v:total_impact});
 			row.c.push({v:activitiesLogged});
 			row.c.push({v:social_impact});
 			row.c.push({v:meta_impact});
+			row.c.push({v:social_impact_raw});
+			row.c.push({v:meta_impact_raw});
 
 			return row;
 		},
