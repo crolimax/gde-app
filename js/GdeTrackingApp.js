@@ -267,8 +267,8 @@ GdeTrackingApp.run(function ($rootScope)
 		},
 		'updateStats'				: function(dataset,	apiData)
 		{
-		  dataset.social_impact_raw	= parseInt(dataset.social_impact	|| 0) + parseInt(apiData.social_impact	|| 0, 10);
-			dataset.meta_impact_raw	= parseInt(dataset.meta_impact	|| 0) + parseInt(apiData.meta_impact	|| 0, 10);
+		  dataset.social_impact_raw	= (dataset.social_impact_raw	|| 0) + parseInt(apiData.social_impact	|| 0, 10);
+			dataset.meta_impact_raw	= (dataset.meta_impact_raw	|| 0) + parseInt(apiData.meta_impact	|| 0, 10);
 			dataset.social_impact	= parseFloat(parseFloat(dataset.social_impact	|| 0.00) + log10(parseFloat(apiData.social_impact	|| 0.00, 10))).toFixed(2);
 			dataset.meta_impact	= parseFloat(parseFloat(dataset.meta_impact	|| 0.00) + log10(parseFloat(apiData.meta_impact	|| 0.00, 10))).toFixed(2);
 			dataset.total_impact	= parseFloat((parseFloat(dataset.total_impact		|| 0.00) + parseFloat(apiData.total_impact	|| 0)).toFixed(2));
