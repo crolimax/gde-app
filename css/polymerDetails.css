@@ -56,6 +56,10 @@ html /deep/ paper-action-dialog.tall{
 	height:90%;
 }
 
+html /deep/ paper-shadow{
+  padding:1px;
+}
+
 paper-button {
 	margin				: 1em;
 	width				: 13em;
