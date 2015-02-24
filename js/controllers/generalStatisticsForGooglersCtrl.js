@@ -244,21 +244,25 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
           'maxLines'	:3
         }
       });
+      BarChart.setView({'columns': [0,1,2,3]});//Show only the log10 columns
 
       realChart=BarChart;
 		}
 
 		//Display the Charts
-		new google.visualization.Dashboard(document.getElementById('generalStatisticsBy'+prefix))
-        .bind([keySelector,activitiesSlider,socialImpactSlider,metaImpactSlider,impactSlider],
-              [TableChart,realChart])
-        .draw(activitiesBy_data);
+		var dashboard = new google.visualization.Dashboard(document.getElementById('generalStatisticsBy'+prefix));
+
+		dashboard.bind( [keySelector,activitiesSlider,socialImpactSlider,metaImpactSlider,impactSlider],
+                    TableChart);
+    dashboard.bind( [keySelector,activitiesSlider,socialImpactSlider,metaImpactSlider,impactSlider],
+                    realChart);
+
+    dashboard.draw(activitiesBy_data);
 
 	}
 
 	var drawGeneralStatistics		= function ()
 	{
-    //console.log('drawGeneralStatistics initiated');
 		//===============================================//
 		// For every Activity in $scope.top100activities
 		//===============================================//
