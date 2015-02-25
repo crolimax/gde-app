@@ -29,11 +29,13 @@ from datetime import date
 
 from google.appengine.api import taskqueue
 from google.appengine.api import mail
+from google.appengine.api import app_identity
 
 from apiclient.discovery import build
 
 from models import ActivityPost
 from models import ActivityRecord
+from models import ActivityMetaData
 from models import Account
 from models import activity_record as ar
 
@@ -163,6 +165,25 @@ def is_gde_post(activity):
     else:
         return True
 
+def is_youtube_video(activity):
+    """Identify youtube video's."""
+    content = activity.links
+    result = re.search('www.youtube.com', content, flags=re.IGNORECASE)
+    if result is None:
+        return False
+    try:
+        id_pos = content.index("watch?v=") + 8
+        video_id = content[id_pos:]
+        try:
+            param_pos = video_id.index("&")
+            video_id_trimed = video_id[:param_pos]
+        except ValueError:
+            video_id_trimed = video_id
+    except ValueError:
+        logging.info('badly formed video url')
+        return False
+
+    return video_id_trimed
 
 class CronUpdateGplus(webapp2.RequestHandler):
 
@@ -171,6 +192,10 @@ class CronUpdateGplus(webapp2.RequestHandler):
     def get(self):
         """create tasks."""
         logging.info('crons/upd_gplus')
+
+        # taskqueue.add(queue_name='gplus',
+        #               url='/tasks/upd_gplus',
+        #               params={'gplus_id':111820256548303113275})
 
         accounts = Account.query()
         user_count = 0
@@ -204,6 +229,8 @@ class TaskUpdateGplus(webapp2.RequestHandler):
         #build the service object for the gplus api
         API_KEY = get_server_api_key()
         gplus_service = build('plus', 'v1', developerKey=API_KEY)
+        #build the service object of the yt api
+        yt_service = build('youtube', 'v3', developerKey=API_KEY)
         #get the activities for the gde
         activities = ActivityPost.query(ActivityPost.gplus_id == gplus_id)
 
@@ -216,6 +243,26 @@ class TaskUpdateGplus(webapp2.RequestHandler):
             if activity_record is not None:
                 if activity_record.deleted:
                     continue
+
+            # find out if it is a video
+            video_id = is_youtube_video(activity)
+            if video_id is not False:
+                logging.info('video found %s', video_id)
+                # get the stats for the video
+                stats = yt_service.videos().list(part="statistics", id=video_id).execute()
+                views = stats["items"][0]['statistics']['viewCount']
+                if activity_record.metadata:
+                    if activity_record.metadata[0].impact != int(views):
+                        activity_record.metadata[0].impact = int(views)
+                        logging.info('stats updated: %s', views)
+                        activity_record.put()
+                else:
+                    activity_record.metadata.append(ActivityMetaData())
+                    activity_record.metadata[0].impact = int(views)
+                    logging.info('stats updated: %s', views)
+                    activity_record.put()
+                
+
 
             # get the activity from gplus
             fields = 'id,verb,actor/id,annotation,object(id,actor/id,plusoners/totalItems,replies/totalItems,resharers/totalItems,content)'
@@ -303,6 +350,12 @@ class TaskUpdateGplus(webapp2.RequestHandler):
 
     def send_update_mail(self, bad_posts, gplus_id):
         """Send out a mail with a link to the post for update."""
+
+        #if we run this from the staging environment do not send emails
+        app = app_identity.get_default_version_hostname();
+        if app == "elite-firefly-737.appspot.com":
+            logging.info('running from %s, not sending bad post email', app)
+            return
 
         logging.info('sending a bad_post mail')
 
