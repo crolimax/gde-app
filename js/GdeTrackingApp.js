@@ -94,12 +94,6 @@ GdeTrackingApp.config(function($routeProvider)
 // *****************************************************************************************************
 //   									AngularJS Factories
 // *****************************************************************************************************
-GdeTrackingApp.factory("gdeList",		[function()
-{
-	var gdeList	= [];
-
-	return gdeList;
-}]);
 GdeTrackingApp.factory("mapOptions",	[function()
 {
 	var mapOptions =
@@ -392,6 +386,35 @@ GdeTrackingApp.run(function ($rootScope)
 					$rootScope.activityGroups	= response.items;
 				}
 			);
+		},
+		'gdeListFromApi':function(gdeTrackingAPI,nextPageToken)
+		{	//Create request data object
+			var requestData = {};
+      requestData.limit=100;
+      requestData.type = 'active';
+      requestData.pageToken=nextPageToken;
+      //Load the GDE list once for all the application
+      gdeTrackingAPI.account.list(requestData).execute(
+        function(response)
+        {
+          if (!$rootScope.gdeList){
+            $rootScope.gdeList=[];
+          }
+          response.items.forEach(function(item){
+            //exclude deleted
+            if (item.deleted==false){
+              $rootScope.gdeList.push(item);
+            }
+
+          });
+
+          //See if more data need to be fetched
+          if (response.nextPageToken){
+            //Load more data
+            $rootScope.utils.gdeListFromApi(gdeTrackingAPI,response.nextPageToken);
+          }
+        }
+      );
 		}
 	};
 
@@ -400,6 +423,7 @@ GdeTrackingApp.run(function ($rootScope)
 		$rootScope.utils.activityTypesFromApi(gdeTrackingAPI);
 		$rootScope.utils.productGroupsFromApi(gdeTrackingAPI);
 		$rootScope.utils.activityGroupsFromApi(gdeTrackingAPI);
+		$rootScope.utils.gdeListFromApi(gdeTrackingAPI);
 		$rootScope.$broadcast('event:metadata-ready',gapi.client.gdetracking);
 	});
 });
