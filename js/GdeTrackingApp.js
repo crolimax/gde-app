@@ -412,6 +412,8 @@ GdeTrackingApp.run(function ($rootScope)
           if (response.nextPageToken){
             //Load more data
             $rootScope.utils.gdeListFromApi(gdeTrackingAPI,response.nextPageToken);
+          }else{
+            $rootScope.$broadcast('event:metadata-ready',gdeTrackingAPI);
           }
         }
       );
@@ -424,6 +426,6 @@ GdeTrackingApp.run(function ($rootScope)
 		$rootScope.utils.productGroupsFromApi(gdeTrackingAPI);
 		$rootScope.utils.activityGroupsFromApi(gdeTrackingAPI);
 		$rootScope.utils.gdeListFromApi(gdeTrackingAPI);
-		$rootScope.$broadcast('event:metadata-ready',gapi.client.gdetracking);
+
 	});
 });
