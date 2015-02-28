@@ -413,6 +413,7 @@ GdeTrackingApp.run(function ($rootScope)
             //Load more data
             $rootScope.utils.gdeListFromApi(gdeTrackingAPI,response.nextPageToken);
           }else{
+            $rootScope.metadataReady=true;
             $rootScope.$broadcast('event:metadata-ready',gdeTrackingAPI);
           }
         }
@@ -428,4 +429,6 @@ GdeTrackingApp.run(function ($rootScope)
 		$rootScope.utils.gdeListFromApi(gdeTrackingAPI);
 
 	});
+
+
 });

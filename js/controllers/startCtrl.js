@@ -112,7 +112,7 @@ GdeTrackingApp.controller("startCtrl",							function($rootScope, $scope,	$http,
 		$scope.getGdeList();
 	});
 
-	if ($rootScope.is_backend_ready){
+	if ($rootScope.metadataReady){
     $scope.gdeTrackingAPI = gapi.client.gdetracking;
     //run the function to display the GDEs on the map
 		$scope.getGdeList();
