@@ -228,6 +228,11 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 					id		: 'region',
 					label	: 'Region',
 					type	: 'string'
+				},
+				{
+					id		: 'country',
+					label	: 'Country',
+					type	: 'string'
 				}
 			],
 			rows: []
@@ -236,9 +241,29 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 
 		for (var i=0;i<$scope.activityByRegion.length;i++)
 		{
-			activitiesByRegion.rows.push(
-				$scope.utils.chartDataRow($scope.activityByRegion[i].region, $scope.activityByRegion[i])
-			);
+		  var row					= {c:[]};
+		  var activityRecord = $scope.activityByRegion[i];
+
+		  var region =activityRecord.region;
+		  var country =activityRecord.country;
+
+			var activitiesLogged	= activityRecord.activities.length;
+			var social_impact		= activityRecord.social_impact;
+			var meta_impact		= activityRecord.meta_impact;
+			var total_impact		= activityRecord.total_impact;
+			var social_impact_raw		= activityRecord.social_impact_raw;
+			var meta_impact_raw		= activityRecord.meta_impact_raw;
+
+			row.c.push({v:region});
+			row.c.push({v:country});
+			row.c.push({v:total_impact});
+			row.c.push({v:activitiesLogged});
+			row.c.push({v:social_impact});
+			row.c.push({v:meta_impact});
+			row.c.push({v:social_impact_raw});
+			row.c.push({v:meta_impact_raw});
+
+			activitiesByRegion.rows.push(row);
 		};
     //console.log(activitiesByRegion);
 		//===============================================//
@@ -534,29 +559,6 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 			}
 		});
 
-		var activityTableChart			= new google.visualization.ChartWrapper();
-		activityTableChart.setChartType('Table');
-		activityTableChart.setContainerId('activityTableChart');
-		activityTableChart.setOptions(
-		{
-			'sortColumn'	: 1,
-			'sortAscending'	: false,
-			'page'			: 'enable',
-			'pageSize'		:30
-		});
-
-		var activityCommentsSlider			= new google.visualization.ControlWrapper();
-		activityCommentsSlider.setControlType('NumberRangeFilter');
-		activityCommentsSlider.setContainerId('commentsSlider');
-		activityCommentsSlider.setOptions(
-		{
-			'filterColumnLabel': 'Total Comments',
-			'ui':
-			{
-				'labelStacking': 'vertical'
-			}
-		});
-
 		var activities_ImpactSlider		= new google.visualization.ControlWrapper();
 		activities_ImpactSlider.setControlType('NumberRangeFilter');
 		activities_ImpactSlider.setContainerId('activities_ImpactSlider');
@@ -567,6 +569,17 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 			{
 				'labelStacking': 'vertical'
 			}
+		});
+
+		var activityTableChart			= new google.visualization.ChartWrapper();
+		activityTableChart.setChartType('Table');
+		activityTableChart.setContainerId('activityTableChart');
+		activityTableChart.setOptions(
+		{
+			'sortColumn'	: 1,
+			'sortAscending'	: false,
+			'page'			: 'enable',
+			'pageSize'		:30
 		});
 
 		var activityBarChart			= new google.visualization.ChartWrapper();
@@ -588,7 +601,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 		//===============================================//
 		// activities by Region
 		//===============================================//
-		/*var region_Selector				= new google.visualization.ControlWrapper();
+		var region_Selector				= new google.visualization.ControlWrapper();
 		region_Selector.setControlType('CategoryFilter');
 		region_Selector.setContainerId('region_Selector');
 		region_Selector.setOptions(
@@ -633,19 +646,19 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 		region_metaImpactSlider.setContainerId('region_metaImpactSlider');
 		region_metaImpactSlider.setOptions(
 		{
-			'filterColumnLabel': 'Total +1s',
+			'filterColumnLabel': 'Metadata Impact',
 			'ui':
 			{
 				'labelStacking': 'vertical'
 			}
 		});
 
-		var region_CommentsSlider			= new google.visualization.ControlWrapper();
-		region_CommentsSlider.setControlType('NumberRangeFilter');
-		region_CommentsSlider.setContainerId('region_CommentsSlider');
-		region_CommentsSlider.setOptions(
+		var region_ImpactSlider		= new google.visualization.ControlWrapper();
+		region_ImpactSlider.setControlType('NumberRangeFilter');
+		region_ImpactSlider.setContainerId('region_ImpactSlider');
+		region_ImpactSlider.setOptions(
 		{
-			'filterColumnLabel': 'Total Comments',
+			'filterColumnLabel': 'Total Impact',
 			'ui':
 			{
 				'labelStacking': 'vertical'
@@ -657,28 +670,31 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 		regionTableChart.setContainerId('regionTableChart');
 		regionTableChart.setOptions(
 		{
-			'sortColumn'	: 1,
+			'sortColumn'	: 2,
 			'sortAscending'	: false,
 			'page'			: 'enable',
 			'pageSize'		: 30
 		});
 
-		var regionBarChart 				= new google.visualization.ChartWrapper();
+
+    var regionBarChart			= new google.visualization.ChartWrapper();
 		regionBarChart.setChartType('BarChart');
 		regionBarChart.setContainerId('regionBarChart');
 		regionBarChart.setOptions(
 		{
-			'width'				:570,
-			'isStacked'			: true,
-			'reverseCategories'	: true,
+			'width'			:570,
+			'height':500,
+			'isStacked'		: true,
+			'reverseCategories': true,
 			'legend':
 			{
 				'position'	:'top',
 				'alignment'	:'center',
 				'maxLines'	:4
-			}
-		});*/
+			},
+		});
 
+    regionBarChart.setView({'columns': [1,2,3,4,5]});//Show only the log10 columns
 		//===============================================//
 		// Draw Charts
 		//===============================================//
@@ -695,9 +711,9 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 		.bind([activities_Selector,activities_ActivitiesSlider,activities_socialImpactSlider,activities_metaImpactSlider,activities_ImpactSlider], [activityTableChart,activityBarChart])
 		.draw(activityByType_data);
 
-		/*new google.visualization.Dashboard(document.getElementById('generalStatisticsByRegion'))
-		.bind([region_Selector,region_ActivitiesSlider,region_socialImpactSlider,region_metaImpactSlider,region_CommentsSlider], [regionTableChart,regionBarChart])
-		.draw(activityByRegion_data);*/
+		new google.visualization.Dashboard(document.getElementById('generalStatisticsByRegion'))
+		.bind([region_Selector,region_ActivitiesSlider,region_socialImpactSlider,region_metaImpactSlider,region_ImpactSlider], [regionTableChart,regionBarChart])
+		.draw(activityByRegion_data);
 	}
 
 	var loadingToast	= document.querySelector('paper-toast[id="loading"]');	// Called to show loading sign
@@ -849,18 +865,31 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
             //===============================================//
             // activities by GDE Region
             //===============================================//
-            /*var region = $scope.data.items[i].gde_region;
-            if (!$scope.activityByRegion_temp[region])
-            {
-              $scope.activityByRegion_temp[region]						= {}; // Initialize a new JSON unordered array
+            //Get the user account for the activity
+            var country = null;
+            var region = null;
+            var currDtItm = $scope.data.items[i];
+            $rootScope.gdeList.some(function(accn){
+              if (accn.gplus_id==currDtItm.gplus_id){
+                country = accn.country;
+                region = accn.region;
+                return true;
+              }
+              return false;
+            });
 
-              $scope.activityByRegion_temp[region]['region']				= region;
-              $scope.activityByRegion_temp[region]['activities']			= [];  // Initialize a new JSON ordered array
+            if (!$scope.activityByRegion_temp[country])
+            {
+              $scope.activityByRegion_temp[country] = {}; // Initialize a new JSON unordered array
+
+              $scope.activityByRegion_temp[country]['region'] = region;
+              $scope.activityByRegion_temp[country]['country'] = country;
+              $scope.activityByRegion_temp[country]['activities'] = [];  // Initialize a new JSON ordered array
             }
-            $scope.utils.updateStats($scope.activityByRegion_temp[region], $scope.data.items[i]);
+            $scope.utils.updateStats($scope.activityByRegion_temp[country], $scope.data.items[i]);
 
             var activity = $scope.utils.activityFromApi($scope.data.items[i]);
-            $scope.activityByRegion_temp[region]['activities'].push(activity);*/
+            $scope.activityByRegion_temp[country]['activities'].push(activity);
             //===============================================//
           };
 
@@ -873,7 +902,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
             $scope.top100activities=$scope.top100activities.splice(0,100);
           }
 
-          drawGeneralStatistics()
+          drawGeneralStatistics();
 
         };
 			}
