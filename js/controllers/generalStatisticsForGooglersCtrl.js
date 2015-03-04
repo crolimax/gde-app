@@ -27,7 +27,8 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
   	$scope.activityBy = {
   	  'GDE':{},
   	  'Product':{},
-  	  'Activity':{}
+  	  'Activity':{},
+  	  'Region':{},
   	};
 
 	}
@@ -97,14 +98,26 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 			rows: []
 		};
 
+		var useCountry = false;
+		//Check the prefix to see it the country column needs to be added
+		if(prefix=='Region'){
+      activitiesBy.cols.push({
+        id		: 'country',
+				label	: 'Country',
+				type	: 'string'
+		  });
+		  useCountry = true;
+		}
+
 		//Add Shared Metrics columns
 		$scope.utils.addMetricColumns(activitiesBy);
 
 		//Create Chart rows and add them to the object for the chart
 		for (var i=0;i<activitiesClone.length;i++)
 		{
+
 			activitiesBy.rows.push(
-				$scope.utils.chartDataRow(activitiesClone[i][key], activitiesClone[i])
+				$scope.utils.chartDataRow(activitiesClone[i][key], activitiesClone[i],useCountry)
 			);
 		};
 
@@ -234,8 +247,9 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
       BarChart.setContainerId(prefix+'_BarChart');
       BarChart.setOptions(
       {
-        'width'				:chartWidth,
-        'isStacked'			: true,
+        'width':chartWidth,
+        'height': 500,
+        'isStacked': true,
         'reverseCategories'	: true,
         'legend':
         {
@@ -244,8 +258,13 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
           'maxLines'	:3
         }
       });
-      BarChart.setView({'columns': [0,1,2,3]});//Show only the log10 columns
-
+      //Region Chart avoid showing region
+      if(prefix=='Region'){
+        BarChart.setView({'columns': [1,2,3,4,5]});//Show only the log10 columns
+      }
+      else{
+        BarChart.setView({'columns': [0,1,2,3,4]});//Show only the log10 columns
+      }
       realChart=BarChart;
 		}
 
@@ -313,6 +332,9 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 
 		//By GDE Charts
 		drawChart('Activity','activity_type');
+
+		//By GDE Charts
+		drawChart('Region','region');
 
 		loadingToast.dismiss();
 	}
@@ -459,13 +481,40 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 
                   $scope.activityBy['Activity'][activity_type]['activities'] = [];	// Initialize a new JSON ordered array
                 }
-
                 $scope.utils.updateStats($scope.activityBy['Activity'][activity_type], $scope.data.items[i]);
 
                 $scope.activityBy['Activity'][activity_type]['activities'].push(activity);
 
               }
             };
+            //===============================================//
+            // activities by GDE Region
+            //===============================================//
+            //Get the user account for the activity
+            var country = null;
+            var region = null;
+            var currDtItm = $scope.data.items[i];
+            $rootScope.gdeList.some(function(accn){
+              if (accn.gplus_id==currDtItm.gplus_id){
+                country = accn.country;
+                region = accn.region;
+                return true;
+              }
+              return false;
+            });
+
+            if (!$scope.activityBy['Region'][country])
+            {
+              $scope.activityBy['Region'][country] = {}; // Initialize a new JSON unordered array
+
+              $scope.activityBy['Region'][country]['region'] = region;
+              $scope.activityBy['Region'][country]['country'] = country;
+              $scope.activityBy['Region'][country]['activities'] = [];  // Initialize a new JSON ordered array
+            }
+            $scope.utils.updateStats($scope.activityBy['Region'][country], $scope.data.items[i]);
+
+            $scope.activityBy['Region'][country]['activities'].push(activity);
+            //===============================================//
           };
 
           //sort by total_impact

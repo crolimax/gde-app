@@ -120,6 +120,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 			}
 		});
 		gdeColumnChart.setDataTable(activitiesByGde_data);
+		gdeColumnChart.setView({'columns': [0,1,2,3,4]});//Show only the log10 columns
 		gdeColumnChart.draw();
 		gdeTableChart.draw();
 	}

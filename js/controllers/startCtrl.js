@@ -4,7 +4,7 @@
 GdeTrackingApp.controller("startCtrl",							function($rootScope, $scope,	$http,	mapOptions,	mapCenters,	mapMarkers)
 {
 	var loadingToast	= document.querySelector('paper-toast[id="loading"]');	// Show loading sign
-	loadingToast.show();
+	//loadingToast.show();
 
 	$('.angular-google-map-container').css('border-bottom-left-radius',	'0.5em');
 	$('.angular-google-map-container').css('border-bottom-right-radius',	'0.5em');
@@ -26,9 +26,6 @@ GdeTrackingApp.controller("startCtrl",							function($rootScope, $scope,	$http,
 	$scope.gdeNumber	= '...';
 
 	$scope.gdeTrackingAPI = null;
-  if ($rootScope.is_backend_ready){
-    $scope.gdeTrackingAPI = gapi.client.gdetracking;
-  }
 
   var getPGs = function(gdeObject){
     var gdeProducts = gdeObject.product_group;
@@ -55,89 +52,57 @@ GdeTrackingApp.controller("startCtrl",							function($rootScope, $scope,	$http,
     return toRet;
   }
 
-	$scope.getGdeList			= function (nextPageToken)
+	$scope.getGdeList			= function ()
 	{
-		//console.log($scope.gdeList.length);
-		//console.log(userURL);
-		//Create request data object
-		var requestData = {};
-		requestData.limit=100;
-		requestData.type = 'active';
-		requestData.pageToken=nextPageToken;
 
-		$scope.gdeTrackingAPI.account.list(requestData).execute(
-		function(response)
-		{
-			//Check if the backend returned and error
-			if (response.code){
-			  window.alert('There was a problem connecting with Google App Engine. Try again in a few minutes. Error: '+response.code + ' - '+ response.message);
-			}else{
-			  //response is ok
-			  for	(var i=0;	i<response.items.length;	i++)
-			  {
-				  //MSO - 20140605 - exclude the deleted
-				  if (response.items[i].deleted==false)
-				  {
-					//console.log(response.items[i]);
-					$scope.gdeList.push(response.items[i]);
-				  }
-			  };
-			  //console.log(response);
-			  if	(response.nextPageToken)	// If there is still more data
-			  {
-				$scope.getGdeList(response.nextPageToken);	// Get the next page
-			  } else
-			  {
-			    loadingToast.dismiss();
-					$scope.gdeNumber	= $scope.gdeList.length;
-					for (var i=0;i<$scope.gdeNumber;i++)
-					{
-						$scope.gdeList[i].pic_url		= ($scope.gdeList[i].pic_url).replace("=50", "=100");
+		$scope.gdeList = $rootScope.gdeList;
 
-						var coords						= $scope.gdeList[i].geocode;
-						$scope.gdeList[i].pgObjects = getPGs($scope.gdeList[i]);
-						var badge             = $scope.gdeList[i].pgObjects[0].image;
-						var icon						  = 'img/badges/'+badge.replace('.svg','.png');
-						var gdeName						= $scope.gdeList[i].display_name;
-						var gdePic						= $scope.gdeList[i].pic_url;
-						var gdeProducts				= $scope.gdeList[i].product_group;
-						var gdeCountry				= $scope.gdeList[i].country;
-						var ctry_filename			= $scope.gdeList[i].ctry_filename;
+		$scope.gdeNumber	= $scope.gdeList.length;
 
-						mapMarkers[i]					= {};
+		$scope.gdeList.forEach(function(currGde){
 
-						mapMarkers[i]["latitude"]		    = coords.lat;
-						mapMarkers[i]["longitude"]		  = coords.lng;
-						mapMarkers[i]["icon"]			      = icon;
-						mapMarkers[i]["id"]				      = "gde" + i;;
-						mapMarkers[i]["name"]			      = gdeName;
-						mapMarkers[i]["pic"]			      = gdePic;
-						mapMarkers[i]["pgObjects"]		    = $scope.gdeList[i].pgObjects;
-						mapMarkers[i]["country"]		    = gdeCountry;
-						mapMarkers[i]["ctry_filename"]	= ctry_filename;
-					};
-					$scope.markers		= mapMarkers;
-					$scope.markerClick	= function(id)
-					{
-						var gdeId	= '#'+id;
-						$('window').attr("show",true);
-						console.log(gdeId);
-					};
-					//	Trigger CSS3 animation after map loads
-					$('.nav-fab')	.css('-webkit-animation'	, 'fabAppears	2s	linear	1	both');	//	-webkit- CSS
-					$('.nav-fab')	.css('animation'			, 'fabAppears	2s	linear	1	both');	//	W3C	CSS
+      //Update the pic size to a bigger image
+      currGde.pic_url = currGde.pic_url.replace("=50", "=100");
 
-					//Hide the splash screen
-					$('#splash_screen').hide();
-					$scope.$apply();
-				}
-			}
+      //Generate the PG object list for the GDE
+      if (!currGde.pgObjects){
+        currGde.pgObjects = getPGs(currGde);
+      }
+
+      //Create the mapMarker for the current GDE
+      mapMarker= {};
+
+			mapMarker["latitude"] = currGde.geocode.lat;
+			mapMarker["longitude"] = currGde.geocode.lng;
+			var badge = currGde.pgObjects[0].image; //Get the first PGs Image
+			mapMarker["icon"] = 'img/badges/'+badge.replace('.svg','.png');
+			mapMarker["id"] = "gde" + currGde.gplus_id;
+			mapMarker["name"] = currGde.display_name;
+			mapMarker["pic"] = currGde.pic_url;
+			mapMarker["pgObjects"] = currGde.pgObjects;
+			mapMarker["country"] = currGde.country;
+			mapMarker["ctry_filename"] = currGde.ctry_filename;
+
+			mapMarkers.push(mapMarker);
 		});
-	};
 
-	if ($rootScope.is_backend_ready){
-	  $scope.getGdeList();
-	}
+		$scope.markers = mapMarkers;
+
+		$scope.markerClick	= function(id)
+		{
+			var gdeId	= '#'+id;
+			$('window').attr("show",true);
+			console.log(gdeId);
+		};
+
+		//	Trigger CSS3 animation after map loads
+		$('.nav-fab')	.css('-webkit-animation'	, 'fabAppears	2s	linear	1	both');	//	-webkit- CSS
+		$('.nav-fab')	.css('animation'			    , 'fabAppears	2s	linear	1	both');	//	W3C	CSS
+		$('.mapArea')	.css('-webkit-animation'	, 'mapAppears	2s	linear	1	both');	//	-webkit- CSS
+		$('.mapArea')	.css('animation'			    , 'mapAppears	2s	linear	1	both');	//	W3C	CSS
+		$scope.$apply();
+
+	};
 
 	$scope.$on('event:metadata-ready', function (event, gdeTrackingAPI)
 	{
@@ -145,8 +110,14 @@ GdeTrackingApp.controller("startCtrl",							function($rootScope, $scope,	$http,
 
 		//Save the API object in the scope
 		$scope.gdeTrackingAPI = gdeTrackingAPI;
-		//run the function to get data from the backend
+		//run the function to display the GDEs on the map
 		$scope.getGdeList();
 	});
+
+	if ($rootScope.metadataReady){
+    $scope.gdeTrackingAPI = gapi.client.gdetracking;
+    //run the function to display the GDEs on the map
+		$scope.getGdeList();
+  }
 
 });
