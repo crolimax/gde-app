@@ -190,12 +190,15 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 			}
 		});
 
+		var chartWidth		= $("#generalStatisticsBy"+prefix).width()-10;
+
 		//Create the table
 		var TableChart = new google.visualization.ChartWrapper();
 		TableChart.setChartType('Table');
 		TableChart.setContainerId(prefix+'_TableChart');
 		TableChart.setOptions(
 		{
+		  'width':chartWidth,
 			'sortColumn': 1,
 			'sortAscending': false,
 			'page': 'enable',
@@ -240,7 +243,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 
 		}else{
 		  //Bar Chart
-		  var chartWidth		= $("#generalStatisticsBy"+prefix).width()-10;
+
 
       var BarChart = new google.visualization.ChartWrapper();
       BarChart.setChartType('BarChart');

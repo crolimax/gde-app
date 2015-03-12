@@ -87,6 +87,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 		};
     //		console.log(activitiesByGde);
 
+    var chartWidth		= $("#generalStatisticsByGDE").width()-10;
 
 		// Sort data by Total Activities
 		var activitiesByGde_data		= new google.visualization.DataTable(activitiesByGde);
@@ -97,6 +98,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 		gdeTableChart.setContainerId('gdeTableChart');
 		gdeTableChart.setOptions(
 		{
+		  'width':chartWidth,
 			'sortColumn'	: 1,
 			'sortAscending'	: false,
 			'page'			: 'enable',
@@ -108,7 +110,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 		gdeColumnChart.setChartType('ColumnChart');
 		gdeColumnChart.setContainerId('gdeColumnChart');
 
-		var chartWidth		= $("#generalStatisticsByGDE").width()-10;
+
 		gdeColumnChart.setOptions(
 		{
 			'width'				:chartWidth,
