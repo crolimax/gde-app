@@ -41,6 +41,7 @@ from models import activity_record as ar
 
 from .utils import get_server_api_key
 
+
 class CronNewGplus(webapp2.RequestHandler):
 
     """Creates tasks to get new gplus activities for each gde."""
@@ -52,16 +53,16 @@ class CronNewGplus(webapp2.RequestHandler):
         accounts = Account.query()
         user_count = 0
         for account in accounts:
-            #don't process admin users
+            # don't process admin users
             if account.type == "administrator":
                 continue
-            #don't process inactive users
+            # don't process inactive users
             if account.type != "active":
                 continue
-            user_count +=1
+            user_count += 1
             taskqueue.add(queue_name='gplus',
                           url='/tasks/new_gplus',
-                          params={'gplus_id':account.gplus_id})
+                          params={'gplus_id': account.gplus_id})
 
         logging.info('crons/new_gplus created tasks for %s users' % user_count)
 
@@ -77,11 +78,12 @@ class TaskNewGplus(webapp2.RequestHandler):
         gplus_id = self.request.get('gplus_id')
         logging.info(gplus_id)
 
-        #build the service object for the gplus api
+        # build the service object for the gplus api
         API_KEY = get_server_api_key()
         gplus_service = build('plus', 'v1', developerKey=API_KEY)
         # find out what the last activity date recorded is for the expert
-        activities = ActivityPost.query(ActivityPost.gplus_id == gplus_id).order(-ActivityPost.date).fetch(1)
+        activities = ActivityPost.query(
+            ActivityPost.gplus_id == gplus_id).order(-ActivityPost.date).fetch(1)
         # if this is the first time we are getting activities for a new user
         if len(activities) == 0:
             last_activity_date = date(1990, 1, 1).strftime("%Y-%m-%d %H:%M:%S")
@@ -91,22 +93,22 @@ class TaskNewGplus(webapp2.RequestHandler):
         # get the last 100 activities from gplus
         # eventually we can also query using the date so we don't
         # have to compare each post with the date we just got
-        try: 
+        try:
             result = gplus_service.activities().list(userId=gplus_id,
-                                               collection='public',
-                                               maxResults=100).execute()
+                                                     collection='public',
+                                                     maxResults=100).execute()
         except:
-            #try againg
+            # try againg
             logging.info('trying to get gplus activities again')
             try:
                 result = gplus_service.activities().list(userId=gplus_id,
-                                                   collection='public',
-                                                   maxResults=100).execute()
+                                                         collection='public',
+                                                         maxResults=100).execute()
             except:
                 logging.info('failed again, giving up')
 
         else:
-            #patt0 25102014 sort the items in reverse update date order 
+            # patt0 25102014 sort the items in reverse update date order
             gplus_act = result.get('items', [])
             gplus_activities = sorted(gplus_act, key=lambda k: k['updated'])
             for gplus_activity in gplus_activities:
@@ -114,13 +116,15 @@ class TaskNewGplus(webapp2.RequestHandler):
                     # ensure this is a gde post
                     if is_gde_post(gplus_activity):
 
-                        #create a new activity
+                        # create a new activity
                         new_activity = ActivityPost(id=gplus_activity["id"])
                         new_activity.create_from_gplus_post(gplus_activity)
                         new_activity.put()
-                        logging.info('new activity recorded: %s' % new_activity.url)
+                        logging.info('new activity recorded: %s' %
+                                     new_activity.url)
 
-                        activity_record = find_or_create_ar(gplus_activity, new_activity)
+                        activity_record = find_or_create_ar(
+                            gplus_activity, new_activity)
                         activity_record.add_post(new_activity)
 
 
@@ -134,14 +138,15 @@ def find_or_create_ar(gplus_activity, activity_post):
         original_post_id = gplus_activity['object']['id']
 
     if original_post_id is not None:
-        records = ActivityRecord.query(ActivityRecord.gplus_posts == 
+        records = ActivityRecord.query(ActivityRecord.gplus_posts ==
                                        original_post_id).fetch(20)
         if (len(records) == 0):
-                return ar.create_activity_record(activity_post)
+            return ar.create_activity_record(activity_post)
         else:
-            return records[0]    
+            return records[0]
 
     return ar.create_activity_record(activity_post)
+
 
 def is_gde_post(activity):
     """Identify gde post."""
@@ -165,9 +170,10 @@ def is_gde_post(activity):
     else:
         return True
 
-def is_youtube_video(activity):
+
+def is_youtube_video(link):
     """Identify youtube video's."""
-    content = activity.links
+    content = link
     result = re.search('www.youtube.com', content, flags=re.IGNORECASE)
     if result is None:
         return False
@@ -181,9 +187,35 @@ def is_youtube_video(activity):
             video_id_trimed = video_id
     except ValueError:
         logging.info('badly formed video url')
+        logging.info(content)
         return False
 
     return video_id_trimed
+
+
+def update_video_views(gplus_id):
+    """Iterate through ActivityRecords and get video views"""
+    logging.info('Updating Video Views')
+    # build the service object of the yt api
+    API_KEY = get_server_api_key()
+    yt_service = build('youtube', 'v3', developerKey=API_KEY)
+    # get the activities for the gde
+    activities = ActivityRecord.query(ActivityRecord.gplus_id == gplus_id,
+                                      ActivityRecord.metadata.type == '#video')
+    for activity in activities:
+        for meta in activity.metadata:
+            if meta.link is not None:
+                video_id = is_youtube_video(meta.link)
+                if video_id is not False:
+                    logging.info('linked YT video found %s', video_id)
+                    # get the stats for the video
+                    stats = yt_service.videos().list(
+                        part="statistics", id=video_id).execute()
+                    views = stats["items"][0]['statistics']['viewCount']
+                    meta.impact = int(views)
+                    logging.info('video meta stats updated: %s', views)
+        activity.put()
+
 
 class CronUpdateGplus(webapp2.RequestHandler):
 
@@ -200,16 +232,16 @@ class CronUpdateGplus(webapp2.RequestHandler):
         accounts = Account.query()
         user_count = 0
         for account in accounts:
-            #don't process admin users
+            # don't process admin users
             if account.type == "administrator":
                 continue
-            #don't process inactive users
+            # don't process inactive users
             if account.type != "active":
                 continue
-            user_count +=1
+            user_count += 1
             taskqueue.add(queue_name='gplus',
                           url='/tasks/upd_gplus',
-                          params={'gplus_id':account.gplus_id})
+                          params={'gplus_id': account.gplus_id})
 
         logging.info('crons/upd_gplus created tasks for %s users' % user_count)
 
@@ -226,12 +258,10 @@ class TaskUpdateGplus(webapp2.RequestHandler):
         gplus_id = self.request.get('gplus_id')
         logging.info(gplus_id)
 
-        #build the service object for the gplus api
+        # build the service object for the gplus api
         API_KEY = get_server_api_key()
         gplus_service = build('plus', 'v1', developerKey=API_KEY)
-        #build the service object of the yt api
-        yt_service = build('youtube', 'v3', developerKey=API_KEY)
-        #get the activities for the gde
+        # get the activities for the gde
         activities = ActivityPost.query(ActivityPost.gplus_id == gplus_id)
 
         for activity in activities:
@@ -244,25 +274,35 @@ class TaskUpdateGplus(webapp2.RequestHandler):
                 if activity_record.deleted:
                     continue
 
-            # find out if it is a video
-            video_id = is_youtube_video(activity)
+            # find out if the acticity post links to a YouTube video
+            video_id = is_youtube_video(activity.links)
             if video_id is not False:
-                logging.info('video found %s', video_id)
-                # get the stats for the video
-                stats = yt_service.videos().list(part="statistics", id=video_id).execute()
-                views = stats["items"][0]['statistics']['viewCount']
-                if activity_record.metadata:
-                    if activity_record.metadata[0].impact != int(views):
-                        activity_record.metadata[0].impact = int(views)
-                        logging.info('stats updated: %s', views)
-                        activity_record.put()
-                else:
-                    activity_record.metadata.append(ActivityMetaData())
-                    activity_record.metadata[0].impact = int(views)
-                    logging.info('stats updated: %s', views)
-                    activity_record.put()
-                
+                logging.info('linked YT video found %s', video_id)
 
+                # ensure a metadata entry exist for the video
+                meta_found = False
+                for meta in activity_record.metadata:
+                    if meta.type == '#video' and meta.link == activity_record.activity_link:
+                        logging.info('metadata record exist')
+                        meta_found = True
+                        break
+
+                    if meta.type == '#video' and meta.link is None:
+                        meta_found = True
+                        logging.info('metadata record incomplete')
+                        meta.activity_group = '#content'
+                        meta.link = activity_record.activity_link
+                        activity_record.put()
+                        break
+
+                if not meta_found:
+                    logging.info('metadata record NOT found')
+                    activity_record.metadata.insert(0, ActivityMetaData())
+                    meta = activity_record.metadata[0]
+                    meta.type = '#video'
+                    meta.activity_group = '#content'
+                    meta.link = activity_record.activity_link
+                    activity_record.put()
 
             # get the activity from gplus
             fields = 'id,verb,actor/id,annotation,object(id,actor/id,plusoners/totalItems,replies/totalItems,resharers/totalItems,content)'
@@ -282,7 +322,7 @@ class TaskUpdateGplus(webapp2.RequestHandler):
                     continue
 
             if not is_gde_post(plus_activity):
-                # #gde tag has been removed from post
+                # gde tag has been removed from post
                 # This post and associated AR should be deleted
                 # For now we just skip any further action on this post
                 continue
@@ -290,8 +330,10 @@ class TaskUpdateGplus(webapp2.RequestHandler):
             updated_activity = self.update_if_changed(activity, plus_activity)
 
             if updated_activity is not None:
-                logging.info('updated gplus post id %s' % updated_activity.post_id)
-                activity_record = find_or_create_ar(plus_activity, updated_activity)
+                logging.info('updated gplus post id %s' %
+                             updated_activity.post_id)
+                activity_record = find_or_create_ar(
+                    plus_activity, updated_activity)
                 activity_record.add_post(updated_activity)
                 updated_activity.put()
 
@@ -308,6 +350,8 @@ class TaskUpdateGplus(webapp2.RequestHandler):
                 if really_bad:
                     logging.info('bad post spotted')
                     bad_posts.append(activity.url)
+
+        update_video_views(gplus_id)
 
         if len(bad_posts) > 0:
             self.send_update_mail(bad_posts, gplus_id)
@@ -351,8 +395,8 @@ class TaskUpdateGplus(webapp2.RequestHandler):
     def send_update_mail(self, bad_posts, gplus_id):
         """Send out a mail with a link to the post for update."""
 
-        #if we run this from the staging environment do not send emails
-        app = app_identity.get_default_version_hostname();
+        # if we run this from the staging environment do not send emails
+        app = app_identity.get_default_version_hostname()
         if app == "elite-firefly-737.appspot.com":
             logging.info('running from %s, not sending bad post email', app)
             return
@@ -370,7 +414,7 @@ class TaskUpdateGplus(webapp2.RequestHandler):
         body_s += "Because of this, it(they) does not reflect in your GDE stats. \n\n"
 
         for bad_post in bad_posts:
-            body_s += "%s \n" % bad_post 
+            body_s += "%s \n" % bad_post
 
         body_s += "\nKindly update your post(s) with #hashtags. A reminder of the valid "
         body_s += "hashtags can be found in the 'How Its Used?' section of http://gdetracking.gweb.io/. \n\n"
@@ -378,8 +422,10 @@ class TaskUpdateGplus(webapp2.RequestHandler):
 
         try:
             mail.send_mail(sender="GDE Tracking App Support <no-reply@omega-keep-406.appspotmail.com>",
-                  to=email,
-                  subject="GDE Activity Tracker : Missing hashtags on ActivityPost for %s " % datetime.now().strftime("%Y-%m-%d"),
-                  body="""%s""" % body_s)
+                           to=email,
+                           subject="GDE Activity Tracker : Missing hashtags on ActivityPost for %s " % datetime.now(
+                           ).strftime("%Y-%m-%d"),
+                           body="""%s""" % body_s)
         except:
-            logging.warning("error sending email check user account %s", str(account.display_name))
+            logging.warning(
+                "error sending email check user account %s", str(account.display_name))
