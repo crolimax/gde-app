@@ -93,6 +93,7 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 				userImage.src			= $scope.userImageUrl;
 				userImage.alt			= 'g+ image';
 				$('#userImg')	.html(userImage);
+				$('#authInfos').show();
 
 				if($rootScope.metadataReady){
 				  $scope.getUserAccount(resp.id);
@@ -104,15 +105,17 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 	$scope.$on('event:google-plus-signin-failure', function (event, authResult)
 	{																					// User has not authorized the G+ App!
 		$('.signinButton')	.css('display','block');
+
     //$('.signout')		.css('display','none');
-    if ($('.userName').text!= '')
+    if (authResult.status.google_logged_in)
     {
       alert("There was an Error with Oauth");
+      console.log('Error in sign in flow.');
 		};
 		$('#userImg')		.html = '';
 		$('.userName')		.text= '';
 		$rootScope.usrId = null;//UnAuthorize the user
-		console.log('Error in sign in flow.');
+
 		console.log(authResult);
 	});
 	$scope.$on('event:metadata-ready', function (event, gdeTrackingAPI)
