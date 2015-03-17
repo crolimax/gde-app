@@ -176,11 +176,20 @@ def is_gde_post(activity):
 def is_youtube_video(link):
     """Identify youtube video's."""
     content = urllib2.unquote(link).decode('utf8')
-    result = re.search('www.youtube.com', content, flags=re.IGNORECASE)
+    # shortened YT url
+    result = re.search('http://youtu.be', content, flags=re.IGNORECASE)
     if result is None:
-        return False
+        result = re.search('www.youtube.com', content, flags=re.IGNORECASE)
+        if result is None:
+            return False
+        else:
+            video_prefix = "watch?v="
+    else:
+        video_prefix = "youtu.be/"
+
     try:
-        id_pos = content.index("watch?v=") + 8
+        logging.info(content)
+        id_pos = content.index(video_prefix) + len(video_prefix)
         video_id = content[id_pos:]
         try:
             param_pos = video_id.index("&")
@@ -189,7 +198,6 @@ def is_youtube_video(link):
             video_id_trimed = video_id
     except ValueError:
         logging.info('badly formed video url')
-        logging.info(content)
         return False
 
     return video_id_trimed
