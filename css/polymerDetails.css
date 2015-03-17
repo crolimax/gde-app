@@ -628,7 +628,7 @@ html /deep/ .prettyTable th
     display:none;
   }
 }
-@media (max-height: 1050px) {
+@media (max-width: 1050px) {
   .hideForSmallScreen{
     display:none;
   }
