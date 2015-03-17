@@ -609,4 +609,15 @@ html /deep/ .prettyTable th
   .appLogo{
     display:none;
   }
+  .plusLogin{
+    position: relative;
+    top:10px;
+  }
+  .plusLogin	#userImg img {
+    height: 50px;
+    box-shadow: 2px 2px 10px #000;
+  }
+  core-toolbar.medium-tall{
+    height:auto;
+  }
 }
