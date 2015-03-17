@@ -79,18 +79,18 @@
 				</div>
 			</core-toolbar	header>
 			<core-menu	nav	ng-controller="menuCtrl">
-				<core-item class="menuButtonZone">
-					<paper-button	raised class="colored red" ng-click="showGeneralStatisticsForGooglers()"	id="generalStatisticsForGooglers">
+				<core-item class="menuButtonZone" id="generalStatisticsForGooglers">
+					<paper-button	raised class="colored red" ng-click="showGeneralStatisticsForGooglers()"	>
 					  Googlers access
 					</paper-button>
 				</core-item>
-				<core-item class="menuButtonZone">
-					<paper-button	raised class="colored red" onclick="toggleDialog('GDEAvatarBuilder')"		id="gdeAvatarBuilder">
+				<core-item class="menuButtonZone" id="gdeAvatarBuilder">
+					<paper-button	raised class="colored red" onclick="toggleDialog('GDEAvatarBuilder')"	>
 					  GDE Avatar Builder
 					</paper-button>
 				</core-item>
-				<core-item class="menuButtonZone">
-					<paper-button	raised class="colored blue"		ng-click="showGdeStatistics()"					id="gdeStatistics">
+				<core-item class="menuButtonZone" id="gdeStatistics">
+					<paper-button	raised class="colored blue"		ng-click="showGdeStatistics()">
 					  GDE access
 					</paper-button>
 				</core-item>
@@ -121,8 +121,10 @@
 				<span	class="bottom"	flex>
 				</span>
 				<div	ng-controller="plusLoginCtrl"	class="plusLogin bottom">
-					<p		class=	"userName"></p>
-					<span	id=		"userImg"></span>
+				  <div id='authInfos' style='display:none'>
+  					<p		class=	"userName"></p>
+  					<span	id=		"userImg"></span>
+					</div>
 					<div	class=	"signinButton">
 						<google-plus-signin clientid="47242318878-dik3r14d8jc528h1ao35f8ehqa7tmpe1" language="en"></google-plus-signin>
 					</div>
