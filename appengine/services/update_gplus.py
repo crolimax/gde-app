@@ -27,6 +27,8 @@ import re
 from datetime import datetime
 from datetime import date
 
+import urllib2
+
 from google.appengine.api import taskqueue
 from google.appengine.api import mail
 from google.appengine.api import app_identity
@@ -173,7 +175,7 @@ def is_gde_post(activity):
 
 def is_youtube_video(link):
     """Identify youtube video's."""
-    content = link
+    content = urllib2.unquote(link).decode('utf8')
     result = re.search('www.youtube.com', content, flags=re.IGNORECASE)
     if result is None:
         return False
