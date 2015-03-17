@@ -90,10 +90,10 @@
 			<th ng-click="changeSorting('activity_types_str')" style="cursor: pointer;">
 				Type
 			</th>
-			<th ng-click="changeSorting('social_impact')" style="cursor: pointer;">
+			<th ng-click="changeSorting('social_impact')" style="cursor: pointer;" class='hideForSmallScreen'>
 				Social<br>Impact
 			</th>
-			<th ng-click="changeSorting('meta_impact')" style="cursor: pointer;">
+			<th ng-click="changeSorting('meta_impact')" style="cursor: pointer;" class='hideForSmallScreen'>
 				Metadata<br>Impact
 			</th>
 			<th ng-click="changeSorting('total_impact')" style="cursor: pointer;">
@@ -118,10 +118,10 @@
 			<td>
 				{{activity.activity_types_str}}
 			</td>
-			<td>
+			<td class='hideForSmallScreen'>
 				{{activity.social_impact}}
 			</td>
-			<td>
+			<td class='hideForSmallScreen'>
 				{{activity.meta_impact}}
 			</td>
 			<td>

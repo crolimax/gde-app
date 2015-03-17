@@ -590,6 +590,9 @@ html /deep/ .prettyTable th
   .appLogo{
     display:none;
   }
+  .hideForSmallScreen{
+    display:none;
+  }
 }
 
 @media (max-height: 500px) {
@@ -620,5 +623,17 @@ html /deep/ .prettyTable th
   }
   core-toolbar.medium-tall{
     height:auto;
+  }
+  .hideForSmallScreen{
+    display:none;
+  }
+}
+@media (max-height: 1050px) {
+  .hideForSmallScreen{
+    display:none;
+  }
+  html /deep/ .prettyTable {
+    margin: 1em;
+    padding:initial;
   }
 }
