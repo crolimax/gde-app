@@ -232,22 +232,23 @@
 
           <div vertical layout ng-repeat="currentMetadata in metadataArray" style="min-height:200px">
             <input type="hidden" value="{{currentMetadata.activity_group}}"></input>
-            <div layout horizontal wrap>
-              <paper-input flex floatingLabel type='text' style ="min-width: 300px;"
-                  label='{{getAGFieldTitle(currentMetadata.activity_group,"title")}}'
-                  ng-model='currentMetadata.title'
-                  ></paper-input>
-              <select ng-model="currentMetadata.type"	ng-options="actType for actType in selectedAG.types" self-stretch>
-                <option value="">
-                  Select type of Activity
-                </option>
-              </select>
-            </div>
-            <paper-input floatingLabel type='url' style ="min-width: 300px;"
-              label='{{getAGFieldTitle(currentMetadata.activity_group,"description")}}'
-              ng-model='currentMetadata.description'
-              ></paper-input>
             <div horizontal layout wrap>
+              <div layout horizontal style='width:100%' >
+                <paper-input flex floatingLabel type='text' style ="width:100%;"
+                    label='{{getAGFieldTitle(currentMetadata.activity_group,"title")}}'
+                    ng-model='currentMetadata.title'
+                    ></paper-input>
+                <select ng-model="currentMetadata.type"	ng-options="actType for actType in selectedAG.types"
+                    self-stretch style='min-width: 100px;'>
+                  <option value="">
+                    Select type of Activity
+                  </option>
+                </select>
+              </div>
+              <paper-input floatingLabel type='text' style ="min-width: 300px;width:100%"
+                label='{{getAGFieldTitle(currentMetadata.activity_group,"description")}}'
+                ng-model='currentMetadata.description'>
+              </paper-input>
               <paper-input floatingLabel type='url' style ="min-width: 300px;"
                 label='{{getAGFieldTitle(currentMetadata.activity_group,"link")}}'
                 ng-model='currentMetadata.link'
