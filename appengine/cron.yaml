@@ -9,6 +9,11 @@ cron:
   schedule: 26 of october 18:10
   #schedule: every wed 01:30
 
+- description: stack overflow harvest
+  url: /crons/harvest_so
+  schedule: 24 of march 16:35
+  # schedule: every wed 02:30
+
 - description: ad-hoc calc_impact
   url: /tasks/calc_impact
   schedule: 29 of january 10:45

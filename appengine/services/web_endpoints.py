@@ -18,7 +18,8 @@ _CLIENT_IDs = [
     '622745668355-rpeo1i7hjo4vj003dithtp1d71iniqqc.apps.googleusercontent.com'
 ]
 
-api_root = endpoints.api(name='gdetracking', version='v1.0b2', allowed_client_ids=_CLIENT_IDs)
+api_root = endpoints.api(
+    name='gdetracking', version='v1.0b2', allowed_client_ids=_CLIENT_IDs)
 
 
 @api_root.api_class(resource_name='activity_record', path='activityRecord')
@@ -36,7 +37,8 @@ class ActivityRecordService(remote.Service):
     def ActivityRecordInsert(self, activity_record):
 
         if not check_auth(activity_record.gplus_id, activity_record.api_key):
-            raise endpoints.UnauthorizedException('Only GDEs and admins may enter or change data.')
+            raise endpoints.UnauthorizedException(
+                'Only GDEs and admins may enter or change data.')
 
         if activity_record.deleted is None:
             activity_record.deleted = False
@@ -51,7 +53,8 @@ class ActivityRecordService(remote.Service):
             raise endpoints.NotFoundException('ActivityRecord not found.')
 
         if not check_auth(activity_record.gplus_id, activity_record.api_key):
-            raise endpoints.UnauthorizedException('Only GDEs and admins may enter or change data.')
+            raise endpoints.UnauthorizedException(
+                'Only GDEs and admins may enter or change data.')
 
         if activity_record.deleted is None:
             activity_record.deleted = False
@@ -66,7 +69,8 @@ class ActivityRecordService(remote.Service):
             raise endpoints.NotFoundException('ActivityRecord not found.')
 
         if not check_auth(activity_record.gplus_id, activity_record.api_key):
-            raise endpoints.UnauthorizedException('Only GDEs and admins may enter or change data.')
+            raise endpoints.UnauthorizedException(
+                'Only GDEs and admins may enter or change data.')
 
         if activity_record.deleted is None:
             activity_record.deleted = False
@@ -82,7 +86,8 @@ class ActivityRecordService(remote.Service):
             raise endpoints.NotFoundException('ActivityRecord not found.')
 
         if not check_auth(activity_record.gplus_id, activity_record.api_key):
-            raise endpoints.UnauthorizedException('Only GDEs and admins may enter or change data.')
+            raise endpoints.UnauthorizedException(
+                'Only GDEs and admins may enter or change data.')
 
         activity_record.deleted = True
         activity_record.put()
@@ -97,11 +102,13 @@ class ActivityRecordService(remote.Service):
             raise endpoints.NotFoundException('ActivityRecord not found.')
 
         if not check_auth(activity_record.gplus_id, activity_record.api_key):
-            raise endpoints.UnauthorizedException('Only GDEs and admins may enter or change data.')
+            raise endpoints.UnauthorizedException(
+                'Only GDEs and admins may enter or change data.')
 
         # Mark associated Activity Posts as deleted
         if activity_record.gplus_posts is not None and len(activity_record.gplus_posts) > 0:
-            keys = [ndb.Key(ActivityPost, post_id) for post_id in activity_record.gplus_posts]
+            keys = [ndb.Key(ActivityPost, post_id)
+                    for post_id in activity_record.gplus_posts]
             posts = ndb.get_multi(keys)
             for post in posts:
                 if post is not None:
@@ -143,15 +150,16 @@ class AccountService(remote.Service):
                                     'display_name', 'pic_url', 'geocode',
                                     'real_name', 'email', 'location', 'region',
                                     'country', 'ctry_filename', 'product_group',
-                                    'pg_filename', 'deleted', 'api_key'),
+                                    'pg_filename', 'deleted', 'api_key', 'so_id'),
                     response_fields=('id', 'gplus_id', 'gplus_page', 'type',
                                      'display_name', 'pic_url', 'geocode',
                                      'real_name', 'email', 'location', 'region',
                                      'country', 'ctry_filename', 'product_group',
-                                     'pg_filename', 'deleted'))
+                                     'pg_filename', 'deleted', 'so_id'))
     def AccountInsert(self, account):
         if not check_auth(None, account.api_key):
-            raise endpoints.UnauthorizedException('Only Admins may enter or change this data.')
+            raise endpoints.UnauthorizedException(
+                'Only Admins may enter or change this data.')
 
         account.put()
         return account
@@ -176,7 +184,8 @@ class ActivityTypeService(remote.Service):
                          request_fields=('id', 'tag', 'description', 'group', 'api_key'))
     def at_insert(self, activity_type):
         if not check_auth(None, activity_type.api_key):
-            raise endpoints.UnauthorizedException('Only Admins may enter or change this data.')
+            raise endpoints.UnauthorizedException(
+                'Only Admins may enter or change this data.')
 
         activity_type.put()
         return activity_type
@@ -195,7 +204,8 @@ class ActivityTypeService(remote.Service):
         if not activity_type.from_datastore:
             raise endpoints.NotFoundException('Activity type not found.')
         if not check_auth(None, activity_type.api_key):
-            raise endpoints.UnauthorizedException('Only Admins may enter or change this data.')
+            raise endpoints.UnauthorizedException(
+                'Only Admins may enter or change this data.')
 
         activity_type.key.delete()
 
@@ -216,7 +226,8 @@ class ActivityGroupService(remote.Service):
                                           'google_expensed', 'us_approx_amount', 'api_key'))
     def ag_insert(self, activity_group):
         if not check_auth(None, activity_group.api_key):
-            raise endpoints.UnauthorizedException('Only Admins may enter or change this data.')
+            raise endpoints.UnauthorizedException(
+                'Only Admins may enter or change this data.')
 
         activity_group.put()
         return activity_group
@@ -235,7 +246,8 @@ class ActivityGroupService(remote.Service):
         if not activity_group.from_datastore:
             raise endpoints.NotFoundException('Activity type not found.')
         if not check_auth(None, activity_group.api_key):
-            raise endpoints.UnauthorizedException('Only Admins may enter or change this data.')
+            raise endpoints.UnauthorizedException(
+                'Only Admins may enter or change this data.')
 
         activity_group.key.delete()
 
@@ -254,7 +266,8 @@ class ProductGroupService(remote.Service):
                          request_fields=('id', 'tag', 'description', 'url', 'image', 'api_key'))
     def pg_insert(self, product_group):
         if not check_auth(None, product_group.api_key):
-            raise endpoints.UnauthorizedException('Only Admins may enter or change this data.')
+            raise endpoints.UnauthorizedException(
+                'Only Admins may enter or change this data.')
 
         product_group.put()
         return product_group
@@ -273,7 +286,8 @@ class ProductGroupService(remote.Service):
         if not product_group.from_datastore:
             raise endpoints.NotFoundException('Activity type not found.')
         if not check_auth(None, product_group.api_key):
-            raise endpoints.UnauthorizedException('Only Admins may enter or change this data.')
+            raise endpoints.UnauthorizedException(
+                'Only Admins may enter or change this data.')
 
         product_group.key.delete()
 
