@@ -15,7 +15,7 @@ class Account(EndpointsModel):
                               'display_name', 'pic_url', 'geocode',
                               'real_name', 'location', 'region',
                               'country', 'ctry_filename', 'product_group',
-                              'pg_filename', 'deleted')
+                              'pg_filename', 'deleted', 'so_id')
 
     _api_key = None
 
@@ -34,8 +34,9 @@ class Account(EndpointsModel):
     pg_filename = ndb.StringProperty()
     deleted = ndb.BooleanProperty()
     pic_url = ndb.StringProperty()
-    # how will we manage these? using AR ids?
-    # activities = ndb.StringProperty(repeated=True)
+
+    # Stack Overflow ID : issue #211 on github
+    so_id = ndb.StringProperty()
 
     def ApiKeySet(self, value):
         self._api_key = value
