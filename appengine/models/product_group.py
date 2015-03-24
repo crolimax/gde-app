@@ -6,7 +6,8 @@ from protorpc import messages
 
 class ProductGroup(EndpointsModel):
 
-    _message_fields_schema = ('id', 'tag', 'description', 'url', 'image')
+    _message_fields_schema = (
+        'id', 'tag', 'description', 'url', 'image', 'so_tags')
 
     _api_key = None
 
@@ -21,6 +22,9 @@ class ProductGroup(EndpointsModel):
 
     # Badge-image for this product
     image = ndb.StringProperty()
+
+    # Stack Overflow tags of interest  : issue #211 on github
+    so_tags = ndb.StringProperty(repeated=True)
 
     def ApiKeySet(self, value):
         self._api_key = value
