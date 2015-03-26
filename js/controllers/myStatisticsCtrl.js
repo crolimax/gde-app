@@ -9,7 +9,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
   }
 
 	var loadingToast	= document.querySelector('paper-toast[id="loading"]');	// Show loading sign
-	loadingToast		.show();
+	loadingToast.show();
 
 	$('paper-fab')		.css('-webkit-animation',	'hideFab	1s	linear	1	both');	//	-webkit- CSS3 animation
 	$('paper-fab')		.css('animation',			'hideFab	1s	linear	1	both');	//	W3C	CSS3 animation
@@ -87,6 +87,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 		};
     //		console.log(activitiesByGde);
 
+    var chartWidth		= $("#generalStatisticsByGDE").width()-10;
 
 		// Sort data by Total Activities
 		var activitiesByGde_data		= new google.visualization.DataTable(activitiesByGde);
@@ -97,6 +98,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 		gdeTableChart.setContainerId('gdeTableChart');
 		gdeTableChart.setOptions(
 		{
+		  'width':chartWidth,
 			'sortColumn'	: 1,
 			'sortAscending'	: false,
 			'page'			: 'enable',
@@ -107,9 +109,11 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 		var gdeColumnChart 		= new google.visualization.ChartWrapper();
 		gdeColumnChart.setChartType('ColumnChart');
 		gdeColumnChart.setContainerId('gdeColumnChart');
+
+
 		gdeColumnChart.setOptions(
 		{
-			'width'				:790,
+			'width'				:chartWidth,
 			'reverseCategories'	: true,
 			'legend':
 			{
@@ -200,6 +204,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
           {
             $scope.getActivitiesFromGAE(response.nextPageToken,gplusId,minDate,maxDate,order);	// Get the next page
           } else{// Done
+            loadingToast.dismiss();
             //console.log($scope.data.items);
             if ($rootScope.usrId)// Check if the user it's an authorized user.
             {
@@ -376,6 +381,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
       //Clean the metadataObject
       $scope.metadataArray=[];
 		}
+
   };
 
   var setCurrActivityDefaults = function(){
@@ -672,7 +678,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     }
 	};
 
-	$scope.saveGDEActivity = function(){
+	$scope.saveGDEActivity = function(senderEvent){
 
     var readyToSave = true;
 
@@ -727,7 +733,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     }
 
     $scope.metadataArray.forEach(function(currMeta){
-      if (currMeta.hasOwnProperty('impact')){
+      if ($scope.getAGFieldTitle(currMeta.activity_group,'impact').length>0){
         if ($.isNumeric(currMeta.impact)){
           //Sanity Checks on Numbers
           if (currMeta.impact==null || currMeta.impact==""){
@@ -740,7 +746,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
         }
       }
 
-      if(currMeta.hasOwnProperty('us_approx_amount')){
+      if($scope.getAGFieldTitle(currMeta.activity_group,'us_approx_amount').length>0){
         if ($.isNumeric(currMeta.us_approx_amount)){
           //Sanity Checks on Numbers
           if (currMeta.us_approx_amount==null || currMeta.us_approx_amount==""){
@@ -759,6 +765,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     {
       if ($scope.editMode=='Merge'){
         $("#fabDone").attr("disabled",false);//Enable the Fab again
+        $scope.parentEvent=senderEvent;
         //ask confirmation to delete the original activities
         toggleDialog("mergeSaveDialog");
         return;
@@ -810,6 +817,11 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
                   });
                 });
                 $scope.originalARToMerge = [];
+
+                //disable the merge button
+                $("#mergeButton").removeClass();
+                $("#mergeButton").attr("disabled",true); //Disable the button
+
                 break;
             }
 
@@ -821,7 +833,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
             prepareActivitiesForChart();
 
             //Hide the dialog
-            toggleDialog('singleActivity');
+            senderEvent.target.closest("#singleActivity").toggle();
 
           }
 
@@ -837,17 +849,19 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     var tmp = $.grep($scope.userActivities,function(item){
       return (item.selectedForMerge != null && item.selectedForMerge==true)
     });
-
+    $("#mergeButton").removeClass();
     $("#mergeButton").attr("disabled",true); //Disable the button
     if (currVal==null || currVal == false){
       if (tmp.length>0)//The event is rised before the data is changed so we have to check that
       {//Enable the merge button
         $("#mergeButton").attr("disabled",false);
+        $("#mergeButton").addClass("colored blue");
       }
     }else{
       if(tmp.length>2){//3 or more selected, one less selecting, still more (or equal) then 2
         //Enable the merge button
         $("#mergeButton").attr("disabled",false);
+        $("#mergeButton").addClass("colored blue");
       }
     }
 
@@ -862,9 +876,10 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     toggleDialog("mergeDialog");
   };
 
-	$scope.mergeSelectedAR = function(){
+	$scope.mergeSelectedAR = function(senderEvent){
     //Hide the dialog
-    toggleDialog("mergeDialog");
+    //toggleDialog("mergeDialog");
+    senderEvent.target.closest("#mergeDialog").toggle();
 
     //Create a new Empty AR
     $scope.newActivity(false);
@@ -1026,12 +1041,13 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
 	};
 
-  $scope.saveMergedAR = function(){
-    toggleDialog("mergeSaveDialog");
+  $scope.saveMergedAR = function(senderEvent){
+    //toggleDialog("mergeSaveDialog");
+    senderEvent.target.closest("#mergeSaveDialog").toggle();
     //Set the EditMode to Merged
     $scope.editMode='Merged';
     //Save the activity
-    $scope.saveGDEActivity();
+    $scope.saveGDEActivity($scope.parentEvent);
 
   };
   //Metadata functions

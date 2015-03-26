@@ -36,6 +36,8 @@ function onGapiClientLoad(){
         //Broadcast that the API is ready
         rootScope.$broadcast('event:gde-app-back-end-ready',gapi.client.gdetracking);
         console.log('event emitted');
+        //Hide the loading div
+        document.querySelector("#splash_screen").style.display='none'
       }, ROOT);
 }
 
@@ -44,7 +46,7 @@ function onGapiClientLoad(){
 // =====================================================================================================
 function toggleDialog(id)
 {
-	var dialog = document.querySelector('paper-dialog[id=' + id + ']');
+	var dialog = document.querySelector('[id=' + id + ']');
 	dialog.toggle();
 }
 document.addEventListener('polymer-ready', function()
@@ -94,12 +96,6 @@ GdeTrackingApp.config(function($routeProvider)
 // *****************************************************************************************************
 //   									AngularJS Factories
 // *****************************************************************************************************
-GdeTrackingApp.factory("gdeList",		[function()
-{
-	var gdeList	= [];
-
-	return gdeList;
-}]);
 GdeTrackingApp.factory("mapOptions",	[function()
 {
 	var mapOptions =
@@ -316,7 +312,7 @@ GdeTrackingApp.run(function ($rootScope)
 
 
 		},
-		'chartDataRow'				: function(label,	activityRecord)
+		'chartDataRow'				: function(label,	activityRecord, useCountry)
 		{
 			var row					= {c:[]};
 
@@ -327,7 +323,11 @@ GdeTrackingApp.run(function ($rootScope)
 			var social_impact_raw		= activityRecord.social_impact_raw;
 			var meta_impact_raw		= activityRecord.meta_impact_raw;
 
+
 			row.c.push({v:label});
+			if (useCountry){
+			  row.c.push({v:activityRecord.country});
+			}
 			row.c.push({v:total_impact});
 			row.c.push({v:activitiesLogged});
 			row.c.push({v:social_impact});
@@ -392,6 +392,38 @@ GdeTrackingApp.run(function ($rootScope)
 					$rootScope.activityGroups	= response.items;
 				}
 			);
+		},
+		'gdeListFromApi':function(gdeTrackingAPI,nextPageToken)
+		{	//Create request data object
+			var requestData = {};
+      requestData.limit=100;
+      requestData.type = 'active';
+      requestData.pageToken=nextPageToken;
+      //Load the GDE list once for all the application
+      gdeTrackingAPI.account.list(requestData).execute(
+        function(response)
+        {
+          if (!$rootScope.gdeList){
+            $rootScope.gdeList=[];
+          }
+          response.items.forEach(function(item){
+            //exclude deleted
+            if (item.deleted==false){
+              $rootScope.gdeList.push(item);
+            }
+
+          });
+
+          //See if more data need to be fetched
+          if (response.nextPageToken){
+            //Load more data
+            $rootScope.utils.gdeListFromApi(gdeTrackingAPI,response.nextPageToken);
+          }else{
+            $rootScope.metadataReady=true;
+            $rootScope.$broadcast('event:metadata-ready',gdeTrackingAPI);
+          }
+        }
+      );
 		}
 	};
 
@@ -400,6 +432,9 @@ GdeTrackingApp.run(function ($rootScope)
 		$rootScope.utils.activityTypesFromApi(gdeTrackingAPI);
 		$rootScope.utils.productGroupsFromApi(gdeTrackingAPI);
 		$rootScope.utils.activityGroupsFromApi(gdeTrackingAPI);
-		$rootScope.$broadcast('event:metadata-ready',gapi.client.gdetracking);
+		$rootScope.utils.gdeListFromApi(gdeTrackingAPI);
+
 	});
+
+
 });

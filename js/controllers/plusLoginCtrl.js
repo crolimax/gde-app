@@ -8,48 +8,44 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 	$scope.gdeTrackingAPI = null;
 
 	$scope.getUserAccount = function(userId){
-	  //Create request data object
-    var requestData = {};
-    requestData.id = userId;
+	  if ($rootScope.metadataReady){
+	    //Search the current user
+	    var currUser = null;
+	    $rootScope.gdeList.some(function(item){
+	      if(item.gplus_id==userId){
+	        currUser=item;
+	        return true;
+	      }
+	      return false;
+	    });
 
-    $scope.gdeTrackingAPI.account.get(requestData).execute(
-      function(response)
-  		{
-  		  //Check if the backend returned and error
-        if (response.code){
-          console.log('gdeTrackingAPI.account.get responded with Response Code: '+response.code + ' - '+ response.message);
-        }else{
-          //Response is ok, keep going
-          $scope.type	= response.type;
-          console.log('Welcome '+$scope.userName+'.');
-          $rootScope.userName = response.display_name;
-          $('#generalStatisticsForGooglers')			.css('display','none');	//Hide the previously shown menu
-          //Show the right menu by user type
-          switch (response.type){
-            case 'administrator':
-              console.log('You are an administrator of this app!');
-              $('#generalStatisticsForGooglers')	.css('display','block');
-              $rootScope.usrId		= userId; //User authorized, save the Id in the rootScope
-              break;
-            case 'manager':
-              console.log('You are a manager of this app!');
-              $('#generalStatisticsForGooglers')	.css('display','block');
-              $rootScope.usrId		= userId; //User authorized, save the Id in the rootScope
-              break;
-            case 'active':
-              console.log('You are a GDE!');
-              $('#gdeStatistics')					.css('display','block');
-              $('#gdeAvatarBuilder')				.css('display','block');
-              $rootScope.usrId		= userId; //User authorized, save the Id in the rootScope
-              break;
-            default:
-              break;	//disabled users
-          }
-
-          $rootScope.userLoaded = true;
+	    console.log('Welcome '+$scope.userName+'.');
+	    if (currUser){
+        $rootScope.userName = currUser.display_name;
+        $('#generalStatisticsForGooglers').css('display','none');	//Hide the previously shown menu
+        //Show the right menu by user type
+        switch (currUser.type){
+          case 'administrator':
+            console.log('You are an administrator of this app!');
+            $('#generalStatisticsForGooglers')	.css('display','flex');
+            break;
+          case 'manager':
+            console.log('You are a manager of this app!');
+            $('#generalStatisticsForGooglers')	.css('display','flex');
+            break;
+          case 'active':
+            console.log('You are a GDE!');
+            $('#gdeStatistics')					.css('display','flex');
+            $('#gdeAvatarBuilder')				.css('display','flex');
+            break;
+          default:
+            break;	//disabled users
         }
-      }
-    );
+        $rootScope.userLoaded = true;
+	    }else{
+	      console.log('User not found in the account masterlist');
+	    }
+	  }
 	};
 
 	$scope.$on('event:google-plus-signin-success', function (event, authResult)
@@ -70,10 +66,11 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
         $('gde-badge').get(0).updateImage(resp.image.url.replace(/\?.*$/,""));
 
 				$rootScope.$broadcast('gde:logged',resp.displayName);
-				$scope.userName			= resp.displayName;
-				$scope.userImageUrl		= (resp.image.url).replace("=50", "=90");
-				$scope.userEmails		= resp.emails;
-				$scope.id				= resp.id;
+				$scope.userName = resp.displayName;
+				$scope.userImageUrl = (resp.image.url).replace("=50", "=90");
+				$scope.userEmails = resp.emails;
+				$rootScope.usrId = resp.id;
+				$scope.id = resp.id;
         //console.log('User Id:' + resp.id);
 
 			  for (var i=0;i<$scope.userEmails.length;i++)
@@ -83,7 +80,7 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 					{
 						console	.log('You are a Googler!');
 						console	.log('Hope you like the detailed GDE program statistics.');
-						$('#generalStatisticsForGooglers')	.css('display','block');
+						$('#generalStatisticsForGooglers')	.css('display','flex');
 						$rootScope.usrId		= resp.id; //User authorized, save the Id in the rootScope
 					}
 					console.log('Logged userId:' + resp.id);
@@ -96,8 +93,9 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 				userImage.src			= $scope.userImageUrl;
 				userImage.alt			= 'g+ image';
 				$('#userImg')	.html(userImage);
+				$('#authInfos').show();
 
-				if($rootScope.is_backend_ready){
+				if($rootScope.metadataReady){
 				  $scope.getUserAccount(resp.id);
 				}
 
@@ -107,15 +105,17 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 	$scope.$on('event:google-plus-signin-failure', function (event, authResult)
 	{																					// User has not authorized the G+ App!
 		$('.signinButton')	.css('display','block');
+
     //$('.signout')		.css('display','none');
-    if ($('.userName').text!= '')
+    if (authResult.status.google_logged_in)
     {
       alert("There was an Error with Oauth");
+      console.log('Error in sign in flow.');
 		};
 		$('#userImg')		.html = '';
 		$('.userName')		.text= '';
 		$rootScope.usrId = null;//UnAuthorize the user
-		console.log('Error in sign in flow.');
+
 		console.log(authResult);
 	});
 	$scope.$on('event:metadata-ready', function (event, gdeTrackingAPI)
@@ -124,11 +124,22 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 
 		//Save the API object in the scope
 		$scope.gdeTrackingAPI = gdeTrackingAPI;
-		//Get data from the backend only if the user is already logged in and the user is not already loaded
+
+		//Get data from the backend only if the user is already logged in and the user date are not already loaded
 		if($rootScope.usrId && !$rootScope.userLoaded){
 		  //run the function to get data from the backend
 		  $scope.getUserAccount($rootScope.usrId);
 		}
 
 	});
+
+	if ($rootScope.metadataReady){
+    $scope.gdeTrackingAPI = gapi.client.gdetracking;
+    //Get data from the backend only if the user is already logged in and the user date are not already loaded
+		if($rootScope.usrId && !$rootScope.userLoaded){
+		  //run the function to get data from the backend
+		  $scope.getUserAccount($rootScope.usrId);
+		}
+  }
+
 });

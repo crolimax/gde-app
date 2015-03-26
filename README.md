@@ -28,6 +28,8 @@ The Web App is all JS and HTML, so you can run it in any web server or, as in th
 
 Download the code with Git, and use your most loved editor.
 
+bower is used to get the various web components
+
 **N.B.** As of 2014-10-17 the Front End branch has all the polymer web components manually added and it's using polymer 0.3.3.
 
 After the implementation of [issue 57](https://github.com/maiera/gde-app/issues/57) is done, we are going to use `bower` to keep components and libraries fresh
