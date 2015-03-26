@@ -27,16 +27,16 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
         switch (currUser.type){
           case 'administrator':
             console.log('You are an administrator of this app!');
-            $('#generalStatisticsForGooglers')	.css('display','block');
+            $('#generalStatisticsForGooglers')	.css('display','flex');
             break;
           case 'manager':
             console.log('You are a manager of this app!');
-            $('#generalStatisticsForGooglers')	.css('display','block');
+            $('#generalStatisticsForGooglers')	.css('display','flex');
             break;
           case 'active':
             console.log('You are a GDE!');
-            $('#gdeStatistics')					.css('display','block');
-            $('#gdeAvatarBuilder')				.css('display','block');
+            $('#gdeStatistics')					.css('display','flex');
+            $('#gdeAvatarBuilder')				.css('display','flex');
             break;
           default:
             break;	//disabled users
@@ -80,7 +80,7 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 					{
 						console	.log('You are a Googler!');
 						console	.log('Hope you like the detailed GDE program statistics.');
-						$('#generalStatisticsForGooglers')	.css('display','block');
+						$('#generalStatisticsForGooglers')	.css('display','flex');
 						$rootScope.usrId		= resp.id; //User authorized, save the Id in the rootScope
 					}
 					console.log('Logged userId:' + resp.id);
