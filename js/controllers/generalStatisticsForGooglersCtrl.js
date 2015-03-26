@@ -188,7 +188,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 			}
 		});
 
-		var chartWidth		= $("#generalStatisticsBy"+prefix).width()-10;
+		var chartWidth		= $("#generalStatisticsBy"+prefix).width()-20;
 
 		//Create the table
 		var TableChart = new google.visualization.ChartWrapper();
