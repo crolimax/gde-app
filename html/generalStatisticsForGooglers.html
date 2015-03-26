@@ -23,8 +23,9 @@
 	</paper-shadow>
 </form>
 <div style='text-align:center'>
-  <paper-button	raisedButton	label="Impact Explanation" class="colored green" onclick="toggleDialog('impactExplanation')">
-	</paper-button>
+	<paper-button class="colored green" raised onclick="toggleDialog('impactExplanation')">
+    Impact Explanation
+  </paper-button>
 </div>
 <div class="stats forGooglers">
 	<paper-shadow z="1">
@@ -112,44 +113,45 @@
   </paper-button>
 </a>
 
-<paper-dialog	id="impactExplanation"	transition="paper-dialog-transition-center" autoCloseDisabled="true">
-	<div>
-		<h1>The Impact Columns</h1>
-		<p>The Impact columns are the result of a first attempt to make all the different kind of activities comparable.</p>
-		<h3>Social Impact (RAW)</h3>
-    <p>The sum of the +1s, Reshares and comments that we can extract from the activity if shared with Google +,
-       or if manually updated for people who use Twitter more, the values should of favorites, reshares, replies.</p>
-    <h3>Metadata Impact (RAW)</h3>
-    <p>GDEs can set addictional <i>impacts</i> for the single activities<br>
-    For example if I create an article with source code related to it, I have 2 different activity types:
-    <ul>
-      <li><b>article</b> with the number of views (ex. 1000 views)</li>
-      <li><b>sourcecode</b> with the number of stars (ex. 10 starts)</li>
-    </ul>
-    The <i>Metadata Impact (RAW)</i> for this activity will be 1010.</p>
-    <br>
-    <p>This 2 columns where the first introduced, but we quickly found out huge spikes in the Metadata Impact (RAW) on videos and articles reshared by the Google Developers Page.</p>
-    <p>To make numbers smaller and comparable we came up with a simple formula to calculate the Total Impact of an activity.<br>
-    For each activity we make the following:
-    <ol>
-      <li>Calculate Social Impact as <b>log10(Social Impact RAW)</b></li>
-      <li>Calculate Metadata Impact as <b>log10(Metadata Impact RAW)</b></li>
-    </ol>
-    After we have the log10 values, we sum them up and add a base value of <b>1</b> (to count the effort of making the activity) and we have the Total Impact.
-    </p>
-    <br>
-    <p>The Total Impact full formula can be expressed as follows:
-      <blockquote>
-        <p>Total Impact = 1 + log10(Social Impact RAW) + log10(Metadata Impact RAW)</p>
-      </blockquote>
-    </p>
-    <hr>
-    <h3>Automatic Updates</h3>
-    <p>Activities from the following sources are updated regularly by the server </p>
-    <li>Google + Posts</li>
-    <li>Youtube Videos</li>
-	</div>
-	<paper-button	label="close"	icon="close" dismissive ></paper-button>
-</paper-dialog>
+<paper-action-dialog	id="impactExplanation"	transition="paper-dialog-transition-center">
+	<h1>The Impact Columns</h1>
+	<p>The Impact columns are the result of a first attempt to make all the different kind of activities comparable.</p>
+	<h3>Social Impact (RAW)</h3>
+  <p>The sum of the +1s, Reshares and comments that we can extract from the activity if shared with Google +,
+     or if manually updated for people who use Twitter more, the values should of favorites, reshares, replies.</p>
+  <h3>Metadata Impact (RAW)</h3>
+  <p>GDEs can set addictional <i>impacts</i> for the single activities<br>
+  For example if I create an article with source code related to it, I have 2 different activity types:
+  <ul>
+    <li><b>article</b> with the number of views (ex. 1000 views)</li>
+    <li><b>sourcecode</b> with the number of stars (ex. 10 starts)</li>
+  </ul>
+  The <i>Metadata Impact (RAW)</i> for this activity will be 1010.</p>
+  <br>
+  <p>This 2 columns where the first introduced, but we quickly found out huge spikes in the Metadata Impact (RAW) on videos and articles reshared by the Google Developers Page.</p>
+  <p>To make numbers smaller and comparable we came up with a simple formula to calculate the Total Impact of an activity.<br>
+  For each activity we make the following:
+  <ol>
+    <li>Calculate Social Impact as <b>log10(Social Impact RAW)</b></li>
+    <li>Calculate Metadata Impact as <b>log10(Metadata Impact RAW)</b></li>
+  </ol>
+  After we have the log10 values, we sum them up and add a base value of <b>1</b> (to count the effort of making the activity) and we have the Total Impact.
+  </p>
+  <br>
+  <p>The Total Impact full formula can be expressed as follows:
+    <blockquote>
+      <p>Total Impact = 1 + log10(Social Impact RAW) + log10(Metadata Impact RAW)</p>
+    </blockquote>
+  </p>
+  <hr>
+  <h3>Automatic Updates</h3>
+  <p>Activities from the following sources are updated regularly by the server </p>
+  <li>Google + Posts</li>
+  <li>Youtube Videos</li>
+  <paper-button dismissive>
+    <core-icon icon="close"></core-icon>
+    Close
+  </paper-button>
+</paper-action-dialog>
 
 <script src="js/googleUniversalAnalytics.js"></script>
