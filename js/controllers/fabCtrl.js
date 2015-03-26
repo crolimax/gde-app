@@ -10,8 +10,8 @@ GdeTrackingApp.controller("fabCtrl",							function($scope,	$location)
 //			console.log('left');
 			$('.mapArea')		.css('-webkit-animation'	, 'mapSlideLeft		1s	linear	1	both');	//	-webkit- CSS3 animation
 			$('.mapArea')		.css('animation'			, 'mapSlideLeft		1s	linear	1	both');	//	W3C	CSS3 animation
-			$('paper-fab')		.css('-webkit-animation'	, 'fabGoesLeft		1s	linear	1	both');	//	-webkit- CSS3 animation
-			$('paper-fab')		.css('animation'			, 'fabGoesLeft		1s	linear	1	both');	//	W3C	CSS3 animation
+			$('paper-fab')		.css('-webkit-animation'	, 'fabGoesLeft		0.5s	linear	1	both');	//	-webkit- CSS3 animation
+			$('paper-fab')		.css('animation'			, 'fabGoesLeft		0.5s	linear	1	both');	//	W3C	CSS3 animation
 			$('paper-fab')		.attr('id','fabRight');		//	Updates the element's id
 			setTimeout(function()	//	Show GDE List
 				{
@@ -29,8 +29,8 @@ GdeTrackingApp.controller("fabCtrl",							function($scope,	$location)
 			$('.scrollBar')		.css('display' 				, 'block');								//	Hice GDE List
 			$('.mapArea')		.css('-webkit-animation'	, 'mapSlideRight	1s	linear	1	both');	//	-webkit- CSS3 animation
 			$('.mapArea')		.css('animation'			, 'mapSlideRight	1s	linear	1	both');	//	W3C	CSS3 animation
-			$('paper-fab')		.css('-webkit-animation'	, 'fabGoesRight		1s	linear	1	both');	//	-webkit- CSS3 animation
-			$('paper-fab')		.css('animation'			, 'fabGoesRight		1s	linear	1	both');	//	W3C	CSS3 animation
+			$('paper-fab')		.css('-webkit-animation'	, 'fabGoesRight		0.5s	linear	1	both');	//	-webkit- CSS3 animation
+			$('paper-fab')		.css('animation'			, 'fabGoesRight		0.5s	linear	1	both');	//	W3C	CSS3 animation
 			$('paper-fab')		.attr('id','fabLeft');		//	Updates the element's id
 		};
 	});

@@ -12,6 +12,14 @@
 	<title>
 		GDE Tracking App
 	</title>
+	<!-- ----------------------------------------------------------------------	-->
+	<!-- **********************************************************************	-->
+	<!--				Custom CSS					-->
+	<!-- **********************************************************************	-->
+	<link	rel="stylesheet"
+		href="css/polymerDetails.css"
+		shim-shadowdom>
+	</link>
 	<!-- **********************************************************************	-->
 	<!--				Javascript Libraries									-->
 	<!-- **********************************************************************	-->
@@ -24,81 +32,81 @@
 	<!--				Polymer													-->
 	<!-- **********************************************************************	-->
 	<!-- ---------------------------- Platform --------------------------------	-->
-	<script src="components/platform/platform.js">						</script>
-	<script src="components/web-animations-js/web-animations.js">		</script>
+	<script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
 	<!-- ---------------------------- Core Elements ---------------------------	-->
-	<link rel="import" href="components/core-toolbar/core-toolbar.html">
-	<link rel="import" href="components/core-menu/core-menu.html">
-	<link rel="import" href="components/core-item/core-item.html">
-	<link rel="import" href="components/core-header-panel/core-header-panel.html">
-	<link rel="import" href="components/core-drawer-panel/core-drawer-panel.html">
-	<link rel="import" href="components/core-scaffold/core-scaffold.html">
-	<link rel="import" href="components/core-icons/core-icons.html">
-	<link rel="import" href="components/core-scroll-header-panel/core-scroll-header-panel.html">
+	<link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
+	<link rel="import" href="bower_components/core-menu/core-menu.html">
+	<link rel="import" href="bower_components/core-item/core-item.html">
+	<link rel="import" href="bower_components/core-header-panel/core-header-panel.html">
+	<link rel="import" href="bower_components/core-drawer-panel/core-drawer-panel.html">
+	<link rel="import" href="bower_components/core-icons/core-icons.html">
+	<link rel="import" href="bower_components/core-icons/maps-icons.html">
+
+	<link rel="import" href="bower_components/core-scroll-header-panel/core-scroll-header-panel.html">
+  <link rel="import" href="bower_components/font-roboto/roboto.html">
 
 	<!-- ----------------------------------------------------------------------	-->
 	<!-- --------------------------- Paper Elements ---------------------------	-->
-	<link rel="import" href="components/paper-button/paper-button.html" >
-	<link rel="import" href="components/paper-icon-button/paper-icon-button.html">
-	<link rel="import" href="components/paper-fab/paper-fab.html" >
-	<link rel="import" href="components/paper-item/paper-item.html" >
-	<link rel="import" href="components/paper-shadow/paper-shadow.html" >
-	<link rel="import" href="components/paper-dialog/paper-dialog.html" >
-	<link rel="import" href="components/paper-dialog/paper-dialog-transition.html" >
-	<link rel="import" href="components/paper-toast/paper-toast.html">
-	<link rel="import" href="components/paper-input/paper-input.html">
-	<link rel="import" href="components/paper-checkbox/paper-checkbox.html">
-	<link rel="import" href="components/paper-tabs/paper-tabs.html">
+	<link rel="import" href="bower_components/paper-button/paper-button.html" >
+	<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html" >
+	<link rel="import" href="bower_components/paper-fab/paper-fab.html" >
+	<link rel="import" href="bower_components/paper-shadow/paper-shadow.html" >
+	<link rel="import" href="bower_components/paper-dialog/paper-dialog.html" >
+	<link rel="import" href="bower_components/paper-dialog/paper-action-dialog.html" >
+	<link rel="import" href="bower_components/paper-toast/paper-toast.html">
+	<link rel="import" href="bower_components/paper-input/paper-input.html">
+	<link rel="import" href="bower_components/paper-checkbox/paper-checkbox.html">
+	<link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
+	<link rel="import" href="bower_components/paper-spinner/paper-spinner.html">
 
-	<link rel="import" href="components/core-animated-pages/core-animated-pages.html">
-	<link rel="import" href="components/core-animated-pages/transitions/hero-transition.html">
-	<link rel="import" href="components/core-animated-pages/transitions/cross-fade.html">
-	<link rel="import" href="components/core-animated-pages/transitions/slide-down.html">
-	<link rel="import" href="components/core-animated-pages/transitions/slide-up.html">
-	<link rel="import" href="components/core-animated-pages/transitions/tile-cascade.html">
+	<link rel="import" href="bower_components/core-animated-pages/core-animated-pages.html">
+	<link rel="import" href="bower_components/core-animated-pages/transitions/hero-transition.html">
+	<link rel="import" href="bower_components/core-animated-pages/transitions/cross-fade.html">
+	<link rel="import" href="bower_components/core-animated-pages/transitions/slide-down.html">
+	<link rel="import" href="bower_components/core-animated-pages/transitions/slide-up.html">
+	<link rel="import" href="bower_components/core-animated-pages/transitions/tile-cascade.html">
 
-	<link rel="import" href="components/gde-badge/gde-badge.html">
-	<!-- ----------------------------------------------------------------------	-->
-	<!-- **********************************************************************	-->
-	<!--				Custom CSS					-->
-	<!-- **********************************************************************	-->
-	<link	rel="stylesheet"
-		href="css/polymerDetails.css"
-		shim-shadowdom>
-	</link>
+	<link rel="import" href="elements/gde-badge/gde-badge.html">
+
 	<!-- **********************************************************************	-->
 </head>
 <body unresolved>
 	<core-drawer-panel	id="drawerPanel"	responsiveWidth="1300px">
 		<core-header-panel	 aside	drawer>
 			<core-toolbar	header	id="mainheader"	class="medium-tall">
-				<div class="appLogo_box">
+				<div layout center center-justified flex>
 					<img	class="googleDevelopersLogo" src="img/logo_google_developers.svg"/>
 				</div>
 			</core-toolbar	header>
 			<core-menu	nav	ng-controller="menuCtrl">
-				<core-item class="menuButtonZone">
-					<paper-button	raisedButton	label="Googlers access"		class="colored red"			ng-click="showGeneralStatisticsForGooglers()"	id="generalStatisticsForGooglers">
+				<core-item class="menuButtonZone" id="generalStatisticsForGooglers">
+					<paper-button	raised class="colored red" ng-click="showGeneralStatisticsForGooglers()"	>
+					  Googlers access
+					</paper-button>
+				</core-item>
+				<core-item class="menuButtonZone" id="gdeAvatarBuilder">
+					<paper-button	raised class="colored red" onclick="toggleDialog('GDEAvatarBuilder')"	>
+					  GDE Avatar Builder
+					</paper-button>
+				</core-item>
+				<core-item class="menuButtonZone" id="gdeStatistics">
+					<paper-button	raised class="colored blue"		ng-click="showGdeStatistics()">
+					  GDE access
 					</paper-button>
 				</core-item>
 				<core-item class="menuButtonZone">
-					<paper-button	raisedButton	label="GDE Avatar Builder"	class="colored red"			onclick="toggleDialog('GDEAvatarBuilder')"		id="gdeAvatarBuilder">
+					<paper-button	raised class="colored green"		onclick="toggleDialog('HowItsUsed')">
+					  How is it used?
 					</paper-button>
 				</core-item>
 				<core-item class="menuButtonZone">
-					<paper-button	raisedButton	label="GDE access"		class="colored blue"		ng-click="showGdeStatistics()"					id="gdeStatistics">
+					<paper-button	raised class="colored yellow"		onclick="toggleDialog('HowItWorks')">
+					  How does it works?
 					</paper-button>
 				</core-item>
 				<core-item class="menuButtonZone">
-					<paper-button	raisedButton	label="How is it used?"		class="colored green"		onclick="toggleDialog('HowItsUsed')">
-					</paper-button>
-				</core-item>
-				<core-item class="menuButtonZone">
-					<paper-button	raisedButton	label="How does it works?"		class="colored yellow"		onclick="toggleDialog('HowItWorks')">
-					</paper-button>
-				</core-item>
-				<core-item class="menuButtonZone">
-					<paper-button	raisedButton	label="Who are the GDEs?"	class="colored deepPurple"	onclick="toggleDialog('WhoAreTheGDEs')">
+					<paper-button	raised class="colored deepPurple"	onclick="toggleDialog('WhoAreTheGDEs')">
+					  Who are the GDEs?
 					</paper-button>
 				</core-item>
 				<div	class="gplus">
@@ -113,46 +121,41 @@
 				<span	class="bottom"	flex>
 				</span>
 				<div	ng-controller="plusLoginCtrl"	class="plusLogin bottom">
-					<p		class=	"userName"></p>
-					<span	id=		"userImg"></span>
+				  <div id='authInfos' style='display:none'>
+  					<p		class=	"userName"></p>
+  					<span	id=		"userImg"></span>
+					</div>
 					<div	class=	"signinButton">
-						<google-plus-signin clientid="622745668355-rpeo1i7hjo4vj003dithtp1d71iniqqc" language="en"></google-plus-signin>
+						<google-plus-signin clientid="47242318878-dik3r14d8jc528h1ao35f8ehqa7tmpe1" language="en"></google-plus-signin>
 					</div>
 				</div>
-			</core-toolbar	header>
+			</core-toolbar>
+			<div id='splash_screen' layout horizontal center center-justified fit>
+        <div>Loading...</div>
+      </div>
 			<article	class="scrollBar"	ng-view>
-	<!--	---------------------------------------------------------------------	-->
-	<!--					AngularJS templated HTML5 area							-->
-	<!--	---------------------------------------------------------------------	-->
-	<!--	< ...................................................................	-->
-	<!--	---------------------------------------------------------------------	-->
+
+      <!--	---------------------------------------------------------------------	-->
+      <!--              AngularJS templated HTML5 area              							-->
+      <!--	---------------------------------------------------------------------	-->
+      <!--	.....................................................................	-->
+      <!--	---------------------------------------------------------------------	-->
 			</article>
-	<!--	---------------------------------------------------------------------	-->
-	<!--						paper-fab & AngularJS Bind							-->
-	<!--	---------------------------------------------------------------------	-->
-			<div ng-controller="fabCtrl" >
+      <!--	---------------------------------------------------------------------	-->
+      <!--						paper-fab & AngularJS Bind							                    -->
+      <!--	---------------------------------------------------------------------	-->
+      <div ng-controller="fabCtrl" >
 				<paper-fab	class="nav-fab"	icon="chevron-right"	id="fabLeft"></paper-fab>
 			</div>
-	<!--	---------------------------------------------------------------------	-->
-	<!--						Polymer Paper Dialogs								-->
-	<!--	---------------------------------------------------------------------	-->
-			<paper-toast id="loading" text="Loading...">
+      <!--	---------------------------------------------------------------------	-->
+      <!--						Polymer Paper Dialogs								                        -->
+      <!--	---------------------------------------------------------------------	-->
+			<paper-toast id="loading" autoCloseDisabled duration="60000" text="Loading...">
+			  <paper-spinner active></paper-spinner>
 			</paper-toast>
-			<paper-dialog	id="Googler"			transition="paper-dialog-transition-center"	ng-controller="menuCtrl">
-				<p>
-					<paper-button	raisedButton	affirmative	label="General Statistics"	ng-click="showGeneralStatisticsForGooglers()"></paper-button>
-				</p>
-				<paper-button	label="close"	icon="close" dismissive ></paper-button>
-			</paper-dialog>
-			<paper-dialog	id="GDE"				transition="paper-dialog-transition-center"	ng-controller="menuCtrl">
-				<p>
-					<paper-button	raisedButton	affirmative	label="My Statistics"		ng-click="showGdeStatistics()"></paper-button>
-				</p>
-				<paper-button	label="close"	icon="close" dismissive ></paper-button>
-			</paper-dialog>
-			<paper-dialog	id="HowItsUsed"			transition="paper-dialog-transition-center">
-				<div>
-					<h1>How to use</h1>
+			<paper-action-dialog id="HowItsUsed" transition="core-transition-center "autoCloseDisabled="true">
+				<div class="content">
+					<h1>How is it used</h1>
 					<p>
 						The application checks all the <a href='https://developers.google.com/experts/members/' target="_blank">GDE's</a> <a href='https://plus.google.com/' target='_blank'>Google+</a> <strong>public stream</strong> (posts shared Public or with public Communities) searching for posts that contain the hashtag <a href="https://plus.google.com/explore/gde" target="_blank">#gde</a>.
 					</p>
@@ -175,7 +178,7 @@
 
 					<p>Following a <i>cheat sheet</i> of the Tags:</p>
 					<br/>
-					<table style="float:left;margin-right: 10px;padding-right: 10px;border-style: solid;height: 600px;" class='prettyTable' >
+					<table style="float:left;border-style: solid;height: 600px;" class='prettyTable' >
 						<tr>
 							<th colspan="2">
 								Product Tags
@@ -186,7 +189,7 @@
 					    <td><a href='{{pg.url}}'target='_blank'>{{pg.description}}</a></td>
 					  </tr>
 					</table>
-					<table style="margin-left: 100px;padding-left: 10px;border-style: solid;height: 600px;"	class='prettyTable' >
+					<table style="padding-left: 10px;border-style: solid;height: 600px;"	class='prettyTable' >
 						<tr>
 							<th colspan="2">
 								Activity Type Tags
@@ -199,47 +202,59 @@
 					</table>
 
 				</div>
-				<paper-button	label="close"	icon="close" dismissive ></paper-button>
-			</paper-dialog>
-			<paper-dialog	id="HowItWorks"			transition="paper-dialog-transition-center">
+				<paper-button dismissive >
+          <core-icon icon="close"></core-icon>
+          Close
+				</paper-button>
+			</paper-action-dialog>
+			<paper-action-dialog	id="HowItWorks"			transition="core-transition-center" autoCloseDisabled="true">
 				<h1> Soon!</h1>
-				<paper-button	label="close"	icon="close" dismissive ></paper-button>
-			</paper-dialog>
-			<paper-dialog	id="WhoAreTheGDEs"		transition="paper-dialog-transition-center">
-					<div>
+				<paper-button dismissive >
+          <core-icon icon="close"></core-icon>
+				  Close
+				</paper-button>
+			</paper-action-dialog>
+			<paper-action-dialog	id="WhoAreTheGDEs"		transition="core-transition-center" autoCloseDisabled="true">
+					<div class="content">
 						<h1>Who are the Google Developer Experts?</h1>
 						<p>The Google Developer Experts (GDE) title recognizes the <strong>outstanding developers who exhibit great expertise in one or more Google technologies and share it with the developer community</strong>.</p>
 						<p>GDEs are gurus, mentors and evangelists; they create tutorials, code samples, and write books and blogs; they publish videos, drive community projects, and present at events large and small. These independent developers bring their real-world experience and knowledge working with Google technologies to developer communities worldwide.</p>
 						<p><a href="https://developers.google.com/experts/" target="_blank">More infos ...</a></p>
 					</div>
-				<paper-button	label="close"	icon="close" dismissive ></paper-button>
-			</paper-dialog>
+				<paper-button dismissive >
+          <core-icon icon="close"></core-icon>
+				  Close
+				</paper-button>
+			</paper-action-dialog>
 
-			<paper-dialog	id="GDEAvatarBuilder"		transition="paper-dialog-transition-center">
-				<div>
+			<paper-action-dialog	id="GDEAvatarBuilder"		transition="core-transition-center" autoCloseDisabled="true">
+				<div class="content">
 					<h1>GDE Avatar Builder</h1>
 					<p>Fill the form below with your G+ id (eg: +SandroPaganotti) to get your GDE Avatar:</p>
 
-			    <form id="avatarForm">
-			        <input type="text" id="userid" value="">
-			        <input type="submit">
-			    </form>
+          <form id="avatarForm">
+            <input type="text" id="userid" value="">
+            <input type="submit">
+          </form>
 
-			    <gde-badge  userid="" apikey="AIzaSyA00Bh_4YQx34Zc5z_JIlqYQJjNCr2ihV4" text="GDE"></gde-badge>
+          <gde-badge  userid="" apikey="AIzaSyB9tHddHIErDbuiTmd6xj1_AFgTIJJDTTw" text="GDE"></gde-badge>
 
-					<paper-button	label="close"	icon="close" dismissive ></paper-button>
+          <paper-button dismissive >
+            <core-icon icon="close"></core-icon>
+            Close
+          </paper-button>
 				</div>
-			</paper-dialog>
-	<!--	---------------------------------------------------------------------	-->
+			</paper-action-dialog>
+			<!--	---------------------------------------------------------------------	-->
 		</core-header-panel>
 	</core-drawer-panel>
 	<!-- **********************************************************************	-->
 	<!--                     	  Additional Scripts                              	-->
 	<!-- **********************************************************************	-->
-	<script src="js/google-plus-signin.js">				</script>
-	<script src='js/resources/underscore-min.js'>			</script>
-	<script src='js/resources/angular-google-maps.js'>		</script>
-	<script src="js/resources/ng-polymer-elements.min.js">					</script>
+	<script src="js/google-plus-signin.js"></script>
+	<script src='js/resources/underscore-min.js'></script>
+	<script src='js/resources/angular-google-maps.js'></script>
+	<script src="js/resources/ng-polymer-elements.min.js"></script>
 	<!-- **********************************************************************	-->
 	<!--                     	  GDE App Scripts                           	    -->
 	<!-- **********************************************************************	-->

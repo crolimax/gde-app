@@ -3,10 +3,6 @@
 /*		Author: GDE tracking app team.													*/
 /*		Polymer & CSS3 -Webkit/W3C- Layout												*/
 /*	*********************************************************************************	*/
-@font-face {
-	font-family: 'roboto';
-	src: url(../components/font-roboto/Roboto-Regular.ttf);
-}
 html,body {
 	height				: 95%;
 	font-family			: 'roboto' !important;
@@ -19,7 +15,7 @@ core-header-panel {
 	background			: white;
 	overflow			: hidden;
 }
-core-toolbar {
+html /deep/ core-toolbar {
 	color				: #fafafa;
 	text-shadow			: 0 0 0.5px #fafafa;
 	background-color	: #212121;
@@ -47,38 +43,47 @@ core-drawer-panel:not([narrow]) #navicon {
 core-header-panel drawer {
 	width				: 310px;
 }
-paper-dialog {
+html /deep/ paper-action-dialog {
 	width				: 80%;
 	min-width			: 430px;
-	min-height			: 30%
+	min-height			: 30%;
+	margin :0px;
 }
-paper-dialog.tall{
+html /deep/ paper-action-dialog::shadow #scroller {
+	padding:5px;
+}
+html /deep/ paper-action-dialog.tall{
 	height:90%;
 }
+
+html /deep/ paper-shadow{
+  padding:1px;
+}
+
 paper-button {
 	margin				: 1em;
 	width				: 13em;
 	height				: 5em;
 	line-height			: 4.25em;
 }
-paper-button[raisedButton].colored	{
+.colored	{
 	fill				: #fafafa;
 	color				: #fafafa;
 	text-shadow			: 0 0 0.5px #fafafa;
 }
-paper-button[raisedButton].colored.red		{
+.colored.red		{
 	background			: #e84e40;
 }
-paper-button[raisedButton].colored.blue		{
+.colored.blue		{
 	background			: #5677fc;
 }
-paper-button[raisedButton].colored.green		{
+.colored.green		{
 	background			: #7cb342;
 }
-paper-button[raisedButton].colored.yellow		{
+.colored.yellow		{
 	background			: #f9a825;
 }
-paper-button[raisedButton].colored.deepPurple	{
+.colored.deepPurple	{
 	background			: #673ab7;
 }
 paper-toast {
@@ -87,15 +92,16 @@ paper-toast {
 	width				: 20%;
 }
 .nav-fab	{
-	position			: fixed;
-	left				: 120%;
-	bottom				: 5em;
-	z-index				: 1;
+	position      : fixed;
+	right         : -100px;
+	bottom        : 5em;
+	z-index       : 1;
 }
 
-paper-input{
+html /deep/ paper-input{
   width:auto;
   padding:8px;
+  margin:0px 2px 0px 2px;
 }
 
 paper-checkbox::shadow #ink {
@@ -112,13 +118,14 @@ paper-radio-button::shadow #ink {
 /*								AngularJS Directives									*/
 /*	*********************************************************************************	*/
 google-map	{
-	display				: inline-block;
+	display			: inline-block;
 	width				: 100%;
+	min-height  : 80%;
 }
 marker	{
 	box-shadow:			1px 1px 50px #aaa, inset -1px -1px 50px #ccc;
 }
-paper-dialog table		{
+paper-action-dialog table		{
     /* W3C */
 	border-width		: 0;
 	background-color	: #f5f5f5;
@@ -128,7 +135,7 @@ paper-dialog table		{
     box-shadow			: 0px 1px 4px #777, inset 0px 0px 2px #aaa;
     transition			: all 1s ease-in-out;
 }
-paper-dialog table:hover {
+paper-action-dialog table:hover {
     /* W3C */
     box-shadow			: 0px 3px 8px #555, inset 0px 0px 3px #999;
 }
@@ -163,19 +170,6 @@ select:hover
 {
 	justify-content		: center;
 }
-.center
-{
-    /* webkit */
-    display				: -webkit-box;
-    -webkit-box-orient	: vertical;
-    -webkit-box-pack	: center;
-    -webkit-box-align	: center;
-    /* W3C */
-    display				: box;
-    box-orient			: vertical;
-    box-pack			: center;
-    box-align			: center;
-}
 .scrollBar	{
 	display				: block;
 	overflow-y			: hidden;
@@ -190,13 +184,6 @@ select:hover
 #gdeStatistics,	#generalStatisticsForGooglers, #gdeAvatarBuilder	{
 	display				: none;
 }
-.plusLogin	#userImg	{
-	margin				: 1em;
-}
-.plusLogin	#userImg	img	{
-	height				: 90px;
-	box-shadow			: 2px 2px 10px #000;
-}
 .gplus		{
 	margin				: 1em;
 	margin-top			: 5em;
@@ -210,26 +197,22 @@ select:hover
 	position			: relative;
 	top					: -15px;
 }
-.appLogo_box	{
-	display	: -webkit-box;
-	display	: -webkit-flex;
-	display	: -ms-flexbox;
-	display	: flex;
-	-webkit-box-pack		: center;
-	-webkit-justify-content	: center;
-	    -ms-flex-pack		: center;
-	        justify-content	: center;
-	width	: 100%;
+.plusLogin	#userImg	{
+	margin				: 1em;
 }
+.plusLogin	#userImg	img	{
+	height				: 90px;
+	box-shadow			: 2px 2px 10px #000;
+}
+
 .appLogo	{
 	position			: absolute;
-	left				: 0;
-	bottom				: 20px;
+	left				: 2.5em;
 	margin				: 1em;
 	padding				: 1em;
 	text-align			: right;
 	width				: 300px;
-	margin-top			: -7em;
+	margin-top			: -10em;
 	border-radius		: 0.5em;
 	background-color	: rgba(255, 255, 255, .7);
 	box-shadow			: 1px 1px 4px #999, inset 1px 1px 3px #aaa;
@@ -247,12 +230,13 @@ select:hover
 	color				: #616161;
 	text-shadow			: 0 0 0.5px #616161;
 }
-.googleDevelopersLogo	{
-	position			: relative;
-	top					: 80px;
-	height				: 200px;
+.googleDevelopersLogo {
+  position: relative;
+  top: 35px;
+  height: 150px;
+  left: 35px;
 }
-.content	{
+html /deep/ .content	{
 	padding				: 20px;
 }
 .mapArea	{
@@ -262,18 +246,7 @@ select:hover
 	width				: 100%;
 }
 .gdeList {
-    /* webkit */
-    -webkit-box-pack	: start;
-    -webkit-box-align	: start;
-    -webkit-box-orient	: horizontal;
-    -webkit-box-flex	: 1;
 
-    /* W3C */
-    display				: box;
-    box-pack			: start;
-    box-align			: start;
-    box-orient			: horizontal;
-    box-flex			: 1;
 	opacity				: 0;
 	position			: absolute;
 	right				: 0;
@@ -281,25 +254,12 @@ select:hover
     transition			: all 0.4s ease-in-out;
 }
 .gdeCard {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: -ms-flexbox;
-	display: flex;
-	-webkit-align-content: center;
-	    -ms-flex-line-pack: center;
-	        align-content: center;
-	-webkit-box-pack: center;
-	-webkit-justify-content: center;
-	    -ms-flex-pack: center;
-	        justify-content: center;
 	min-width: 15em;
 	background-color: #f5f5f5;
 	margin: 0.5em;
 	padding: 1.5em;
 	text-align: center;
 	border-radius: 5px;
-	-webkit-transition: all 1s ease-in-out;
-	        transition: all 1s ease-in-out;
 	box-shadow: 0px 1px 4px #777, inset 0px 0px 2px #aaa;
 }
 .gdeCard:hover {
@@ -339,31 +299,31 @@ select:hover
 {
 	display				: none;
 }
-.prettyTable
+html /deep/ .prettyTable
 {
 	/* W3C */
 	margin				: 1em;
 	padding				: 1em;
 }
-.prettyTable tr
+html /deep/ .prettyTable tr
 {
 	/* W3C */
 	margin				: 1em;
 	padding				: 1em;
 	transition			: all 0.3s ease-in-out;
 }
-.prettyTable tr:nth-child(even)
+html /deep/ .prettyTable tr:nth-child(even)
 {
 	/* W3C */
 	background-color	: #eee;
 }
-.prettyTable tr:hover
+html /deep/ .prettyTable tr:hover
 {
 	/* W3C */
 	background-color	: #666;
 	color				: #fff!important;
 }
-.prettyTable th
+html /deep/ .prettyTable th
 {
 	/* W3C */
 	font-size			: 1.17em;
@@ -385,45 +345,10 @@ select:hover
 {
 	width			: 30%;
 }
-.gdesGeneralStats
-{
-    display:-webkit-box;
-    -webkit-box-pack:start;
-    -webkit-box-align:stretch;
-    -webkit-box-orient: horizontal;
-    -webkit-box-flex:1;
 
-    /* W3C */
-    display: box;
-    box-pack:start;
-    box-align:stretch;
-    box-orient: horizontal;
-    box-flex:1;
-}
-.countryButtons
+.countryButtons	paper-button
 {
-	display		: -webkit-box;
-	display		: -webkit-flex;
-	display		: -ms-flexbox;
-	display		: flex;
-	-webkit-box-orient		: horizontal;
-	-webkit-box-direction	: normal;
-	-webkit-flex-direction	: row;
-		-ms-flex-direction	: row;
-			flex-direction	: row;
-	-webkit-flex-wrap		: wrap-reverse;
-		-ms-flex-wrap		: wrap-reverse;
-			flex-wrap		: wrap-reverse;
-	position	: absolute;
-	left		: 0;
-	bottom		: -45%;
-}
-.countryButtons{
-}
-.countryButtons	paper-icon-button
-{
-	margin 			: 1em;
-	padding			: 0.5em;
+	background  : #dfdfdf;
 }
 /*	*********************************************************************************	*/
 /*								CSS3 Animation Keyframes								*/
@@ -466,30 +391,30 @@ select:hover
 {
     0%
 	{
-		left			: 120%;
+		right			: 3em;
 	}
 	70%
 	{
-		left			: 100%;
+		right			: 3em;
 	}
 	100%
 	{
-		left			: 90%;
+		right			: 3em;
 	}
 }
 @keyframes fabAppears
 {
     0%
 	{
-		left			: 120%;
+		right			: 3em;
 	}
 	70%
 	{
-		left			: 100%;
+		right			: 3em;
 	}
 	100%
 	{
-		left			: 90%;
+		right			: 3em;
 	}
 }
 
@@ -498,37 +423,27 @@ select:hover
 /*	---------------------------------------------------------------------------------	*/
 @-webkit-keyframes fabGoesLeft
 {
-    0%
+  0%
 	{
-		left			: 90%;
-		transform		: rotate(0deg);
-	}
-	90%
-	{
-		left			: 320px;
+	  right			: 3em;
 		transform		: rotate(0deg);
 	}
 	100%
 	{
-		left			: 320px;
+	  right			: 3em;
 		transform		: rotate(180deg);
 	}
 }
 @keyframes fabGoesLeft
 {
-    0%
+  0%
 	{
-		left			: 90%;
-		transform		: rotate(0deg);
-	}
-	90%
-	{
-		left			: 320px;
+	  right			: 3em;
 		transform		: rotate(0deg);
 	}
 	100%
 	{
-		left			: 320px;
+	  right			: 3em;
 		transform		: rotate(180deg);
 	}
 }
@@ -574,38 +489,28 @@ select:hover
 /*	---------------------------------------------------------------------------------	*/
 @-webkit-keyframes fabGoesRight
 {
-    100%
+  100%
 	{
-		left			: 90%;
+	  right			: 3em;
 		transform		: rotate(0deg);
-	}
-	90%
-	{
-		left			: 90%;
-		transform		: rotate(180deg);
 	}
 	0%
 	{
-		left			: 320px;
+	  right			: 3em;
 		transform		: rotate(180deg);
 	}
 }
 @keyframes fabGoesRight
 {
-    100%
+  100%
 	{
-		left			: 90%;
-		transform		: rotate(0deg);
-	}
-	90%
-	{
-		left			: 90%;
+	  right			: 3em;
 		transform		: rotate(0deg);
 	}
 	0%
 	{
-		left			: 320px;
-		transform		: rotate(0deg);
+	  right			: 3em;
+		transform		: rotate(180deg);
 	}
 }
 @-webkit-keyframes mapSlideRight
@@ -661,4 +566,74 @@ select:hover
 	{
 		right			: -20%;
 	}
+}
+
+/*-------Media queries--------*/
+@media (max-width: 600px) {
+  .plusLogin	.userName	{
+  	display				: none;
+  }
+  paper-button {
+    margin: 0.5em;
+    width: 13em;
+    height: 2.5em;
+    line-height: 1.25em;
+  }
+  .googleDevelopersLogo {
+    position: relative;
+    top: 34px;
+    height: 134px;
+  }
+  .countryButtons	paper-button {
+    width: 10em;
+  }
+  .appLogo{
+    display:none;
+  }
+  .hideForSmallScreen{
+    display:none;
+  }
+}
+
+@media (max-height: 500px) {
+  paper-button {
+    margin: 0.5em;
+    width: 13em;
+    height: 2.5em;
+    line-height: 1.25em;
+  }
+  .googleDevelopersLogo {
+    position: relative;
+    top: 5px;
+    height: 50px;
+  }
+  .countryButtons	paper-button {
+    width: 10em;
+  }
+  .appLogo{
+    display:none;
+  }
+  .plusLogin{
+    position: relative;
+    top:10px;
+  }
+  .plusLogin	#userImg img {
+    height: 50px;
+    box-shadow: 2px 2px 10px #000;
+  }
+  core-toolbar.medium-tall{
+    height:auto;
+  }
+  .hideForSmallScreen{
+    display:none;
+  }
+}
+@media (max-width: 1050px) {
+  .hideForSmallScreen{
+    display:none;
+  }
+  html /deep/ .prettyTable {
+    margin: 1em;
+    padding:initial;
+  }
 }
