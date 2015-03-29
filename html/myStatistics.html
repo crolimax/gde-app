@@ -224,7 +224,7 @@
         </div>
         <!--Dynamically Change the metadata fileds by activity_type group -->
         <paper-tabs id="AGTabs">
-          <paper-tab ng-repeat="ag in currActivityGroups" ng-click="selectAG(ag.tag)">
+          <paper-tab ng-repeat="ag in currActivityGroups" ng-click="selectAG(ag.tag,$event)">
               {{ag.tag}}
           </paper-tab>
         </paper-tabs>

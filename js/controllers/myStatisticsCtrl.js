@@ -1051,14 +1051,16 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
   };
   //Metadata functions
-  $scope.selectAG = function(agId){
+  $scope.selectAG = function(agId,senderEvent){
     $.each($scope.currActivityGroups, function(k,v)
     {
       var ag = $scope.currActivityGroups[k];
       if(agId==ag.tag){
         $scope.selectAGIdx=k;
         $scope.selectedAG=ag;
-        $("#core_animated_pages").prop('selected',k);
+        //MSO - 2015-03-29 - get the reference to the core animated pages inside the context of the dialog
+        var pages= senderEvent.target.parentElement.parentElement.querySelector("#core_animated_pages");
+        pages.selected = k;//Select the right page for the tab
       }
 		});
   };
