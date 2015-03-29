@@ -460,7 +460,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     toggleDialog('delTrashDialog');
   }
 
-  $scope.trashGDEActivity = function(){
+  $scope.trashGDEActivity = function(senderEvent){
     var activityId = $scope.delTrashActId;
 
     //Remove the AR from the backend
@@ -471,7 +471,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
           alert(resp.message);
         }else{
-          toggleDialog('delTrashDialog');
+          senderEvent.target.closest('#delTrashDialog').toggle();
 
           //Get the item
           var item = $.grep($scope.data.items, function(item){
@@ -492,7 +492,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     });
   }
 
-  $scope.deleteGDEActivity = function(){
+  $scope.deleteGDEActivity = function(senderEvent){
     var activityId = $scope.delTrashActId;
 
     //Remove the AR from the backend
@@ -503,7 +503,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 
           alert(resp.message);
         }else{
-          toggleDialog('delTrashDialog');
+          senderEvent.target.closest('#delTrashDialog').toggle();
           //AR Deleted, remove from the table
           removeARfromList(resp.id);
 

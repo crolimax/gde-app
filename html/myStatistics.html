@@ -60,17 +60,17 @@
   </div>
 </paper-action-dialog>
 <br/>
-<paper-dialog id="delTrashDialog" autoCloseDisabled="true" >
+<paper-action-dialog id="delTrashDialog" autoCloseDisabled="true" >
   <div class="content" vertical layout center>
     <div horizontal layout center-justified>
       Do you want to trash the activity or completely delete it?
     </div>
     <div horizontal layout center-justified>
-      <paper-button raisedButton label="Trash" ng-click="trashGDEActivity()"></paper-button>
-      <paper-button raisedButton class ="colored red" label="Delete (Forever)" ng-click="deleteGDEActivity()"></paper-button>
+      <paper-button raised ng-click="trashGDEActivity($event)">Trash</paper-button>
+      <paper-button raised class ="colored red" ng-click="deleteGDEActivity($event)">Delete (Forever)</paper-button>
     </div>
   </div>
-</paper-dialog>
+</paper-action-dialog>
 <br/>
 <div class="stats">
   <paper-shadow z="1">
