@@ -263,7 +263,7 @@ class ActivityGroupService(remote.Service):
 class ProductGroupService(remote.Service):
 
     @ProductGroup.method(path='/productGroup/{id}', http_method='POST', name='insert',
-                         request_fields=('id', 'tag', 'description', 'url', 'image', 'api_key'))
+                         request_fields=('id', 'tag', 'description', 'url', 'image', 'api_key', 'so_tags'))
     def pg_insert(self, product_group):
         if not check_auth(None, product_group.api_key):
             raise endpoints.UnauthorizedException(
