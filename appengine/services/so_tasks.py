@@ -38,6 +38,7 @@ The above was decided arbitrarly :(
 import webapp2
 import logging
 from datetime import datetime, date, timedelta
+from monthdelta import monthdelta
 
 import json
 import urllib2
@@ -86,19 +87,23 @@ class CronHarvestSO(webapp2.RequestHandler):
             user_count += 1
 
             # harvest a period i.e. from January 1st INITIAL RUN
-            num_weeks = 14
+            num_months = 3
             start_date = date(2015, 1, 1)
 
-            # normail weekly harvest
-            # num_weeks = 1
-            # start_date = date.today() - timedelta(1)
+            # normail monthly harvest >> HAS TO RUN ON THE FIRST OF THE MONTH
+            # num_months = 1
+            # start_date = date.today() - monthdelta(1)
 
-            for i in range(0, num_weeks):
-                start = start_date + timedelta(i * 7)
-                end = start + timedelta(7)
+            for i in range(0, num_months):
+                start = start_date + monthdelta(i)
+                end = start + monthdelta(1) - timedelta(1)
+                logging.info(str(start))
+                logging.info(str(end))
                 taskqueue.add(queue_name='gplus',
                               url='/tasks/harvest_so',
                               params={'key': account.key.urlsafe(), 'from': str(start), 'to': str(end)})
+
+            # break
 
         logging.info(
             'crons/harvest_so created tasks for %s users' % user_count)
