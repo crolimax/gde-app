@@ -14,15 +14,14 @@ EndPoint 1 : https://api.stackexchange.com/docs/answers-on-users
 EndPoint 2 : https://api.stackexchange.com/docs/questions-by-ids
 >> /2.2/questions/29363485?order=desc&sort=activity&site=stackoverflow
 
-Use EP1 above to get all the answers answered for the week (date range)
+Use EP1 above to get all the answers answered for the month (date range)
 then use EP2 to match tags on the question
 
 
 Harvesting is for an interval, creates an ActivityRecord
 with the metadata it extracts from the SO API
 
-We create one AR per product group per week is questions are anwered
-
+We create one AR per product group per month if questions are anwered in that PG
 
 Using the exising fields (we need to refactor for the decoupling from G+)
 
@@ -59,12 +58,10 @@ from models import Account
 from models import ProductGroup
 from models import activity_record as ar
 
-from .utils import get_server_api_key
+from .utils import get_so_api_key
 
 SO_ROOT = "https://api.stackexchange.com/2.2"
-SO_KEY = "eg4fwRCfG483LDD2w*vHSA(("
-
-# https://api.stackexchange.com/2.2/users/2748916/tags/[google-drive-sdk]/top-answers?((&site=stackoverflow&order=desc&sort=activity&filter=default
+SO_KEY = get_so_api_key()
 
 
 class CronHarvestSO(webapp2.RequestHandler):
@@ -75,6 +72,19 @@ class CronHarvestSO(webapp2.RequestHandler):
         """Create tasks."""
         logging.info('crons/harvest_so')
 
+        # harvest a period i.e. from January 1st INITIAL RUN
+        # num_months = 15
+        # start_date = date(2014, 1, 1)
+
+        # normal monthly harvest >> HAS TO RUN ON THE FIRST OF THE MONTH
+        if date.today().day != 1:
+            logging.info(
+                'Stack Overflow Harvesting MUST be run on first of the month : EXITING')
+            return
+
+        num_months = 1
+        start_date = date.today() - monthdelta(1)
+
         accounts = Account.query(Account.so_id != None)
         user_count = 0
         for account in accounts:
@@ -84,26 +94,22 @@ class CronHarvestSO(webapp2.RequestHandler):
             # don't process inactive users
             if account.type != "active":
                 continue
+
+            # for testing against Gerwin
+            # if account.key.id() != "112336147904981294875":
+            #     continue
+            # for testing against Linda
+            if account.key.id() != "117200475532672775346" and account.key.id() != "112336147904981294875":
+                continue
+
             user_count += 1
-
-            # harvest a period i.e. from January 1st INITIAL RUN
-            num_months = 3
-            start_date = date(2015, 1, 1)
-
-            # normail monthly harvest >> HAS TO RUN ON THE FIRST OF THE MONTH
-            # num_months = 1
-            # start_date = date.today() - monthdelta(1)
 
             for i in range(0, num_months):
                 start = start_date + monthdelta(i)
                 end = start + monthdelta(1) - timedelta(1)
-                logging.info(str(start))
-                logging.info(str(end))
                 taskqueue.add(queue_name='gplus',
                               url='/tasks/harvest_so',
                               params={'key': account.key.urlsafe(), 'from': str(start), 'to': str(end)})
-
-            # break
 
         logging.info(
             'crons/harvest_so created tasks for %s users' % user_count)
@@ -133,9 +139,13 @@ class TaskHarvestSO(webapp2.RequestHandler):
         # populate product groups and tags associated with the GDE
         # multiple product groups is not uncommon and even more so
         # with the polymer harvesting experiment
+
+        # changed the approach above so that all product group questions
+        # are recorded independant of the GDE product group affiliation.
         pg_tags = {}
-        for pg in gde.product_group:
-            product_group = ndb.Key('ProductGroup', pg).get()
+        product_groups = ProductGroup.query().fetch(100)
+        for pg in product_groups:
+            product_group = pg
             # not sure why I am dealing with unicode here :(
             so_tags = [x.encode('UTF8') for x in product_group.so_tags]
             pg_tags[product_group.id] = {}
@@ -144,7 +154,7 @@ class TaskHarvestSO(webapp2.RequestHandler):
 
         logging.info(pg_tags)
 
-        query = "/answers?" + SO_KEY + \
+        query = "/answers?key=" + SO_KEY + \
             "&page=1&pagesize=100&site=stackoverflow&order=desc&sort=creation&filter=default"
 
         query = query + \
@@ -169,14 +179,14 @@ class TaskHarvestSO(webapp2.RequestHandler):
 
         # create Activity Records for product group that have some answers
         # for product_group in pg_tags:
-        for pg in gde.product_group:
-            product_group = ndb.Key('ProductGroup', pg).get()
+        for pg in product_groups:
+            product_group = pg
             count = 0
             for pg_tag in pg_tags[product_group.id]:
                 count += pg_tags[product_group.id][pg_tag]
             if count != 0:
                 logging.info(
-                    "create ar for {} with {} answers".format(product_group, count))
+                    "create ar for {} with {} answers".format(product_group.description, count))
 
                 link = url
 
@@ -186,14 +196,13 @@ class TaskHarvestSO(webapp2.RequestHandler):
                 activities = ActivityRecord.query(ActivityRecord.gplus_id == gde.gplus_id,
                                                   ActivityRecord.metadata.type == '#stackOverflow',
                                                   ActivityRecord.post_date == str(
-                                                      date.today()),
-                                                  ActivityRecord.activity_link == link)
+                                                      to_date),
+                                                  ActivityRecord.activity_title == title)
 
-                if activities.count() == 0:
+                if activities.count(20) == 0:
                     logging.info("create activity record")
                     activity_record = ActivityRecord(gplus_id=gde.gplus_id,
-                                                     post_date=str(
-                                                         date.today()),
+                                                     post_date=str(to_date),
                                                      activity_types=[
                                                          "#forumpost"],
                                                      product_groups=[
@@ -212,7 +221,7 @@ class TaskHarvestSO(webapp2.RequestHandler):
                     meta.impact = count
                     activity_record.put()
                 else:
-                    logging.info("existing activity record")
+                    logging.info("ActivityRecord Exist Not Overwritting")
 
     def add_answer_to_tag_count(self, pg_tags, question_id):
         # this can be optimized to do only one call, by passed many question
@@ -229,15 +238,13 @@ class TaskHarvestSO(webapp2.RequestHandler):
         questions = json.loads(res)["items"]
         # should really assert that we have only one question
         for question in questions:
-            # logging.info(answer)
+            # logging.info(question)
             tags = question["tags"]
             for tag in tags:
                 # logging.info(tag)
                 for product_group in pg_tags:
-                    # logging.info(product_group)
                     for pg_tag in pg_tags[product_group]:
-                        # logging.info(pg_tag)
                         if tag == pg_tag:
-                            logging.info("found")
-                            logging.info(pg_tag)
+                            # logging.info("found")
+                            # logging.info(pg_tag)
                             pg_tags[product_group][tag] += 1
