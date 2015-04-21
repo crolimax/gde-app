@@ -95,13 +95,6 @@ class CronHarvestSO(webapp2.RequestHandler):
             if account.type != "active":
                 continue
 
-            # for testing against Gerwin
-            # if account.key.id() != "112336147904981294875":
-            #     continue
-            # for testing against Linda
-            if account.key.id() != "117200475532672775346" and account.key.id() != "112336147904981294875":
-                continue
-
             user_count += 1
 
             for i in range(0, num_months):
