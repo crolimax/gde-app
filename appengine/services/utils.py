@@ -1,10 +1,4 @@
-"""This module defines the utility functions.
-
-These functions are called by scheduling one time CRON jobs as defined in
-cron.yaml
-
-ReconstructDataSet iterates through all the gplus activity posts to rebuild
-the data model. Used as we change the data models.
+""" Auth Utils
 
 """
 

@@ -37,9 +37,11 @@ The above was decided arbitrarly :(
 import webapp2
 import logging
 from datetime import datetime, date, timedelta
+import time
 from monthdelta import monthdelta
 
 import json
+import urllib
 import urllib2
 from urllib2 import Request, urlopen, URLError
 
@@ -73,7 +75,7 @@ class CronHarvestSO(webapp2.RequestHandler):
         logging.info('crons/harvest_so')
 
         # harvest a period i.e. from January 1st INITIAL RUN
-        # num_months = 15
+        # num_months = 3
         # start_date = date(2014, 1, 1)
 
         # normal monthly harvest >> HAS TO RUN ON THE FIRST OF THE MONTH
@@ -94,6 +96,8 @@ class CronHarvestSO(webapp2.RequestHandler):
             # don't process inactive users
             if account.type != "active":
                 continue
+            # if account.gplus_id != "117200475532672775346":
+            #     continue
 
             user_count += 1
 
@@ -181,7 +185,22 @@ class TaskHarvestSO(webapp2.RequestHandler):
                 logging.info(
                     "create ar for {} with {} answers".format(product_group.description, count))
 
-                link = url
+                # UPGRADE LINK TO THE SET OF ANSWERS THAT WHERE RECORDED
+                link = "http://stackoverflow.com/search?q=user:" + \
+                    gde.so_id + urllib.quote_plus(" ")
+                link_tags = ""
+
+                for pg_tag in pg_tags[product_group.id]:
+                    if link_tags != "":
+                        link_tags += urllib.quote_plus(" OR ")
+                    link_tags += "[" + pg_tag + "]"
+
+                link += link_tags
+
+                link_date = urllib.quote_plus(" is:answer created:") + \
+                    str(to_date.year) + '-' + str(to_date.month)
+
+                link = link + link_date
 
                 title = "SO HARVEST - {} - from {} to {}".format(
                     product_group.tag, str(from_date), str(to_date))
@@ -219,12 +238,14 @@ class TaskHarvestSO(webapp2.RequestHandler):
     def add_answer_to_tag_count(self, pg_tags, question_id):
         # this can be optimized to do only one call, by passed many question
         # ids
-        query = "?" + SO_KEY + \
+        query = "?key=" + SO_KEY + \
             "&site=stackoverflow&order=desc&sort=activity&filter=default"
 
         url = SO_ROOT + \
             "/questions/{}".format(question_id) + query
-        logging.info(url)
+        # logging.info(url)
+        # don't hit the API too often
+        time.sleep(.5)
 
         req = Request(url)
         res = urlopen(req).read()

@@ -11,19 +11,18 @@ cron:
 
 - description: stack overflow harvest
   url: /crons/harvest_so
-  schedule: 21 of april 04:29
-  # schedule: 1 of month 02:30
+  schedule: 29 of april 10:40
+  # schedule: 1 of month 03:00
 
 - description: ad-hoc calc_impact
   url: /tasks/calc_impact
   schedule: 29 of january 11:03
 
 - description: daily backup
-  url: /_ah/datastore_admin/backup.create?kind=Account&kind=ActivityPost&kind=ActivityRecord
+  url: /_ah/datastore_admin/backup.create?kind=Account&kind=ActivityPost&kind=ActivityRecord&kind=ActivityGroup&kind=ActivityType&kind=ProductGroup
   target: ah-builtin-python-bundle
   schedule: 3 of december 17:00
   #schedule: every day 02:30
-
 
 # - description: weekly upd_blogger
 #   url: /crons/upd_blogger
