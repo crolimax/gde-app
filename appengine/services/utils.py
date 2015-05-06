@@ -1,10 +1,4 @@
-"""This module defines the utility functions.
-
-These functions are called by scheduling one time CRON jobs as defined in
-cron.yaml
-
-ReconstructDataSet iterates through all the gplus activity posts to rebuild
-the data model. Used as we change the data models.
+""" Auth Utils
 
 """
 
@@ -35,6 +29,22 @@ my_default_retry_params = gcs.RetryParams(initial_delay=0.2,
 gcs.set_default_retry_params(my_default_retry_params)
 
 
+def get_so_api_key():
+    bucket = '/' + os.environ.get('BUCKET_NAME',
+                                  app_identity.get_default_gcs_bucket_name())
+
+    secrets_file = None
+
+    try:
+        secrets_file = gcs.open(bucket + '/' + 'secrets.json', 'r')
+    except gcs.NotFoundError:
+        logging.error('secrets.json not found in default bucket')
+        return None
+
+    secrets = json.loads(secrets_file.read())
+    return secrets.get('so_api_key')
+
+
 def get_admin_api_key():
     bucket = '/' + os.environ.get('BUCKET_NAME',
                                   app_identity.get_default_gcs_bucket_name())
@@ -49,6 +59,7 @@ def get_admin_api_key():
 
     secrets = json.loads(secrets_file.read())
     return secrets.get('admin_api_key')
+
 
 def get_server_api_key():
     bucket = '/' + os.environ.get('BUCKET_NAME',
