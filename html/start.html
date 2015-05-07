@@ -7,9 +7,9 @@
 						<h2>{{marker.name}}</h2>
 						<img ng-src="{{marker.pic}}" class="gdePic"/>
 						<h3 ng-repeat="product in marker.pgObjects">
-    					{{product.description}}&nbsp;
-    				</h3>
-    				<img class="badge" ng-repeat="pg_filename in marker.pgObjects"  ng-src="img/badges/{{pg_filename.image}}"></img>
+              {{product.description}}&nbsp;
+            </h3>
+            <img class="badge" ng-repeat="pg_filename in marker.pgObjects" ng-if ="pg_filename.image" ng-src="img/badges/{{pg_filename.image}}"></img>
 					</div>
 				</window>
 			</marker>
@@ -60,8 +60,7 @@
 				<h3 ng-repeat="product in gde.pgObjects">
 					{{product.description}}
 				</h3>
-				<p><small>{{gde.country}}</small> <img class="flag" ng-src="img/flags/{{gde.ctry_filename}}.svg"></img></p>
-				<img class="badge" ng-repeat="pg_filename in gde.pgObjects"  ng-src="img/badges/{{pg_filename.image}}"></img>
+				<p><small>{{gde.country}}</small> <img class="flag" ng-if ="gde.ctry_filename" ng-src="img/flags/{{gde.ctry_filename}}.svg"></img></p>
 			</a>
 		</div>
 	</div>
