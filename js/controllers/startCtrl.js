@@ -69,21 +69,24 @@ GdeTrackingApp.controller("startCtrl",							function($rootScope, $scope,	$http,
         currGde.pgObjects = getPGs(currGde);
       }
 
-      //Create the mapMarker for the current GDE
-      mapMarker= {};
-
-			mapMarker["latitude"] = currGde.geocode.lat;
-			mapMarker["longitude"] = currGde.geocode.lng;
-			var badge = currGde.pgObjects[0].image; //Get the first PGs Image
-			mapMarker["icon"] = 'img/badges/'+badge.replace('.svg','.png');
-			mapMarker["id"] = "gde" + currGde.gplus_id;
-			mapMarker["name"] = currGde.display_name;
-			mapMarker["pic"] = currGde.pic_url;
-			mapMarker["pgObjects"] = currGde.pgObjects;
-			mapMarker["country"] = currGde.country;
-			mapMarker["ctry_filename"] = currGde.ctry_filename;
-
-			mapMarkers.push(mapMarker);
+      //Create the mapMarker only if we have the geocode
+      if (currGde.geocode){
+        //Create the mapMarker for the current GDE
+        mapMarker= {};
+        
+        mapMarker["latitude"] = currGde.geocode.lat;
+        mapMarker["longitude"] = currGde.geocode.lng;
+        var badge = currGde.pgObjects[0].image; //Get the first PGs Image
+        mapMarker["icon"] = 'img/badges/'+badge.replace('.svg','.png');
+        mapMarker["id"] = "gde" + currGde.gplus_id;
+        mapMarker["name"] = currGde.display_name;
+        mapMarker["pic"] = currGde.pic_url;
+        mapMarker["pgObjects"] = currGde.pgObjects;
+        mapMarker["country"] = currGde.country;
+        mapMarker["ctry_filename"] = currGde.ctry_filename;
+        
+        mapMarkers.push(mapMarker);
+      }
 		});
 
 		$scope.markers = mapMarkers;
