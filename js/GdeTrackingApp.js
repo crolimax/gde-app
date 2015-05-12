@@ -31,11 +31,11 @@ function onGapiClientLoad(){
   var ROOT = 'https://omega-keep-406.appspot.com/_ah/api';
       gapi.client.load('gdetracking', 'v1.0b2', function() {
         rootScope.is_backend_ready=true;
-        console.log('GdeApp Backend API LOADED!');
+        console.log('GdeApp Backend API LOADED!' + ' ' + new Date().toUTCString());
 
         //Broadcast that the API is ready
         rootScope.$broadcast('event:gde-app-back-end-ready',gapi.client.gdetracking);
-        console.log('event emitted');
+        console.log('event emitted' + ' ' + new Date().toUTCString());
         //Hide the loading div
         document.querySelector("#splash_screen").style.display='none'
       }, ROOT);

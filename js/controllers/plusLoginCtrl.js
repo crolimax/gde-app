@@ -19,7 +19,7 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 	      return false;
 	    });
 
-	    console.log('Welcome '+$scope.userName+'.');
+	    console.log('Welcome '+$scope.userName+'.' + ' ' + new Date().toUTCString());
 	    if (currUser){
         $rootScope.userName = currUser.display_name;
         $('#generalStatisticsForGooglers').css('display','none');	//Hide the previously shown menu
@@ -43,7 +43,7 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
         }
         $rootScope.userLoaded = true;
 	    }else{
-	      console.log('User not found in the account masterlist');
+	      console.log('User not found in the account masterlist' + ' ' + new Date().toUTCString());
 	    }
 	  }
 	};
@@ -83,7 +83,7 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 						$('#generalStatisticsForGooglers')	.css('display','flex');
 						$rootScope.usrId		= resp.id; //User authorized, save the Id in the rootScope
 					}
-					console.log('Logged userId:' + resp.id);
+					console.log('Logged userId:' + resp.id + ' ' + new Date().toUTCString());
 					console.log('Logged email:' + $scope.userEmails[i].value);
 
 				}
@@ -110,7 +110,7 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
     if (authResult.status.google_logged_in)
     {
       alert("There was an Error with Oauth");
-      console.log('Error in sign in flow.');
+      console.log('Error in sign in flow.' + ' ' + new Date().toUTCString());
 		};
 		$('#userImg')		.html = '';
 		$('.userName')		.text= '';
@@ -120,7 +120,7 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 	});
 	$scope.$on('event:metadata-ready', function (event, gdeTrackingAPI)
 	{
-		console.log('plusLoginCtrl: metadata-ready received');
+		console.log('plusLoginCtrl: metadata-ready received' + ' ' + new Date().toUTCString());
 
 		//Save the API object in the scope
 		$scope.gdeTrackingAPI = gdeTrackingAPI;

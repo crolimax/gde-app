@@ -43,7 +43,7 @@ GdeTrackingApp.controller("startCtrl",							function($rootScope, $scope,	$http,
         })
       });
     }else{
-      console.log("GDE "+gdeObject.display_name+ " has no Product Group");
+      console.log("GDE "+gdeObject.display_name+ " has no Product Group" + ' ' + new Date().toUTCString());
     }
 
     if(toRet.length==0){
@@ -106,7 +106,7 @@ GdeTrackingApp.controller("startCtrl",							function($rootScope, $scope,	$http,
 
 	$scope.$on('event:metadata-ready', function (event, gdeTrackingAPI)
 	{
-		console.log('startCtrl: metadata-ready received');
+		console.log('startCtrl: metadata-ready received' + ' ' + new Date().toUTCString());
 
 		//Save the API object in the scope
 		$scope.gdeTrackingAPI = gdeTrackingAPI;

@@ -229,7 +229,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
 	//MSO - 20140806 - should never happen, as we redirect the user to the main page if not logged in, but just in case keep it
 	$scope.$on('event:metadata-ready', function (event, gdeTrackingAPI)
 	{
-		console.log('myStatisticsCtrl: metadata-ready received');
+		console.log('myStatisticsCtrl: metadata-ready received' + ' ' + new Date().toUTCString());
 
 		//Save the API object in the scope
 		$scope.gdeTrackingAPI = gdeTrackingAPI;
@@ -271,7 +271,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
         		{
         		  //Check if the backend returned and error
               if (response.code){
-                console.log('gdeTrackingAPI.activity_post.get('+value+') responded with Response Code: '+response.code + ' - '+ response.message);
+                console.log('gdeTrackingAPI.activity_post.get('+value+') responded with Response Code: '+response.code + ' - '+ response.message + ' ' + new Date().toUTCString());
               }else{
                 //Push the ActivityPost to the array
                 $scope.currentActivityPosts.push(response);
@@ -467,7 +467,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     $scope.gdeTrackingAPI.activity_record.trash({id:activityId}).execute(
       function(resp){
         if (resp.code){
-          console.log('gdeTrackingAPI.activity_record.trash({id:'+activityId+'}) responded with Response Code: '+resp.code + ' - '+ resp.message);
+          console.log('gdeTrackingAPI.activity_record.trash({id:'+activityId+'}) responded with Response Code: '+resp.code + ' - '+ resp.message + ' ' + new Date().toUTCString());
 
           alert(resp.message);
         }else{
@@ -499,7 +499,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     $scope.gdeTrackingAPI.activity_record.delete({id:activityId}).execute(
       function(resp){
         if (resp.code){
-          console.log('gdeTrackingAPI.activity_record.delete({id:'+activityId+'}) responded with Response Code: '+resp.code + ' - '+ resp.message);
+          console.log('gdeTrackingAPI.activity_record.delete({id:'+activityId+'}) responded with Response Code: '+resp.code + ' - '+ resp.message + ' ' + new Date().toUTCString());
 
           alert(resp.message);
         }else{
@@ -521,7 +521,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
     $scope.gdeTrackingAPI.activity_record.patch({id:activityId,resource:{deleted:false}}).execute(
       function(resp){
         if (resp.code){
-          console.log('gdeTrackingAPI.activity_record.patch({id:'+activityId+'}) responded with Response Code: '+resp.code + ' - '+ resp.message);
+          console.log('gdeTrackingAPI.activity_record.patch({id:'+activityId+'}) responded with Response Code: '+resp.code + ' - '+ resp.message + ' ' + new Date().toUTCString());
 
           alert(resp.message);
         }else{
@@ -645,7 +645,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
       //Remove the Old Item
       $scope.data.items.splice(itmId,1);
     }else{
-      console.log('arId:'+ arId + ' not found in data.items');
+      console.log('arId:'+ arId + ' not found in data.items' + ' ' + new Date().toUTCString());
     }
     itmId=null;
     //activitiesByGdeNameTemp[$scope.name]
@@ -660,7 +660,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
       //Remove the Old Item
       $scope.activitiesByGdeNameTemp[$scope.name]['activities'].splice(itmId,1);
     }else{
-      console.log('arId:'+ arId + ' not found in activitiesByGdeNameTemp');
+      console.log('arId:'+ arId + ' not found in activitiesByGdeNameTemp' + ' ' + new Date().toUTCString());
     }
     itmId=null;
     $scope.userActivities.some(function(item,index){
@@ -674,7 +674,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
       //Remove the Old Item
       $scope.userActivities.splice(itmId,1);
     }else{
-      console.log('arId:'+ arId + ' not found in userActivities');
+      console.log('arId:'+ arId + ' not found in userActivities' + ' ' + new Date().toUTCString());
     }
 	};
 
@@ -788,7 +788,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
         function(response)
         {
           if (response.code){
-            console.log('gdeTrackingAPI.activity_record.insert(DATA) responded with Response Code: '+response.code + ' - '+ response.message);
+            console.log('gdeTrackingAPI.activity_record.insert(DATA) responded with Response Code: '+response.code + ' - '+ response.message + ' ' + new Date().toUTCString());
             console.log(JSON.stringify($scope.currentActivity));
             alert(response.message);
           }else{
@@ -812,7 +812,7 @@ GdeTrackingApp.controller("myStatisticsCtrl",					function($scope,	$location,	$h
                   $scope.gdeTrackingAPI.activity_record.delete({id:arItem.id}).execute(
                     function(resp){
                       if (resp.code){
-                        console.log('gdeTrackingAPI.activity_record.delete({id:'+arItem.id+'}) responded with Response Code: '+resp.code + ' - '+ resp.message);
+                        console.log('gdeTrackingAPI.activity_record.delete({id:'+arItem.id+'}) responded with Response Code: '+resp.code + ' - '+ resp.message + ' ' + new Date().toUTCString());
                         console.log(JSON.stringify(arItem));
                         alert(resp.message);
                       }else{

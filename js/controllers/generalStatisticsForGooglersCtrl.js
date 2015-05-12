@@ -570,7 +570,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 	//MSO - 20140806 - should never happen, as we redirect the user to the main page if not logged in, but just in case keep is
 	$scope.$on('event:metadata-ready', function (event, gdeTrackingAPI)
 	{
-		console.log('generalStatisticsForGooglersCtrl: metadata-ready received');
+		console.log('generalStatisticsForGooglersCtrl: metadata-ready received' + ' ' + new Date().toUTCString());
     $scope.products=$rootScope.productGroups;
 		//Save the API object in the scope
 		$scope.gdeTrackingAPI = gdeTrackingAPI;
