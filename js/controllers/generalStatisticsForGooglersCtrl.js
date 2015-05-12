@@ -292,21 +292,26 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 					id		: 'title',
 					label	: 'Title',
 					type	: 'string'
+				},
+				{
+					id		: 'gde_name',
+					label	: 'GDE Name',
+					type	: 'string'
 				}
 			],
 			rows: []
 		};
+		
 		$scope.utils.addMetricColumns(top100);
 		for (var i=0;i<$scope.top100activities.length;i++)
 		{
 			top100.rows.push(
-				$scope.utils.chartDataRow($scope.top100activities[i].title, $scope.top100activities[i])
+				$scope.utils.chartDataRow($scope.top100activities[i].title, $scope.top100activities[i],null,true)
 			);
 		}
 
 		var top100activitiesByGde_data		= new google.visualization.DataTable(top100);
-		top100activitiesByGde_data.sort(1);
-
+		
 		//===============================================//
 		// Sort Activities by Impact - $scope.top100activities
 		//===============================================//
@@ -315,7 +320,7 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
 		top100TableChart				.setContainerId('top100activitiesChart');
 		top100TableChart				.setOptions(
 		{
-			'sortColumn': 1,
+			'sortColumn': 2,
 			'sortAscending': false,
 			'page': 'enable',
 			'pageSize':10
@@ -398,7 +403,8 @@ GdeTrackingApp.controller("generalStatisticsForGooglersCtrl",	function($rootScop
           {
             var activity = $scope.utils.activityFromApi($scope.data.items[i]);
             //Store the activity for later processing
-            var top100act = {title:activity.title, activities:[activity]};
+            
+            var top100act = {title:activity.title,gde_name:activity.gde_name, activities:[activity]};
             $scope.utils.updateStats(top100act, $scope.data.items[i]);
             $scope.top100activities.push(top100act);
 

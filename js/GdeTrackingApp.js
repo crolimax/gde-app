@@ -312,7 +312,7 @@ GdeTrackingApp.run(function ($rootScope)
 
 
 		},
-		'chartDataRow'				: function(label,	activityRecord, useCountry)
+		'chartDataRow'				: function(label,	activityRecord, useCountry,showGDEName)
 		{
 			var row					= {c:[]};
 
@@ -327,6 +327,9 @@ GdeTrackingApp.run(function ($rootScope)
 			row.c.push({v:label});
 			if (useCountry){
 			  row.c.push({v:activityRecord.country});
+			}
+			if (showGDEName){
+			  row.c.push({v:activityRecord.gde_name});
 			}
 			row.c.push({v:total_impact});
 			row.c.push({v:activitiesLogged});
