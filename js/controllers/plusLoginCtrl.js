@@ -44,6 +44,8 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
         }
         
         //Check the account email
+        //TODO: need "hasEmail" to understand if push is needed without exposing the email
+        /*
         if ($scope.currEmail && currUser.email == null){
           currUser.email = $scope.currEmail;
           
@@ -52,6 +54,7 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
             "id":userId,
             "email":$scope.currEmail});
         }
+        */
         
         $rootScope.userLoaded = true;
 	    }else{
