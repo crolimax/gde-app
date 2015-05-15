@@ -6,7 +6,6 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 {
 	$location.path('/');		// Forces the App to always load in the Welcome Screen
 	$scope.gdeTrackingAPI = null;
-	$scope.currEmail = null;
 
 	$scope.getUserAccount = function(userId){
 	  if ($rootScope.metadataReady){
@@ -42,19 +41,6 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
           default:
             break;	//disabled users
         }
-        
-        //Check the account email
-        //TODO: need "hasEmail" to understand if push is needed without exposing the email
-        /*
-        if ($scope.currEmail && currUser.email == null){
-          currUser.email = $scope.currEmail;
-          
-          //Push the updated user to the backend
-          $scope.pushUserAccount({
-            "id":userId,
-            "email":$scope.currEmail});
-        }
-        */
         
         $rootScope.userLoaded = true;
 	    }else{
@@ -114,7 +100,6 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 					}
 					console.log('Logged userId:' + resp.id);
 					console.log('Logged email:' + $scope.userEmails[i].value);
-          $scope.currEmail = $scope.userEmails[i].value;
 				}
 
 				$('.userName')	.text($scope.userName);	// Binds the user name into the DOM using a class via jQuery so it can be repeated throughout the document.
