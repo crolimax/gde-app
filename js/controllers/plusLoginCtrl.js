@@ -41,11 +41,27 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
           default:
             break;	//disabled users
         }
+        
         $rootScope.userLoaded = true;
 	    }else{
 	      console.log('User not found in the account masterlist' + ' ' + new Date().toUTCString());
 	    }
 	  }
+	};
+	
+	$scope.pushUserAccount = function(userObject){
+	  $scope.gdeTrackingAPI.account.insert(userObject).execute(
+        function(response)
+        {
+          if (response.code){
+            console.log('gdeTrackingAPI.account.insert(DATA) responded with Response Code: '+response.code + ' - '+ response.message);
+            console.log(JSON.stringify(userObject));
+            alert(response.message);
+          }else{
+            console.log('Email Updated correctly');
+          }
+    		}
+    	);
 	};
 
 	$scope.$on('event:google-plus-signin-success', function (event, authResult)
@@ -62,7 +78,6 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 			});
 			request.execute(function(resp)
 			{
-
         $('gde-badge').get(0).updateImage(resp.image.url.replace(/\?.*$/,""));
 
 				$rootScope.$broadcast('gde:logged',resp.displayName);
@@ -72,7 +87,7 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 				$rootScope.usrId = resp.id;
 				$scope.id = resp.id;
         //console.log('User Id:' + resp.id);
-
+        
 			  for (var i=0;i<$scope.userEmails.length;i++)
 				{
 					var emailDomain = $scope.userEmails[i].value.substring($scope.userEmails[i].value.indexOf('@'));
@@ -85,7 +100,6 @@ GdeTrackingApp.controller('plusLoginCtrl',						function($scope,	$location,	$htt
 					}
 					console.log('Logged userId:' + resp.id + ' ' + new Date().toUTCString());
 					console.log('Logged email:' + $scope.userEmails[i].value);
-
 				}
 
 				$('.userName')	.text($scope.userName);	// Binds the user name into the DOM using a class via jQuery so it can be repeated throughout the document.
