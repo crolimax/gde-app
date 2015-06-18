@@ -17,7 +17,7 @@ import math
 class ActivityMetaData(EndpointsModel):
 
     # groups of activities that can be reported together
-    # #content #community #techtalk #bugreport #forumpost #opensourcecode
+    # content #community #techtalk #bugreport #forumpost #opensourcecode
     activity_group = ndb.StringProperty()
 
     # bugreport, techtalk, applies to all
@@ -43,7 +43,8 @@ class ActivityMetaData(EndpointsModel):
     # community, techtalk
     location = ndb.StringProperty()
     google_expensed = ndb.BooleanProperty()
-    us_approx_amount = EndpointsVariantIntegerProperty(variant=messages.Variant.INT32)
+    us_approx_amount = EndpointsVariantIntegerProperty(
+        variant=messages.Variant.INT32)
 
 
 class ActivityRecord(EndpointsModel):
@@ -72,7 +73,8 @@ class ActivityRecord(EndpointsModel):
     activity_title = ndb.StringProperty()
     gplus_posts = ndb.StringProperty(repeated=True)
     # cumulative plus_oners & resharers
-    plus_oners = EndpointsVariantIntegerProperty(variant=messages.Variant.INT32)
+    plus_oners = EndpointsVariantIntegerProperty(
+        variant=messages.Variant.INT32)
     resharers = EndpointsVariantIntegerProperty(variant=messages.Variant.INT32)
     comments = EndpointsVariantIntegerProperty(variant=messages.Variant.INT32)
     # activity types and product groups
@@ -164,7 +166,8 @@ class ActivityRecord(EndpointsModel):
 
     def MinDateSet(self, value):
         if value is not None:
-            self._endpoints_query_info._filters.add(ActivityRecord.post_date >= value)
+            self._endpoints_query_info._filters.add(
+                ActivityRecord.post_date >= value)
 
     @EndpointsAliasProperty(setter=MinDateSet, property_type=messages.StringField)
     def minDate(self):
@@ -176,7 +179,8 @@ class ActivityRecord(EndpointsModel):
 
     def MaxDateSet(self, value):
         if value is not None:
-            self._endpoints_query_info._filters.add(ActivityRecord.post_date <= value)
+            self._endpoints_query_info._filters.add(
+                ActivityRecord.post_date <= value)
 
     @EndpointsAliasProperty(setter=MaxDateSet, property_type=messages.StringField)
     def maxDate(self):
@@ -253,12 +257,18 @@ def create_activity_record(activity_post):
 
 
 def find(activity_post):
-    activity_link = activity_post.links
-    if activity_post.links == "":
-        activity_link = activity_post.url
+    # activity_link = activity_post.links
+    # if activity_post.links == "":
+    #     activity_link = activity_post.url
 
-    records = ActivityRecord.query(ActivityRecord.activity_link ==
-                                   activity_link).fetch(1)
+    # records = ActivityRecord.query(ActivityRecord.activity_link ==
+    #                                activity_link).fetch(1)
+
+    # the find funtion was failing for AR merged from the front end
+    # this looks for the AR based on the AP id instead of the link
+
+    records = ActivityRecord.query(
+        ActivityRecord.gplus_posts == activity_post.id).fetch(1)
 
     if (len(records) == 0):
         return None

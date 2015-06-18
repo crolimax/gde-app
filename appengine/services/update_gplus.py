@@ -163,6 +163,10 @@ def is_gde_post(activity):
     # alternatively is the verb is 'share' then verify that
     # actor.id of the share and the original post are the same
     if 'verb' in activity:
+        # when the verb is 'checkin' the ["object"]["actor "] key does not
+        # exist
+        if activity["verb"] == 'checkin':
+            return False
         if activity["verb"] == 'post':
             return True
         elif activity["object"]["actor"]["id"] == activity["actor"]["id"]:
@@ -283,6 +287,8 @@ class TaskUpdateGplus(webapp2.RequestHandler):
             if activity_record is not None:
                 if activity_record.deleted:
                     continue
+
+            logging.info(activity_record)
 
             # find out if the acticity post links to a YouTube video
             video_id = is_youtube_video(activity.links)

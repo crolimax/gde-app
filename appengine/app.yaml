@@ -1,3 +1,6 @@
+# Code checked into github points the app.yaml to the staging environment
+# you should switch the app-id from STAGE to LIVE before deploying to production
+
 # LIVE
 #application: omega-keep-406
 # STAGE
