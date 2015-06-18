@@ -1,3 +1,8 @@
+# The actual CRON timings for production are commented out
+# this enable testing of the jobs on the staging environment
+# when debugging or writting new code
+# be sure to swap the comment lines before uploading to production
+
 cron:
 - description: daily new_gplus
   url: /crons/new_gplus
