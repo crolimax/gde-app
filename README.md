@@ -13,6 +13,8 @@ The application is mainly composed by 2 parts:
 
 The backend code can be found on the `feature/appengine` branch, the current version of the Web App can be found in the branch `feature\material_design`.
 
+New web app will be developed in this repository: https://github.com/GoogleDeveloperExperts/gde-app-web
+
 ## Installing
 
 First of all download the get the branch with Git.
